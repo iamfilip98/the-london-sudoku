@@ -387,7 +387,10 @@ class SudokuEngine {
         // Keyboard controls
         document.addEventListener('keydown', async (e) => await this.handleKeyInput(e));
 
-        // Auto-save every 10 seconds
+        // Auto-save every 10 seconds (clear existing first to prevent duplicates)
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+        }
         this.autoSaveInterval = setInterval(() => {
             if (this.gameStarted && !this.gameCompleted) {
                 this.saveGameState();
@@ -4403,7 +4406,10 @@ class SudokuEngine {
                 '<div class="status-message">Puzzle restarted! Good luck!</div>';
         }
 
-        // Restart auto-save interval
+        // Restart auto-save interval (clear existing first to prevent duplicates)
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+        }
         this.autoSaveInterval = setInterval(() => {
             if (this.gameStarted && !this.gameCompleted) {
                 this.saveGameState();
