@@ -4494,6 +4494,9 @@ class SudokuEngine {
             this.stopTimer();
         }
 
+        // Clear explicit selection flag to allow loading fresh puzzles for new difficulty
+        this.explicitlySelectedDifficulty = false;
+
         // Update current difficulty
         this.currentDifficulty = difficulty;
 

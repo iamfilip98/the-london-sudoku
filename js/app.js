@@ -235,8 +235,13 @@ class SudokuChampionship {
                 // Update page content
                 await this.updatePageContent(targetPage);
 
-                // If navigating to dashboard, refresh today's progress
+                // If navigating to dashboard, force refresh today's progress to show latest updates
                 if (targetPage === 'dashboard') {
+                    // Invalidate cache to ensure fresh data
+                    this.todayProgressCache.data = null;
+                    this.todayProgressCache.lastUpdate = null;
+                    this.todayProgressCache.date = null;
+
                     await this.updateTodayProgress();
                 }
             });
@@ -368,31 +373,25 @@ class SudokuChampionship {
         // Poll for live progress updates every 15 seconds for real-time battle updates
         setInterval(async () => {
             if (this.initializationComplete) {
-                // Only poll if we're on the dashboard page or if initialization is complete
-                const dashboardPage = document.getElementById('dashboard');
-                if (dashboardPage && dashboardPage.classList.contains('active')) {
-                    // Invalidate cache and update progress for live updates
-                    this.todayProgressCache.data = null;
-                    this.todayProgressCache.lastUpdate = null;
-                    this.todayProgressCache.date = null;
+                // Poll regardless of active page to keep data fresh for when user switches to dashboard
+                // Invalidate cache and update progress for live updates
+                this.todayProgressCache.data = null;
+                this.todayProgressCache.lastUpdate = null;
+                this.todayProgressCache.date = null;
 
-                    await this.updateTodayProgress();
-                }
+                await this.updateTodayProgress();
             }
         }, 15000); // 15 seconds for live battle updates
 
         // Also check immediately when page becomes visible (user returns to tab)
         document.addEventListener('visibilitychange', async () => {
             if (!document.hidden && this.initializationComplete) {
-                const dashboardPage = document.getElementById('dashboard');
-                if (dashboardPage && dashboardPage.classList.contains('active')) {
-                    // Force refresh when user returns to tab
-                    this.todayProgressCache.data = null;
-                    this.todayProgressCache.lastUpdate = null;
-                    this.todayProgressCache.date = null;
+                // Force refresh when user returns to tab
+                this.todayProgressCache.data = null;
+                this.todayProgressCache.lastUpdate = null;
+                this.todayProgressCache.date = null;
 
-                    await this.updateTodayProgress();
-                }
+                await this.updateTodayProgress();
             }
         });
     }
@@ -1837,8 +1836,13 @@ class SudokuChampionship {
             // Update page content
             await this.updatePageContent(targetPage);
 
-            // If navigating to dashboard, refresh today's progress
+            // If navigating to dashboard, force refresh today's progress to show latest updates
             if (targetPage === 'dashboard') {
+                // Invalidate cache to ensure fresh data
+                this.todayProgressCache.data = null;
+                this.todayProgressCache.lastUpdate = null;
+                this.todayProgressCache.date = null;
+
                 await this.updateTodayProgress();
             }
         }
