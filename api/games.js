@@ -247,7 +247,7 @@ module.exports = async function handler(req, res) {
 
   try {
     switch (req.method) {
-      case 'GET':
+      case 'GET': {
         const { date, all, player } = req.query;
 
         // If 'all' parameter is present, return all games
@@ -266,8 +266,9 @@ module.exports = async function handler(req, res) {
 
         const progress = await getTodayProgress(date);
         return res.status(200).json(progress);
+      }
 
-      case 'POST':
+      case 'POST': {
         const { player, date: gameDate, difficulty, ...gameData } = req.body;
 
         // Comprehensive validation
@@ -283,8 +284,9 @@ module.exports = async function handler(req, res) {
           success: true,
           message: 'Game saved successfully'
         });
+      }
 
-      case 'DELETE':
+      case 'DELETE': {
         // Delete all games for a specific date or all games
         const { date: deleteDate, all } = req.query;
 
@@ -305,6 +307,7 @@ module.exports = async function handler(req, res) {
         } else {
           return res.status(400).json({ error: 'Date parameter or all=true is required for deletion' });
         }
+      }
 
       default:
         res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
