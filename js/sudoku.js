@@ -2594,9 +2594,6 @@ class SudokuEngine {
                 }
             });
 
-            Object.entries(byDifficulty).forEach(([diff, stats]) => {
-            });
-
             // 3. Top patterns in high-rated puzzles
             if (highRatedPuzzles.length > 0) {
                 const avgTimeHigh = highRatedPuzzles.reduce((sum, r) => sum + r.time, 0) / highRatedPuzzles.length;
@@ -2629,27 +2626,17 @@ class SudokuEngine {
             const bestDifficulty = Object.entries(byDifficulty)
                 .sort((a, b) => b[1].avgRating - a[1].avgRating)[0];
 
-            if (bestDifficulty) {
-                    '(avg rating:', bestDifficulty[1].avgRating.toFixed(2) + ')');
-            }
-
             // Error correlation
             const errorCorrelation = this.calculateCorrelation(
                 ratings.map(r => r.errors),
                 ratings.map(r => r.rating)
             );
 
-            if (errorCorrelation < -0.3) {
-            }
-
             // Time correlation
             const timeCorrelation = this.calculateCorrelation(
                 ratings.map(r => r.time),
                 ratings.map(r => r.rating)
             );
-
-            if (timeCorrelation < -0.3) {
-            }
 
 
             return {
@@ -5067,9 +5054,6 @@ window.analyzePuzzleRatings = async function(useServer = true) {
         }
     });
 
-    Object.entries(byDifficulty).forEach(([diff, stats]) => {
-    });
-
     // High-rated puzzle patterns
     if (highRatedPuzzles.length > 0) {
         const avgTimeHigh = highRatedPuzzles.reduce((sum, r) => sum + r.time, 0) / highRatedPuzzles.length;
@@ -5119,31 +5103,19 @@ window.analyzePuzzleRatings = async function(useServer = true) {
     const bestDifficulty = Object.entries(byDifficulty)
         .sort((a, b) => b[1].avgRating - a[1].avgRating)[0];
 
-    if (bestDifficulty) {
-            '(avg rating:', bestDifficulty[1].avgRating.toFixed(2) + ')');
-    }
-
     const errorCorrelation = calculateCorrelation(
         ratings.map(r => r.errors),
         ratings.map(r => r.rating)
     );
-
-    if (errorCorrelation < -0.3) {
-    }
 
     const timeCorrelation = calculateCorrelation(
         ratings.map(r => r.time),
         ratings.map(r => r.rating)
     );
 
-    if (timeCorrelation < -0.3) {
-    }
-
 
     // Check data collection progress
     const uniqueDates = [...new Set(ratings.map(r => r.date))];
-    if (uniqueDates.length < 7) {
-    }
 
     return {
         overall: { avgRating, totalCount: ratings.length, highRated: highRatedPuzzles.length, lowRated: lowRatedPuzzles.length },
