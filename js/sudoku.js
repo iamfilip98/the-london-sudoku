@@ -528,30 +528,40 @@ class SudokuEngine {
                 return;
             }
 
-            // Background: Try to load daily puzzles from server API (non-blocking)
-            // This runs in background while user can play with fallback puzzles
-            debugLog('🔄 Attempting background API update...');
-            setTimeout(async () => {
-                try {
-                    const today = this.getTodayDateString();
-                    const response = await fetch(`/api/puzzles?date=${today}&t=${Date.now()}`);
+            // 4th Priority: Load from API (blocking - we must have puzzles before continuing)
+            debugLog('🔄 Loading puzzles from API...');
+            try {
+                const today = this.getTodayDateString();
+                const response = await fetch(`/api/puzzles?date=${today}&t=${Date.now()}`);
 
-                    if (response.ok) {
-                        const apiPuzzles = await response.json();
-                        const validation = this.validatePuzzleData(apiPuzzles);
-                        if (validation.isValid) {
-                            this.dailyPuzzles = apiPuzzles;
-                            debugLog('✅ Daily puzzles updated in background');
+                if (response.ok) {
+                    const apiPuzzles = await response.json();
+                    const validation = this.validatePuzzleData(apiPuzzles);
+                    if (validation.isValid) {
+                        this.dailyPuzzles = apiPuzzles;
+                        debugLog('✅ Daily puzzles loaded from API');
+
+                        // Update global cache
+                        window.preloadedPuzzles = this.dailyPuzzles;
+                        if (window.sudokuApp) {
+                            window.sudokuApp.puzzleCache.puzzles = this.dailyPuzzles;
+                            window.sudokuApp.puzzleCache.loadTime = Date.now();
                         }
+                        return;
+                    } else {
+                        throw new Error(`Invalid puzzle data: ${validation.reason}`);
                     }
-                } catch (error) {
-                    debugLog('ℹ️ Background API update failed, using fallback puzzles');
+                } else {
+                    throw new Error(`API returned ${response.status}`);
                 }
-            }, 100); // Minimal delay to not block UI
+            } catch (apiError) {
+                console.error('❌ Failed to load puzzles from API:', apiError);
+                throw new Error('Unable to load puzzles - please refresh the page');
+            }
 
         } catch (error) {
-            debugLog('ℹ️ Using fallback puzzles for instant loading');
-            // Fallback puzzles are already loaded, so no delay here
+            console.error('❌ Critical error in loadDailyPuzzles:', error);
+            throw error;
         }
     }
 
