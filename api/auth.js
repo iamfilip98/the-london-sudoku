@@ -1,29 +1,19 @@
-require('dotenv').config({ path: '.env.local' });
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-const { Pool } = require('pg');
+/**
+ * Authentication API
+ * SECURITY FIXES (November 2025):
+ * - Fixed TLS certificate verification
+ * - Fixed CORS configuration
+ * - Using shared database pool
+ */
+
+const pool = require('../lib/db-pool');
+const { setCorsHeaders } = require('../lib/cors');
 const bcrypt = require('bcryptjs');
 
-const pool = new Pool({
-  connectionString: process.env.POSTGRES_PRISMA_URL,
-  ssl: {
-    rejectUnauthorized: false,
-    checkServerIdentity: () => undefined
-  },
-  max: 3,
-  idleTimeoutMillis: 5000,
-  connectionTimeoutMillis: 10000
-});
-
 module.exports = async function handler(req, res) {
-  // Handle CORS
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+  // ✅ SECURITY FIX: Proper CORS handling
+  if (setCorsHeaders(req, res)) {
+    return;  // Preflight request handled
   }
 
   if (req.method !== 'POST') {

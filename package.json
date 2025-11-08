@@ -1,11 +1,17 @@
 {
-  "name": "the-new-london-times",
-  "version": "1.0.0",
-  "description": "The New London Times - Sudoku Championship website with database storage and secure authentication",
-  "main": "index.html",
+  "name": "the-london-sudoku",
+  "version": "0.1.0",
+  "description": "The London Sudoku - Daily puzzle platform with competitive leaderboards, battle pass, and multiple variants",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamfilip98/the-london-sudoku"
+  },
+  "author": "Filip Ivanovic",
+  "license": "SEE LICENSE FILE",
   "scripts": {
     "start": "echo 'This is a Vercel serverless project. Use vercel dev for local development.'",
-    "dev": "echo 'Use vercel dev for local development or open index.html directly in browser.'",
+    "dev": "vercel dev",
     "init-users": "node init-users.js",
     "test": "playwright test",
     "test:visual": "playwright test tests/visual",
@@ -35,6 +41,7 @@
     "playwright": "^1.56.1"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.20.0 <19.0.0",
+    "npm": ">=9.0.0"
   }
 }
