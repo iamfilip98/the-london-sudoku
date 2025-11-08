@@ -4,10 +4,12 @@
  * - Fixed TLS certificate verification
  * - Fixed CORS configuration
  * - Using shared database pool
+ * - Added Zod input validation
  */
 
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
+const { loginSchema, validate } = require('../lib/validators');
 const bcrypt = require('bcryptjs');
 
 module.exports = async function handler(req, res) {
@@ -22,16 +24,17 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { username, password } = req.body;
-
-    // Validate input
-    if (!username || !password) {
-      res.status(400).json({
+    // ✅ SECURITY FIX: Validate and sanitize input
+    const validation = validate(req.body, loginSchema);
+    if (!validation.success) {
+      return res.status(400).json({
         success: false,
-        error: 'Username and password are required'
+        error: validation.error.message,
+        details: validation.error.issues
       });
-      return;
     }
+
+    const { username, password } = validation.data;
 
     // Query user from database
     const result = await pool.query(

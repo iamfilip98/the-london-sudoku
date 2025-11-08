@@ -1,0 +1,118 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allow manual deployments
+
+jobs:
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+
+    # Only deploy if tests pass
+    needs: []  # Will be updated when test workflow runs
+
+    environment:
+      name: production
+      url: https://thelondonsudoku.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.20.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests before deploy
+        run: npm test
+        env:
+          CI: true
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deploy Project Artifacts to Vercel
+        id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$url" >> $GITHUB_OUTPUT
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Run smoke tests
+        run: |
+          # Wait for deployment to be ready
+          sleep 30
+
+          # Test health endpoint
+          curl -f ${{ steps.deploy.outputs.url }}/api/health || exit 1
+
+          echo "✅ Smoke tests passed"
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "🚀 Deployment successful!"
+          echo "URL: ${{ steps.deploy.outputs.url }}"
+
+      - name: Notify deployment failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          exit 1
+
+  post-deploy:
+    name: Post-Deployment Tasks
+    runs-on: ubuntu-latest
+    needs: deploy
+
+    steps:
+      - name: Verify production health
+        run: |
+          # Wait for DNS propagation
+          sleep 60
+
+          # Check production health endpoint
+          response=$(curl -s https://thelondonsudoku.com/api/health)
+          status=$(echo $response | jq -r '.status')
+
+          if [ "$status" != "healthy" ]; then
+            echo "❌ Production health check failed!"
+            exit 1
+          fi
+
+          echo "✅ Production is healthy"
+
+      - name: Create deployment tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tagName = `deploy-${new Date().toISOString().slice(0,10)}-${context.sha.slice(0,7)}`;
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${tagName}`,
+              sha: context.sha
+            });
+            console.log(`✅ Created tag: ${tagName}`);
