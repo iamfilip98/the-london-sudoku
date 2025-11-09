@@ -7,6 +7,50 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 2 Month 16: Variant-Aware Validation** (November 9, 2025)
+- ✅ **Real-time Variant Constraint Validation**: Instant feedback on variant-specific rule violations
+  - Players now get immediate error feedback when violating variant rules
+  - No more discovering mistakes only at puzzle completion
+  - Professional gameplay experience with smart validation
+- 🎯 **X-Sudoku Validation**: Diagonal constraint checking
+  - Validates both main diagonal (top-left to bottom-right)
+  - Validates anti-diagonal (top-right to bottom-left)
+  - Prevents duplicate numbers on diagonals during play
+- ♘ **Anti-Knight Validation**: Knight's move constraint checking
+  - Checks all 8 knight's move positions from current cell
+  - Prevents placing same number a knight's move apart
+  - Enforces chess knight movement rules
+- 🔪 **Killer Sudoku Validation**: Cage sum and duplicate checking
+  - Validates no duplicates within each cage
+  - Checks cage sum doesn't exceed target
+  - Validates complete cage sums match exactly
+  - Immediate feedback on invalid cage placements
+- 🎯 **Hyper Sudoku Validation**: Extra region constraint checking
+  - Validates all 4 overlapping 3×3 hyper regions
+  - Checks for duplicates in both standard boxes AND hyper regions
+  - Total of 31 constraints validated (9 rows + 9 cols + 9 boxes + 4 hyper)
+- 🔢 **Consecutive Sudoku Validation**: Marker relationship enforcement
+  - **Marked edges**: Adjacent cells MUST differ by exactly 1
+  - **Unmarked edges**: Adjacent cells MUST NOT differ by 1
+  - Bidirectional checking (checks both cells in relationship)
+  - Enforces negative constraint (absence of marker is meaningful)
+- 🌡️ **Thermo Sudoku Validation**: Strictly increasing sequence enforcement
+  - Validates numbers increase from bulb to tip
+  - Checks both previous cell (must be less) and next cell (must be greater)
+  - Prevents out-of-order placements along thermometer paths
+  - Maintains strict inequality (not just non-decreasing)
+- 🧩 **Jigsaw Sudoku Validation**: Irregular region duplicate checking
+  - Validates no duplicates within each irregular region
+  - Works with dynamically generated region maps
+  - Checks all 9 cells in each non-standard region
+- 🚀 **Performance Optimized**: Efficient validation algorithms
+  - Targeted checks only for affected constraints
+  - Early termination on first violation found
+  - Minimal overhead during normal gameplay
+- 📊 **Comprehensive Coverage**: All 10 variants fully validated
+  - Classic, X-Sudoku, Mini 6×6: Standard + variant rules
+  - Anti-Knight, Killer, Hyper, Consecutive, Thermo, Jigsaw: Full constraint validation
+
 ### **Phase 2 Month 15: Frontend Variant Rendering** (November 9, 2025)
 - 🎨 **Visual Overlays for All Special Variants**: Complete frontend rendering support
   - **Killer Sudoku**: Dashed cage borders with sum labels displayed in top-left of each cage
