@@ -4226,6 +4226,20 @@ class SudokuEngine {
                 }
             }
 
+            // PHASE 2 MONTH 22: Refresh leaderboards if currently viewing
+            if (window.variantLeaderboardsUI) {
+                try {
+                    // Refresh leaderboards display if the leaderboards page is active
+                    const leaderboardsPage = document.getElementById('leaderboards-page');
+                    if (leaderboardsPage && !leaderboardsPage.classList.contains('hidden')) {
+                        window.variantLeaderboardsUI.refresh();
+                        console.log('✅ Leaderboards refreshed after game completion');
+                    }
+                } catch (error) {
+                    console.error('Failed to refresh leaderboards:', error);
+                }
+            }
+
         } catch (error) {
             console.error('Failed to save completed game:', error);
         }

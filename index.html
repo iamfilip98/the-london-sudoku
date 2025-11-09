@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/tutorial.css">
     <link rel="stylesheet" href="css/variant-mastery.css">
     <link rel="stylesheet" href="css/variant-challenges.css">
+    <link rel="stylesheet" href="css/variant-leaderboards.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -603,44 +604,85 @@
                 <div class="page-header">
                     <h1 class="page-title">
                         <i class="fas fa-medal"></i>
-                        Leaderboards & Records
+                        Variant Leaderboards
                     </h1>
                 </div>
 
-                <div class="leaderboards-content">
-                    <div class="leaderboard-tabs">
-                        <button class="tab-btn active" data-tab="monthly">Monthly</button>
-                        <button class="tab-btn" data-tab="weekly">Weekly</button>
-                        <button class="tab-btn" data-tab="records">Records</button>
-                    </div>
-
-                    <div class="tab-content active" id="monthly-tab">
-                        <div class="leaderboard-section">
-                            <h3>This Month's Champions</h3>
-                            <div class="leaderboard-cards" id="monthlyLeaderboard"></div>
-                        </div>
-                    </div>
-
-                    <div class="tab-content" id="weekly-tab">
-                        <div class="leaderboard-section">
-                            <h3>This Week's Performance</h3>
-                            <div class="leaderboard-cards" id="weeklyLeaderboard"></div>
-                        </div>
-                    </div>
-
-                    <div class="tab-content" id="records-tab">
-                        <div class="records-grid">
-                            <div class="record-category">
-                                <h3>Fastest Times</h3>
-                                <div class="records-list" id="fastestTimes"></div>
-                            </div>
-                            <div class="record-category">
-                                <h3>Perfect Games</h3>
-                                <div class="records-list" id="perfectGames"></div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Category Tabs -->
+                <div class="leaderboard-category-tabs">
+                    <button class="leaderboard-category-tab active" data-category="speed">
+                        <span class="tab-icon">⚡</span>
+                        <span class="tab-label">Speed Legends</span>
+                    </button>
+                    <button class="leaderboard-category-tab" data-category="streak">
+                        <span class="tab-icon">🔥</span>
+                        <span class="tab-label">Streak Masters</span>
+                    </button>
+                    <button class="leaderboard-category-tab" data-category="perfect">
+                        <span class="tab-icon">✨</span>
+                        <span class="tab-label">Perfectionists</span>
+                    </button>
+                    <button class="leaderboard-category-tab" data-category="completions">
+                        <span class="tab-icon">🎯</span>
+                        <span class="tab-label">Dedicated Players</span>
+                    </button>
+                    <button class="leaderboard-category-tab" data-category="xp">
+                        <span class="tab-icon">⭐</span>
+                        <span class="tab-label">XP Champions</span>
+                    </button>
                 </div>
+
+                <!-- Variant Filters -->
+                <div class="leaderboard-variant-filter">
+                    <button class="filter-btn active" data-variant="all">
+                        <span>🌟</span> All Variants
+                    </button>
+                    <button class="filter-btn" data-variant="classic">
+                        <span>🎯</span> Classic
+                    </button>
+                    <button class="filter-btn" data-variant="x-sudoku">
+                        <span>✖️</span> X-Sudoku
+                    </button>
+                    <button class="filter-btn" data-variant="mini">
+                        <span>📐</span> Mini
+                    </button>
+                    <button class="filter-btn" data-variant="anti-knight">
+                        <span>♞</span> Anti-Knight
+                    </button>
+                    <button class="filter-btn" data-variant="killer-sudoku">
+                        <span>🔪</span> Killer
+                    </button>
+                    <button class="filter-btn" data-variant="hyper-sudoku">
+                        <span>🎯</span> Hyper
+                    </button>
+                    <button class="filter-btn" data-variant="consecutive-sudoku">
+                        <span>🔢</span> Consecutive
+                    </button>
+                    <button class="filter-btn" data-variant="thermo-sudoku">
+                        <span>🌡️</span> Thermo
+                    </button>
+                    <button class="filter-btn" data-variant="jigsaw-sudoku">
+                        <span>🧩</span> Jigsaw
+                    </button>
+                </div>
+
+                <!-- Category Info -->
+                <div id="leaderboardCategoryInfo"></div>
+
+                <!-- Podium (Top 3) -->
+                <div class="leaderboard-podium-section">
+                    <h2 class="section-title">Top 3</h2>
+                    <div id="leaderboardPodium"></div>
+                </div>
+
+                <!-- Full Leaderboard Table -->
+                <div class="leaderboard-table-section">
+                    <h2 class="section-title">Full Rankings</h2>
+                    <div id="leaderboardTable"></div>
+                </div>
+
+                <!-- User Ranking Summary -->
+                <div id="userRankingSummary"></div>
             </div>
 
             <!-- Achievements Page -->
@@ -1635,6 +1677,10 @@
     <!-- PHASE 2 MONTH 21: Variant Daily Challenges -->
     <script src="/js/variant-daily-challenges.js"></script>
     <script src="/js/variant-challenges-ui.js"></script>
+
+    <!-- PHASE 2 MONTH 22: Variant Leaderboards -->
+    <script src="/js/variant-leaderboards.js"></script>
+    <script src="/js/variant-leaderboards-ui.js"></script>
     <script>
         // Initialize tutorial system when Sudoku engine is ready
         let tutorialManager;
@@ -1670,6 +1716,16 @@
                 window.variantChallengesUI = variantChallengesUI;
                 variantChallengesUI.initialize();
                 console.log('✅ Variant challenges UI initialized');
+
+                // PHASE 2 MONTH 22: Initialize variant leaderboards
+                const variantLeaderboardsManager = new VariantLeaderboardsManager(variantStatsManager, variantChallengesManager);
+                window.variantLeaderboardsManager = variantLeaderboardsManager;
+                console.log('✅ Variant leaderboards manager initialized');
+
+                const variantLeaderboardsUI = new VariantLeaderboardsUI(variantLeaderboardsManager);
+                window.variantLeaderboardsUI = variantLeaderboardsUI;
+                variantLeaderboardsUI.initialize();
+                console.log('✅ Variant leaderboards UI initialized');
 
                 // Add tutorial triggers to UI
                 addTutorialTriggers();
