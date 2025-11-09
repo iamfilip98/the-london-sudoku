@@ -243,7 +243,7 @@ Use --help for more information.
   const octokit = new Octokit({
     auth: token,
     request: {
-      agent: process.env.https_proxy ? require('https-proxy-agent').HttpsProxyAgent(process.env.https_proxy) : undefined
+      agent: process.env.https_proxy ? new (require('https-proxy-agent').HttpsProxyAgent)(process.env.https_proxy) : undefined
     }
   });
 
