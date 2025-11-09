@@ -590,15 +590,25 @@ class SudokuEngine {
             // 4th Priority: Load from API (blocking - we must have puzzles before continuing)
             debugLog('🔄 Loading puzzles from API...');
             try {
-                const today = this.getTodayDateString();
-                const response = await fetch(`/api/puzzles?date=${today}&variant=${this.variant}&t=${Date.now()}`);
+                // PHASE 2: Only Classic has daily puzzles, all other variants use practice mode
+                let apiUrl;
+                if (this.variant === 'classic') {
+                    const today = this.getTodayDateString();
+                    apiUrl = `/api/puzzles?date=${today}&variant=${this.variant}&t=${Date.now()}`;
+                    debugLog(`🔄 Loading daily Classic puzzles for ${today}`);
+                } else {
+                    apiUrl = `/api/puzzles?mode=practice&variant=${this.variant}&t=${Date.now()}`;
+                    debugLog(`🔄 Loading practice puzzles for ${this.variant}`);
+                }
+
+                const response = await fetch(apiUrl);
 
                 if (response.ok) {
                     const apiPuzzles = await response.json();
                     const validation = this.validatePuzzleData(apiPuzzles);
                     if (validation.isValid) {
                         this.dailyPuzzles = apiPuzzles;
-                        debugLog('✅ Daily puzzles loaded from API');
+                        debugLog('✅ Puzzles loaded from API');
 
                         // Update global cache
                         window.preloadedPuzzles = this.dailyPuzzles;
