@@ -228,7 +228,7 @@ const targetTimes = {
 7. `/api/generate-tomorrow.js` - Scheduled puzzle generation
 8. `/api/health.js` - Health check endpoint
 9. `/api/import.js` - **CONSOLIDATED** anonymous data migration (completion + achievement)
-10. `/api/puzzles.js` - Puzzle fetching (with Redis caching) + **Practice Mode** (?mode=practice&variant=classic|x-sudoku|mini|anti-knight|killer-sudoku|hyper-sudoku) *[Phase 1 Month 4-5, Phase 2 Month 9-11]*
+10. `/api/puzzles.js` - Puzzle fetching (with Redis caching) + **Practice Mode** (?mode=practice&variant=classic|x-sudoku|mini|anti-knight|killer-sudoku|hyper-sudoku|consecutive-sudoku) *[Phase 1 Month 4-5, Phase 2 Month 9-12]*
 11. `/api/ratings.js` - Puzzle rating system
 12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) *[Phase 1 Month 4]*
 
@@ -240,6 +240,7 @@ const targetTimes = {
 - **Phase 2 Month 9**: 12 endpoints (✅ **STILL AT LIMIT**)
 - **Phase 2 Month 10**: 12 endpoints (✅ **STILL AT LIMIT**)
 - **Phase 2 Month 11**: 12 endpoints (✅ **STILL AT LIMIT**)
+- **Phase 2 Month 12**: 12 endpoints (✅ **STILL AT LIMIT**)
 - **Consolidation History**:
   - Phase 0: Merged `import-achievement.js` + `import-completion.js` → `import.js?type=completion|achievement`
   - Phase 0: Merged `init-db.js` → `admin.js?action=init-db`
@@ -249,6 +250,7 @@ const targetTimes = {
   - Phase 2 Month 9: Added Anti-Knight variant to `/api/puzzles.js?mode=practice&variant=anti-knight`
   - Phase 2 Month 10: Added Killer Sudoku variant to `/api/puzzles.js?mode=practice&variant=killer-sudoku`
   - Phase 2 Month 11: Added Hyper Sudoku variant to `/api/puzzles.js?mode=practice&variant=hyper-sudoku`
+  - Phase 2 Month 12: Added Consecutive Sudoku variant to `/api/puzzles.js?mode=practice&variant=consecutive-sudoku`
 
 **Subscription Consolidation Details**:
 - Subscription actions added to `/api/admin.js` with conditional authentication
