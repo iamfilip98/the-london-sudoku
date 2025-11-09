@@ -7,6 +7,28 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 1 Month 6: Monetization via Ads** (November 9, 2025)
+- 💰 **Google AdSense Integration**: Non-intrusive banner ads for free tier users
+  - Banner ads displayed on dashboard and game pages
+  - Ads disabled for premium users (future premium subscription)
+  - Polite ad block detection with upgrade suggestion
+  - API: `lib/ad-manager.js` for centralized ad management
+- 📺 **Rewarded Video Ads**: Watch ads to earn free hints
+  - Max 3 rewarded videos per day
+  - Users can watch a video to get a free hint without penalty
+  - Daily counter resets at midnight (localStorage tracking)
+  - Placeholder modal for demo (real video ads integration pending)
+- 🎯 **Premium Preparation**: Infrastructure for ad-free experience
+  - Ad system checks premium status before showing ads
+  - `isPremium` flag in user profile (backend ready for Stripe)
+  - Ad-free badge for premium users
+  - Seamless toggle between free/premium ad experience
+- 🎨 **Ad Styling**: Professional non-intrusive design
+  - Responsive ad containers (desktop & mobile)
+  - Gradient rewarded video button with counter
+  - Ad placeholder during load states
+  - Mobile-optimized layouts (60px min-height on mobile)
+
 ### **Phase 1 Month 5: Variants & Free Tier** (November 9, 2025)
 - 🎯 **X-Sudoku Variant**: Classic Sudoku PLUS diagonal constraints
   - Both main diagonals must contain digits 1-9
