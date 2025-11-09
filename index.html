@@ -6,6 +6,7 @@
     <title>Sudoku Championship Arena - Faidao vs Filip</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/enhancements.css">
+    <link rel="stylesheet" href="css/tutorial.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1511,6 +1512,55 @@
 
         // Make ad manager globally available
         window.adManager = adManager;
+    </script>
+
+    <!-- PHASE 2 MONTH 18: Tutorial System -->
+    <script src="/lib/tutorial-content.js"></script>
+    <script src="/js/tutorial-manager.js"></script>
+    <script>
+        // Initialize tutorial system when Sudoku engine is ready
+        let tutorialManager;
+
+        function initializeTutorialSystem() {
+            if (window.sudokuEngine) {
+                tutorialManager = new TutorialManager(window.sudokuEngine);
+                window.tutorialManager = tutorialManager;
+                console.log('✅ Tutorial system initialized');
+
+                // Add tutorial triggers to UI
+                addTutorialTriggers();
+            } else {
+                console.warn('Sudoku engine not ready, retrying tutorial initialization...');
+                setTimeout(initializeTutorialSystem, 500);
+            }
+        }
+
+        function addTutorialTriggers() {
+            // Add "Learn How to Play" buttons for each variant
+            // This will be called when the UI is ready
+            console.log('Tutorial triggers ready');
+        }
+
+        // Helper function to launch tutorial for a variant
+        function launchTutorial(variantId) {
+            if (window.tutorialManager) {
+                window.tutorialManager.startTutorial(variantId);
+            } else {
+                console.error('Tutorial manager not initialized');
+            }
+        }
+
+        // Make functions globally available
+        window.launchTutorial = launchTutorial;
+
+        // Initialize after page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(initializeTutorialSystem, 1000); // Wait for Sudoku engine
+            });
+        } else {
+            setTimeout(initializeTutorialSystem, 1000);
+        }
     </script>
 </body>
 </html>
