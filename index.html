@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudoku Championship Arena - Faidao vs Filip</title>
+    <title>The London Sudoku - Championship Arena</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/enhancements.css">
     <link rel="stylesheet" href="css/tutorial.css">
@@ -138,19 +138,19 @@
                     <div class="current-date" id="currentDate"></div>
                 </div>
 
-                <!-- Mobile Head-to-Head Score (visible only on mobile) -->
-                <section class="mobile-head-to-head">
-                    <div class="mobile-player-score faidao">
-                        <div class="mobile-player-name">Faidao</div>
-                        <div class="mobile-player-score-value" id="mobileScoreFaidao">0</div>
+                <!-- Mobile Stats Summary (visible only on mobile) -->
+                <section class="mobile-stats-summary">
+                    <div class="mobile-stat-card">
+                        <div class="mobile-stat-label">Rank</div>
+                        <div class="mobile-stat-value" id="mobileGlobalRank">-</div>
                     </div>
-                    <div class="mobile-vs-divider">
-                        <div class="mobile-vs-circle">VS</div>
-                        <div class="mobile-overall-record" id="mobileOverallRecord">Loading...</div>
+                    <div class="mobile-stat-card">
+                        <div class="mobile-stat-label">Streak</div>
+                        <div class="mobile-stat-value" id="mobileCurrentStreak">0</div>
                     </div>
-                    <div class="mobile-player-score filip">
-                        <div class="mobile-player-name">Filip</div>
-                        <div class="mobile-player-score-value" id="mobileScoreFilip">0</div>
+                    <div class="mobile-stat-card">
+                        <div class="mobile-stat-label">XP</div>
+                        <div class="mobile-stat-value" id="mobileTotalXP">0</div>
                     </div>
                 </section>
 
@@ -159,48 +159,54 @@
                     <div class="ad-placeholder">Advertisement</div>
                 </div>
 
-                <!-- Win Streaks Display -->
-                <section class="win-streaks-section">
-                    <div class="streak-cards">
-                        <div class="streak-card faidao">
-                            <div class="streak-header">
-                                <h3><i class="fas fa-fire"></i> Faidao</h3>
-                                <div class="player-avatar faidao-avatar">F</div>
-                            </div>
-                            <div class="streak-stats">
-                                <div class="current-streak">
-                                    <span class="streak-number" id="faidaoCurrentStreak">0</span>
-                                    <span class="streak-label">Current Streak</span>
-                                </div>
-                                <div class="best-streak">
-                                    <span class="streak-number" id="faidaoBestStreak">0</span>
-                                    <span class="streak-label">Best Streak</span>
-                                </div>
+                <!-- Personal Stats Dashboard -->
+                <section class="personal-stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userGlobalRank">-</div>
+                                <div class="stat-label">Global Rank</div>
                             </div>
                         </div>
 
-                        <div class="vs-divider">
-                            <div class="vs-circle-container">
-                                <span class="vs-circle-shine"></span>
-                                VS
+                        <div class="stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userCurrentStreak">0</div>
+                                <div class="stat-label">Current Streak</div>
                             </div>
-                            <div class="overall-record" id="overallRecord">0 - 0</div>
                         </div>
 
-                        <div class="streak-card filip">
-                            <div class="streak-header">
-                                <h3><i class="fas fa-fire"></i> Filip</h3>
-                                <div class="player-avatar filip-avatar">F</div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⭐</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userBestStreak">0</div>
+                                <div class="stat-label">Best Streak</div>
                             </div>
-                            <div class="streak-stats">
-                                <div class="current-streak">
-                                    <span class="streak-number" id="filipCurrentStreak">0</span>
-                                    <span class="streak-label">Current Streak</span>
-                                </div>
-                                <div class="best-streak">
-                                    <span class="streak-number" id="filipBestStreak">0</span>
-                                    <span class="streak-label">Best Streak</span>
-                                </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">🎮</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userTotalGames">0</div>
+                                <div class="stat-label">Games Played</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">✨</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userPerfectGames">0</div>
+                                <div class="stat-label">Perfect Games</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">💎</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userTotalXP">0</div>
+                                <div class="stat-label">Total XP</div>
                             </div>
                         </div>
                     </div>
