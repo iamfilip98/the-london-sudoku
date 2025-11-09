@@ -7,6 +7,62 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 2 Month 12: Consecutive Sudoku Variant** (November 9, 2025)
+- 🔢 **Consecutive Sudoku Constraint**: Classic Sudoku PLUS consecutive marking constraints
+  - Orthogonally adjacent cells may be marked with consecutive indicators
+  - If marked: Cells MUST contain consecutive numbers (differ by exactly 1)
+  - If NOT marked: Cells MUST NOT contain consecutive numbers
+  - "Negative constraint" variant where absence of markers is as important as presence
+  - Requires strategic deduction about unmarked edges
+  - Unlimited play (no daily limits)
+  - API: `/api/puzzles?mode=practice&variant=consecutive-sudoku&difficulty=medium`
+- 🧩 **Consecutive Sudoku Validation Library**: Complete consecutive constraint checking
+  - `lib/consecutive-sudoku-validator.js`: Consecutive validation logic
+  - Functions: `isMarkedConsecutive()`, `isValidConsecutivePlacement()`, `validateConsecutiveBoard()`
+  - Checks both marked (must be consecutive) and unmarked (must not be consecutive) edges
+  - Adjacent cell analysis with orthogonal neighbors
+  - Valid number calculation for hint system with consecutive constraints
+- 🎲 **Consecutive Sudoku Generator**: Strategic marker placement algorithm
+  - `lib/consecutive-sudoku-generator.js`: Generate solvable Consecutive Sudoku puzzles
+  - Generate standard solution, then identify all consecutive pairs
+  - Strategic marker selection based on difficulty:
+    - Easy: Mark 65% of consecutive pairs (more information)
+    - Medium: Mark 45% of consecutive pairs (balanced)
+    - Hard: Mark 30% of consecutive pairs (less information, harder)
+  - Target clues: easy=38, medium=28, hard=25
+  - Consecutive markers included in API response for frontend rendering
+- ✅ **Endpoint Conservation**: Consecutive Sudoku added to existing `/api/puzzles` endpoint
+  - Still at 12/12 endpoints (within free tier limit)
+  - Integrated into practice mode variant system
+  - Markers returned as additional metadata in response
+
+### **Phase 2 Month 11: Hyper Sudoku Variant** (November 9, 2025)
+- 🎯 **Hyper Sudoku Constraint**: Classic Sudoku PLUS four additional 3x3 regions
+  - Also known as Windoku
+  - Four overlapping 3×3 "hyper regions" in addition to standard boxes
+  - Hyper regions positioned at: (1-3, 1-3), (1-3, 5-7), (5-7, 1-3), (5-7, 5-7)
+  - Total of 31 constraints: 9 rows + 9 cols + 9 boxes + 4 hyper regions
+  - Each hyper region must contain digits 1-9 with no duplicates
+  - Significantly more constrained than classic Sudoku
+  - Unlimited play (no daily limits)
+  - API: `/api/puzzles?mode=practice&variant=hyper-sudoku&difficulty=medium`
+- 🧩 **Hyper Sudoku Validation Library**: Complete hyper region constraint checking
+  - `lib/hyper-sudoku-validator.js`: Hyper region validation logic
+  - Functions: `getHyperRegion()`, `isValidHyperPlacement()`, `validateHyperSudokuBoard()`
+  - 4 hyper regions defined with precise positioning
+  - Validates all 31 constraints (standard + hyper)
+  - Valid number calculation for hint system with hyper constraints
+- 🎲 **Hyper Sudoku Generator**: Backtracking with 31 constraints
+  - `lib/hyper-sudoku-generator.js`: Generate solvable Hyper Sudoku puzzles
+  - Seeded random generation with full constraint enforcement
+  - Target clues: easy=36, medium=30, hard=26 (more than classic due to added difficulty)
+  - Unique solution validation with all 31 constraints
+  - Hyper region definitions included in API response for frontend rendering
+- ✅ **Endpoint Conservation**: Hyper Sudoku added to existing `/api/puzzles` endpoint
+  - Still at 12/12 endpoints (within free tier limit)
+  - Integrated into practice mode variant system
+  - Follows same pattern as other variants
+
 ### **Phase 2 Month 10: Killer Sudoku Variant** (November 9, 2025)
 - 🔪 **Killer Sudoku Constraint**: Classic Sudoku PLUS cage sum constraints
   - Grid divided into "cages" (outlined regions of adjacent cells)
