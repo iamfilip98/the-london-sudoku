@@ -104,6 +104,7 @@ build/
 .cache
 .vercel
 .env*.local
+.github-token
 
 # Playwright test results
 test-results/
