@@ -39,18 +39,38 @@ module.exports = async function handler(req, res) {
     return;  // Preflight request handled
   }
 
-  // Handle different HTTP methods
+  // Handle different HTTP methods and actions
   if (req.method === 'GET') {
+    // Check for friends-related queries
+    const { friends, 'friend-requests': friendRequests } = req.query;
+    if (friends) {
+      return handleGetFriends(req, res, friends);
+    } else if (friendRequests) {
+      return handleGetFriendRequests(req, res, friendRequests);
+    }
     return handleGetProfile(req, res);
   } else if (req.method === 'PUT') {
     return handleUpdateProfile(req, res);
-  } else if (req.method !== 'POST') {
+  } else if (req.method === 'POST') {
+    const { action } = req.query;
+    // Handle friends actions
+    if (action === 'send-friend-request') {
+      return handleSendFriendRequest(req, res);
+    } else if (action === 'accept-friend-request') {
+      return handleAcceptFriendRequest(req, res);
+    } else if (action === 'reject-friend-request') {
+      return handleRejectFriendRequest(req, res);
+    } else if (action === 'remove-friend') {
+      return handleRemoveFriend(req, res);
+    }
+    // Default: handle login
+  } else {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
 
   try {
-    // ✅ SECURITY FIX: Validate and sanitize input
+    // ✅ SECURITY FIX: Validate and sanitize input (login)
     const validation = validate(req.body, loginSchema);
     if (!validation.success) {
       return res.status(400).json({
@@ -301,6 +321,378 @@ async function handleUpdateProfile(req, res) {
     return res.status(500).json({
       success: false,
       error: 'Failed to update profile'
+    });
+  }
+}
+
+// =====================================================
+// PHASE 2 MONTH 8: FRIENDS SYSTEM
+// =====================================================
+
+// Get friends list for a user
+async function handleGetFriends(req, res, username) {
+  try {
+    // Get user ID
+    const userResult = await pool.query(
+      'SELECT id FROM users WHERE username = $1',
+      [username]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    const userId = userResult.rows[0].id;
+
+    // Get friends using the database view
+    const friendsResult = await pool.query(`
+      SELECT
+        CASE
+          WHEN user1_id = $1 THEN user2_id
+          ELSE user1_id
+        END AS friend_id,
+        CASE
+          WHEN user1_id = $1 THEN user2_username
+          ELSE user1_username
+        END AS username,
+        CASE
+          WHEN user1_id = $1 THEN user2_display_name
+          ELSE user1_display_name
+        END AS display_name,
+        CASE
+          WHEN user1_id = $1 THEN user2_avatar
+          ELSE user1_avatar
+        END AS avatar,
+        CASE
+          WHEN user1_id = $1 THEN user2_last_active
+          ELSE user1_last_active
+        END AS last_active,
+        friendship_date
+      FROM friends_with_details
+      WHERE user1_id = $1 OR user2_id = $1
+      ORDER BY friendship_date DESC
+    `, [userId]);
+
+    return res.status(200).json({
+      success: true,
+      friends: friendsResult.rows,
+      count: friendsResult.rows.length
+    });
+
+  } catch (error) {
+    console.error('Get friends error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to get friends list'
+    });
+  }
+}
+
+// Get friend requests for a user (both incoming and outgoing)
+async function handleGetFriendRequests(req, res, username) {
+  try {
+    // Get user ID
+    const userResult = await pool.query(
+      'SELECT id FROM users WHERE username = $1',
+      [username]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    const userId = userResult.rows[0].id;
+
+    // Get incoming requests (requests TO this user)
+    const incomingResult = await pool.query(`
+      SELECT
+        id,
+        requester_id,
+        requester_username,
+        requester_display_name,
+        requester_avatar,
+        created_at
+      FROM pending_friend_requests
+      WHERE recipient_id = $1
+      ORDER BY created_at DESC
+    `, [userId]);
+
+    // Get outgoing requests (requests FROM this user)
+    const outgoingResult = await pool.query(`
+      SELECT
+        id,
+        recipient_id,
+        recipient_username,
+        recipient_display_name,
+        created_at
+      FROM pending_friend_requests
+      WHERE requester_id = $1
+      ORDER BY created_at DESC
+    `, [userId]);
+
+    return res.status(200).json({
+      success: true,
+      incoming: incomingResult.rows,
+      outgoing: outgoingResult.rows
+    });
+
+  } catch (error) {
+    console.error('Get friend requests error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to get friend requests'
+    });
+  }
+}
+
+// Send a friend request
+async function handleSendFriendRequest(req, res) {
+  try {
+    const { from, to } = req.body;
+
+    if (!from || !to) {
+      return res.status(400).json({
+        success: false,
+        error: 'Both "from" and "to" usernames are required'
+      });
+    }
+
+    if (from === to) {
+      return res.status(400).json({
+        success: false,
+        error: 'Cannot send friend request to yourself'
+      });
+    }
+
+    // Get user IDs
+    const fromResult = await pool.query(
+      'SELECT id FROM users WHERE username = $1',
+      [from]
+    );
+
+    const toResult = await pool.query(
+      'SELECT id FROM users WHERE username = $1',
+      [to]
+    );
+
+    if (fromResult.rows.length === 0 || toResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'One or both users not found'
+      });
+    }
+
+    const fromId = fromResult.rows[0].id;
+    const toId = toResult.rows[0].id;
+
+    // Check if already friends
+    const friendCheckResult = await pool.query(
+      'SELECT are_friends($1, $2) AS are_friends',
+      [fromId, toId]
+    );
+
+    if (friendCheckResult.rows[0].are_friends) {
+      return res.status(400).json({
+        success: false,
+        error: 'Already friends with this user'
+      });
+    }
+
+    // Check if request already exists
+    const existingResult = await pool.query(
+      'SELECT id, status FROM friend_requests WHERE (requester_id = $1 AND recipient_id = $2) OR (requester_id = $2 AND recipient_id = $1)',
+      [fromId, toId]
+    );
+
+    if (existingResult.rows.length > 0) {
+      const existing = existingResult.rows[0];
+      if (existing.status === 'pending') {
+        return res.status(400).json({
+          success: false,
+          error: 'Friend request already exists'
+        });
+      }
+    }
+
+    // Create friend request
+    const result = await pool.query(
+      'INSERT INTO friend_requests (requester_id, recipient_id, status) VALUES ($1, $2, $3) RETURNING id, created_at',
+      [fromId, toId, 'pending']
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: 'Friend request sent successfully',
+      requestId: result.rows[0].id,
+      createdAt: result.rows[0].created_at
+    });
+
+  } catch (error) {
+    console.error('Send friend request error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to send friend request'
+    });
+  }
+}
+
+// Accept a friend request
+async function handleAcceptFriendRequest(req, res) {
+  try {
+    const { requestId } = req.body;
+
+    if (!requestId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Request ID is required'
+      });
+    }
+
+    // Update request status to 'accepted'
+    const updateResult = await pool.query(
+      'UPDATE friend_requests SET status = $1, updated_at = NOW() WHERE id = $2 AND status = $3 RETURNING requester_id, recipient_id',
+      ['accepted', requestId, 'pending']
+    );
+
+    if (updateResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Friend request not found or already processed'
+      });
+    }
+
+    // Create friendship using the database function
+    const createResult = await pool.query(
+      'SELECT create_friendship_from_request($1) AS success',
+      [requestId]
+    );
+
+    if (!createResult.rows[0].success) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to create friendship'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Friend request accepted successfully'
+    });
+
+  } catch (error) {
+    console.error('Accept friend request error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to accept friend request'
+    });
+  }
+}
+
+// Reject a friend request
+async function handleRejectFriendRequest(req, res) {
+  try {
+    const { requestId } = req.body;
+
+    if (!requestId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Request ID is required'
+      });
+    }
+
+    // Update request status to 'rejected'
+    const result = await pool.query(
+      'UPDATE friend_requests SET status = $1, updated_at = NOW() WHERE id = $2 AND status = $3 RETURNING id',
+      ['rejected', requestId, 'pending']
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Friend request not found or already processed'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Friend request rejected successfully'
+    });
+
+  } catch (error) {
+    console.error('Reject friend request error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to reject friend request'
+    });
+  }
+}
+
+// Remove a friend
+async function handleRemoveFriend(req, res) {
+  try {
+    const { user1, user2 } = req.body;
+
+    if (!user1 || !user2) {
+      return res.status(400).json({
+        success: false,
+        error: 'Both user1 and user2 are required'
+      });
+    }
+
+    // Get user IDs
+    const user1Result = await pool.query(
+      'SELECT id FROM users WHERE username = $1',
+      [user1]
+    );
+
+    const user2Result = await pool.query(
+      'SELECT id FROM users WHERE username = $1',
+      [user2]
+    );
+
+    if (user1Result.rows.length === 0 || user2Result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'One or both users not found'
+      });
+    }
+
+    const user1Id = user1Result.rows[0].id;
+    const user2Id = user2Result.rows[0].id;
+
+    // Ensure consistent ordering
+    const minId = Math.min(user1Id, user2Id);
+    const maxId = Math.max(user1Id, user2Id);
+
+    // Delete friendship
+    const result = await pool.query(
+      'DELETE FROM friendships WHERE user1_id = $1 AND user2_id = $2 RETURNING id',
+      [minId, maxId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Friendship not found'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Friend removed successfully'
+    });
+
+  } catch (error) {
+    console.error('Remove friend error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to remove friend'
     });
   }
 }

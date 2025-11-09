@@ -220,8 +220,8 @@ const targetTimes = {
 
 **Current API Endpoints**:
 1. `/api/achievements.js` - Achievement management
-2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db, **migrate-phase1-month5, mark-founders** *[Phase 1 Month 5]*)
-3. `/api/auth.js` - Authentication (bcrypt + Clerk) + **User Profiles** (GET/PUT for bio, avatar, displayName, founder badge) *[Phase 1 Month 4-5]*
+2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db, **migrate-phase1-month5, migrate-phase2-month8, mark-founders** *[Phase 1-2]*)
+3. `/api/auth.js` - Authentication (bcrypt + Clerk) + **User Profiles** (GET/PUT for bio, avatar, displayName, founder badge) + **Friends System** (?friends=xxx, ?friend-requests=xxx, ?action=send-friend-request) *[Phase 1 Month 4-5, Phase 2 Month 8]*
 4. `/api/cron-verify-puzzles.js` - Scheduled puzzle verification
 5. `/api/entries.js` - Daily battle results
 6. `/api/games.js` - Game state management + **Free Tier Limits** (3 Classic dailies/day) *[Phase 1 Month 5]*
@@ -233,11 +233,21 @@ const targetTimes = {
 12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) *[Phase 1 Month 4]*
 
 **Consolidation Strategy**:
-- **BEFORE**: 14 endpoints (exceeded limit)
-- **AFTER**: 12 endpoints (at limit)
-- **Changes**:
-  - Merged `import-achievement.js` + `import-completion.js` → `import.js?type=completion|achievement`
-  - Merged `init-db.js` → `admin.js?action=init-db`
+- **BEFORE Phase 0**: 14 endpoints (exceeded limit)
+- **Phase 0**: 12 endpoints (at limit)
+- **Phase 2 Month 8**: 12 endpoints (✅ **STILL AT LIMIT**)
+- **Consolidation History**:
+  - Phase 0: Merged `import-achievement.js` + `import-completion.js` → `import.js?type=completion|achievement`
+  - Phase 0: Merged `init-db.js` → `admin.js?action=init-db`
+  - Phase 2 Month 8: Added friends system to `/api/auth.js?friends=xxx&action=send-friend-request`
+  - Phase 2 Month 8: Added migration to `/api/admin.js?action=migrate-phase2-month8`
+
+**Friends System Consolidation**:
+- Friends functionality added to `/api/auth.js` (authentication/user endpoint)
+- Uses query parameters for GET operations: `?friends=username`, `?friend-requests=username`
+- Uses action parameters for POST operations: `?action=send-friend-request|accept-friend-request|reject-friend-request|remove-friend`
+- Keeps related user/social features in one endpoint
+- No new endpoint needed - stays within 12 limit
 
 **RULE**: Before adding ANY new API endpoint, you MUST consolidate existing endpoints or remove unused ones.
 
