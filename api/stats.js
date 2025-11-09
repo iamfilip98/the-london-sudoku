@@ -1,8 +1,12 @@
 /**
  * Stats API - SECURITY FIXES (November 2025)
+ * PHASE 1 MONTH 4 (November 2025):
+ * - Extended for global leaderboards
+ * - Supports daily, weekly, monthly, all-time rankings
  */
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
+const { getCached, CACHE_DURATIONS } = require('../lib/cache');
 
 // Helper function to execute SQL queries
 async function sql(strings, ...values) {
@@ -157,6 +161,89 @@ module.exports = async function handler(req, res) {
             streaks,
             challenges,
             achievements
+          });
+        }
+
+        // PHASE 1 MONTH 4: Global Leaderboards
+        if (type === 'leaderboards') {
+          const { period, difficulty, limit } = req.query;
+          const cacheKey = `leaderboard:${period || 'all'}:${difficulty || 'all'}`;
+
+          // Use cache with 5-minute TTL for leaderboards
+          const leaderboard = await getCached(
+            cacheKey,
+            async () => {
+              let dateFilter = '';
+              const params = [];
+              let paramIndex = 1;
+
+              // Apply date filter based on period
+              if (period === 'daily') {
+                const today = new Date().toISOString().split('T')[0];
+                dateFilter = `AND date = $${paramIndex}`;
+                params.push(today);
+                paramIndex++;
+              } else if (period === 'weekly') {
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                dateFilter = `AND date >= $${paramIndex}`;
+                params.push(weekAgo.toISOString().split('T')[0]);
+                paramIndex++;
+              } else if (period === 'monthly') {
+                const monthAgo = new Date();
+                monthAgo.setMonth(monthAgo.getMonth() - 1);
+                dateFilter = `AND date >= $${paramIndex}`;
+                params.push(monthAgo.toISOString().split('T')[0]);
+                paramIndex++;
+              }
+
+              // Apply difficulty filter if specified
+              let difficultyFilter = '';
+              if (difficulty && ['easy', 'medium', 'hard'].includes(difficulty)) {
+                difficultyFilter = `AND difficulty = $${paramIndex}`;
+                params.push(difficulty);
+                paramIndex++;
+              }
+
+              // Get top players by score
+              const limitValue = parseInt(limit) || 100;
+              const query = `
+                SELECT
+                  player,
+                  COUNT(*) as games_played,
+                  AVG(score) as avg_score,
+                  MAX(score) as best_score,
+                  MIN(time) as fastest_time,
+                  AVG(time) as avg_time,
+                  SUM(errors) as total_errors
+                FROM individual_games
+                WHERE 1=1 ${dateFilter} ${difficultyFilter}
+                GROUP BY player
+                ORDER BY avg_score DESC, fastest_time ASC
+                LIMIT $${paramIndex}
+              `;
+              params.push(limitValue);
+
+              const result = await pool.query(query, params);
+
+              return result.rows.map((row, index) => ({
+                rank: index + 1,
+                player: row.player,
+                gamesPlayed: parseInt(row.games_played),
+                avgScore: parseFloat(row.avg_score).toFixed(2),
+                bestScore: parseFloat(row.best_score),
+                fastestTime: parseInt(row.fastest_time),
+                avgTime: parseFloat(row.avg_time).toFixed(0),
+                totalErrors: parseInt(row.total_errors) || 0
+              }));
+            },
+            CACHE_DURATIONS.LEADERBOARD  // 5 minutes
+          );
+
+          return res.status(200).json({
+            period: period || 'all-time',
+            difficulty: difficulty || 'all',
+            leaderboard
           });
         }
 

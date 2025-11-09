@@ -221,16 +221,16 @@ const targetTimes = {
 **Current API Endpoints**:
 1. `/api/achievements.js` - Achievement management
 2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db)
-3. `/api/auth.js` - Authentication (bcrypt + Clerk)
+3. `/api/auth.js` - Authentication (bcrypt + Clerk) + **User Profiles** (GET/PUT for bio, avatar, displayName) *[Phase 1 Month 4]*
 4. `/api/cron-verify-puzzles.js` - Scheduled puzzle verification
 5. `/api/entries.js` - Daily battle results
 6. `/api/games.js` - Game state management
 7. `/api/generate-tomorrow.js` - Scheduled puzzle generation
 8. `/api/health.js` - Health check endpoint
 9. `/api/import.js` - **CONSOLIDATED** anonymous data migration (completion + achievement)
-10. `/api/puzzles.js` - Puzzle fetching (with Redis caching)
+10. `/api/puzzles.js` - Puzzle fetching (with Redis caching) + **Practice Mode** (?mode=practice) *[Phase 1 Month 4]*
 11. `/api/ratings.js` - Puzzle rating system
-12. `/api/stats.js` - User statistics
+12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) *[Phase 1 Month 4]*
 
 **Consolidation Strategy**:
 - **BEFORE**: 14 endpoints (exceeded limit)
@@ -299,3 +299,134 @@ All critical security issues have been fixed:
 - **Analytics**: PostHog (1M events/month)
 - **Asset Storage**: Vercel Blob (deferred - not critical)
 - **Deployment**: Vercel (12 API endpoints, free tier)
+
+### **Free Tier Limitations (ALL SERVICES)**
+⚠️ **CRITICAL**: All development must respect these hard limits. Exceeding any limit will break the application or require paid upgrades.
+
+#### **Vercel Hobby Plan (Free Tier)**
+**Hard Limits**:
+- ✅ **12 serverless functions maximum** (CURRENTLY AT LIMIT: 12/12)
+- 100GB bandwidth per month
+- 100 hours serverless function execution per month
+- 6,000 build minutes per month
+- 1GB storage for static assets
+- 10-second function timeout (cannot be increased on free tier)
+- 50MB maximum function size
+
+**Mitigation Strategies**:
+- **Endpoint consolidation**: Use query/body parameters instead of new endpoints
+- **Efficient functions**: Optimize code to reduce execution time
+- **Static optimization**: Minimize dynamic requests where possible
+- **Caching**: Use Redis to reduce function executions
+
+#### **Neon Database (Free Tier)**
+**Hard Limits**:
+- 512MB storage (approximately 500K-1M game records depending on data)
+- Unlimited compute hours (auto-suspends after 5 min inactivity)
+- 1 project (1 database)
+- 10 branches (for development/testing)
+- 100 concurrent connections (with connection pooling)
+- 1GB logical replication per month
+
+**Mitigation Strategies**:
+- **Data retention**: Archive old game data (older than 1 year)
+- **Connection pooling**: Use `pg-pool` to manage connections efficiently
+- **Efficient queries**: Index optimization, avoid SELECT *
+- **Auto-suspend**: Accept 1-2 second cold start for first request after inactivity
+
+**Storage Monitoring**:
+```sql
+-- Check database size
+SELECT pg_size_pretty(pg_database_size(current_database()));
+
+-- Check table sizes
+SELECT schemaname, tablename, pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename))
+FROM pg_tables
+WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
+ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+```
+
+#### **Vercel KV / Redis (Free Tier)**
+**Hard Limits**:
+- 256MB storage (approximately 100K-500K cached items depending on size)
+- 100,000 operations per month (read + write combined)
+- 30 requests per second
+- 1 database
+
+**Current Usage**:
+- Puzzles cached with 24-hour TTL (~3 puzzles/day = minimal storage)
+- Leaderboards cached with 5-minute TTL (frequent updates but small data)
+- Rate limiting counters (ephemeral, auto-expire)
+
+**Mitigation Strategies**:
+- **Aggressive TTL**: Short cache durations for non-critical data
+- **Selective caching**: Only cache high-traffic endpoints (puzzles, leaderboards)
+- **Rate limit optimization**: Use sliding windows efficiently
+- **Monitoring**: Track operations usage in Vercel dashboard
+
+**Operations Estimate**:
+- Daily puzzles: ~100 reads/day (assuming 100 users)
+- Leaderboards: ~500 reads/day (cached for 5 min, ~100 users)
+- Rate limiting: ~1000 operations/day (auth checks)
+- **Total**: ~1,600 operations/day = ~50K/month (WELL WITHIN LIMIT)
+
+#### **Clerk Authentication (Free Tier)**
+**Hard Limits**:
+- 10,000 monthly active users (MAUs)
+- Unlimited total users (only actives count)
+- Unlimited applications
+- Basic email support
+- Standard features only (no advanced features like SAML, custom flows)
+
+**Current Usage**:
+- Phase 0-1: Estimated 10-50 MAUs (friends/family testing)
+- Phase 2-3: Estimated 100-500 MAUs (soft launch)
+- Phase 4+: May approach 10K limit (requires upgrade)
+
+**Mitigation Strategies**:
+- **MAU definition**: Users who log in within 30-day period
+- **Anonymous play**: Allows unlimited non-authenticated users
+- **Grace period**: Clerk provides warnings before hard cutoff
+- **Upgrade path**: $25/month for 100K MAUs when needed
+
+#### **PostHog Analytics (Free Tier)**
+**Hard Limits**:
+- 1,000,000 events per month
+- Unlimited tracked users (identified + anonymous)
+- 1 year data retention
+- All product features (analytics, session replay, feature flags)
+- 1 project
+
+**Current Usage** (estimated):
+- Game start: ~100 events/day = 3K/month
+- Game completion: ~80 events/day = 2.4K/month
+- Puzzle generation: ~3 events/day = 90/month
+- User actions: ~500 events/day = 15K/month
+- **Total**: ~20K events/month (WELL WITHIN LIMIT)
+
+**Mitigation Strategies**:
+- **Event sampling**: Sample high-frequency events if usage increases
+- **Event consolidation**: Batch related events
+- **Selective tracking**: Only track business-critical events
+- **Auto-capture**: Disable auto-capture if needed to reduce noise
+
+**Scaling Considerations**:
+- At 1000 daily active users × 50 events/user = 50K events/day = 1.5M/month
+- Will need to implement event sampling before reaching 500+ DAU
+
+#### **Summary: Free Tier Runway**
+Based on current usage and expected growth:
+
+| Service | Current Usage | Free Tier Limit | Buffer | Risk Level |
+|---------|--------------|-----------------|--------|------------|
+| Vercel Functions | 12/12 | 12 | 0% | 🔴 **AT LIMIT** |
+| Vercel Execution | ~5 hrs/mo | 100 hrs/mo | 95% | 🟢 Safe |
+| Vercel Bandwidth | ~1 GB/mo | 100 GB/mo | 99% | 🟢 Safe |
+| Neon Storage | ~50 MB | 512 MB | 90% | 🟢 Safe |
+| Vercel KV | ~50K ops/mo | 100K ops/mo | 50% | 🟡 Monitor |
+| Clerk MAUs | ~50 | 10,000 | 99% | 🟢 Safe |
+| PostHog Events | ~20K/mo | 1M/mo | 98% | 🟢 Safe |
+
+**Critical Path**: Vercel Functions at limit requires endpoint consolidation for ALL future features.
+
+**Growth Threshold**: When reaching 1000+ DAU, monitor Vercel KV and PostHog usage closely.

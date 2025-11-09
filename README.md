@@ -7,6 +7,29 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 1 Month 4: Soft Launch Preparation** (November 9, 2025)
+- 👤 **User Profiles**: Extended `/api/auth` with GET/PUT methods for profile management
+  - Bio field (500 char limit with HTML sanitization)
+  - Avatar URLs with validation
+  - Display name updates
+  - Profile stats: total games, best scores, fastest times, streaks
+- 🎮 **Practice Mode**: Unlimited Classic Sudoku via `/api/puzzles?mode=practice`
+  - On-demand puzzle generation (not stored in database)
+  - Supports all three difficulties (easy, medium, hard)
+  - Unique seed for each puzzle
+  - Perfect for skill improvement without daily limits
+- 🏆 **Global Leaderboards**: Dynamic rankings via `/api/stats?type=leaderboards`
+  - Daily, weekly, monthly, and all-time periods
+  - Filter by difficulty (easy, medium, hard, or all)
+  - Redis caching with 5-minute TTL
+  - Rankings by avg score and fastest time
+- 📋 **Free Tier Documentation**: Comprehensive limits documented in CLAUDE.md
+  - Vercel: 12 functions (AT LIMIT), 100GB bandwidth, 100 hrs execution
+  - Neon: 512MB storage, unlimited compute with auto-suspend
+  - Vercel KV: 256MB storage, 100K operations/month
+  - Clerk: 10K MAUs, PostHog: 1M events/month
+  - Monitoring thresholds and mitigation strategies
+
 ### **Phase 0 Complete: Infrastructure Migration** (November 9, 2025)
 - 🎭 **Anonymous Sessions**: Play without signup using UUID-based sessions
 - 💾 **localStorage Progress**: Game progress stored locally until signup
@@ -317,16 +340,20 @@ stats: (type, data) -- Flexible JSON storage for various statistics
 ### **API Endpoints**
 **Authentication:**
 - `POST /api/auth` - Legacy authentication (bcrypt) for existing users
+- `GET /api/auth?username=USERNAME` - **NEW**: Get user profile with stats and streak (Phase 1 Month 4)
+- `PUT /api/auth` - **NEW**: Update user profile (bio, avatar, displayName) (Phase 1 Month 4)
 - **Clerk Authentication**: Frontend SDK handles auth (sign-in, sign-up, session management)
 - **Anonymous Sessions**: No API needed - localStorage-based until signup
 
 **Public Endpoints:**
 - `GET /api/puzzles?date=YYYY-MM-DD` - Daily puzzle retrieval (with fallback system)
+- `GET /api/puzzles?mode=practice&difficulty=LEVEL` - **NEW**: Unlimited practice mode (Phase 1 Month 4)
 - `GET /api/games?date=YYYY-MM-DD` - Game progress tracking (supports anonymous sessions)
 - `POST /api/games` - Save game completion (supports both auth and anonymous)
 - `GET /api/entries` - Competition entry management
 - `GET /api/achievements` - Achievement system
 - `GET /api/stats?type=all` - Comprehensive statistics
+- `GET /api/stats?type=leaderboards&period=PERIOD&difficulty=LEVEL` - **NEW**: Global leaderboards (Phase 1 Month 4)
 
 **Admin Endpoints:** (Require authentication headers)
 - `POST /api/admin?action=generate-fallback` - Generate emergency backup puzzles

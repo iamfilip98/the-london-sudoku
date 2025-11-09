@@ -1538,7 +1538,40 @@ module.exports = async function handler(req, res) {
   try {
     switch (req.method) {
       case 'GET': {
-        const { date, player, difficulty } = req.query;
+        const { date, player, difficulty, mode } = req.query;
+
+        // PHASE 1 MONTH 4: Practice Mode
+        // Generate practice puzzles on-demand (unlimited, not stored)
+        if (mode === 'practice') {
+          const practiceDifficulty = difficulty || 'medium';
+          const seed = Math.random(); // Unique seed for each practice puzzle
+
+          let puzzle, solution;
+
+          if (practiceDifficulty === 'easy') {
+            const result = await generateEasyPuzzle(seed);
+            puzzle = result.puzzle;
+            solution = result.solution;
+          } else if (practiceDifficulty === 'medium') {
+            const result = await generateMediumPuzzle(seed);
+            puzzle = result.puzzle;
+            solution = result.solution;
+          } else if (practiceDifficulty === 'hard') {
+            const result = await generateHardPuzzle(seed);
+            puzzle = result.puzzle;
+            solution = result.solution;
+          } else {
+            return res.status(400).json({ error: 'Invalid difficulty. Must be easy, medium, or hard' });
+          }
+
+          return res.status(200).json({
+            mode: 'practice',
+            difficulty: practiceDifficulty,
+            puzzle,
+            solution,
+            timestamp: new Date().toISOString()
+          });
+        }
 
         if (player && date && difficulty) {
           // Get specific game state
