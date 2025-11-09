@@ -124,6 +124,21 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
   - **Multiplayer**: Streak systems could enable friend comparisons
   - **Rewards Shop**: XP could be currency for cosmetic unlocks
 
+### **Phase 2 Month 23: Variant Tournaments & Events** (November 9, 2025)
+- 🏆 **Time-Limited Competitive Tournaments**: 4 tournament types with prizes and live rankings
+  - Speed Challenge ⚡ (7 days), Perfect Precision 🎯 (7 days), Endurance Marathon 🏃 (14 days), Flawless Victory ✨ (7 days)
+  - Rotate through all 9 Sudoku variants, 3-5 active/upcoming tournaments at all times
+  - Prizes: 🥇 500-600 XP, 🥈 240-360 XP, 🥉 160-240 XP, 🎖️ 50 XP participation
+- 🎮 **Tournament Lifecycle**: Upcoming → Active → Ended states with auto-cleanup after 30 days
+- 📊 **Live Leaderboards**: Top 10 rankings with real-time updates, podium highlights for top 3
+- 🎯 **Easy Participation**: One-click join, auto-join on first score submission, unlimited attempts
+- 🔄 **Auto-Score Submission**: Every game completion checked for matching active tournaments
+- 💾 **LocalStorage Persistence**: Versioned data (v1) with participant tracking and best scores
+- ⏰ **Smart Time Management**: Auto-updating countdown timers, timezone-aware dates
+- 🎨 **Tournament UI**: View tabs (Active/Upcoming/Ended), tournament cards with live stats, full-page detail modal
+- 📱 **Fully Responsive**: Desktop grid (2-3 cards), tablet (2 cards), mobile (1 card), touch-optimized
+- 🚀 **Future-Ready**: Supports team tournaments, custom events, seasonal competitions
+
 ### **Phase 2 Month 22: Variant Leaderboards & Rankings** (November 9, 2025)
 - 🏆 **Comprehensive Leaderboard System**: Rankings for all 9 Sudoku variants across 5 competitive categories
   - **5 Leaderboard Categories**:
