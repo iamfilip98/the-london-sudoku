@@ -144,6 +144,11 @@
                     </div>
                 </section>
 
+                <!-- PHASE 1 MONTH 6: Ad Banner (Free Tier Users Only) -->
+                <div class="ad-container" id="dashboardBannerAd">
+                    <div class="ad-placeholder">Advertisement</div>
+                </div>
+
                 <!-- Win Streaks Display -->
                 <section class="win-streaks-section">
                     <div class="streak-cards">
@@ -1346,6 +1351,38 @@
         //console.log('🎯 Hint penalty test functions loaded!');
         //console.log('Run testHintPenalties() to automatically test hint penalties');
         //console.log('Run manualHintPenaltyTest() for manual testing');
+    </script>
+
+    <!-- PHASE 1 MONTH 6: Ad Manager -->
+    <script src="/lib/ad-manager.js"></script>
+    <script>
+        // Initialize ad system when page loads
+        let adManager;
+
+        async function initializeAdSystem() {
+            try {
+                adManager = new AdManager();
+                await adManager.init();
+
+                if (adManager.adsEnabled) {
+                    // Show banner ad on dashboard
+                    adManager.showBannerAd('dashboardBannerAd');
+                    console.log('✅ Ad system initialized');
+                }
+            } catch (error) {
+                console.error('Failed to initialize ad system:', error);
+            }
+        }
+
+        // Initialize ads after page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeAdSystem);
+        } else {
+            initializeAdSystem();
+        }
+
+        // Make ad manager globally available
+        window.adManager = adManager;
     </script>
 </body>
 </html>
