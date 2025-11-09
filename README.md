@@ -39,29 +39,29 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 ### **Phase 2 Month 11: Hyper Sudoku Variant** (November 9, 2025)
 - 🎯 **Hyper Sudoku Constraint**: Classic Sudoku PLUS four additional 3x3 regions
   - Also known as Windoku
-  - Four overlapping 3×3 "hyper regions" in addition to standard boxes
+  - Standard rows, columns, and boxes PLUS 4 overlapping 3x3 hyper regions
   - Hyper regions positioned at: (1-3, 1-3), (1-3, 5-7), (5-7, 1-3), (5-7, 5-7)
+  - Each hyper region must contain digits 1-9 (like standard boxes)
   - Total of 31 constraints: 9 rows + 9 cols + 9 boxes + 4 hyper regions
-  - Each hyper region must contain digits 1-9 with no duplicates
-  - Significantly more constrained than classic Sudoku
+  - More challenging with additional overlapping constraints
   - Unlimited play (no daily limits)
   - API: `/api/puzzles?mode=practice&variant=hyper-sudoku&difficulty=medium`
-- 🧩 **Hyper Sudoku Validation Library**: Complete hyper region constraint checking
+- 🧩 **Hyper Sudoku Validation Library**: Complete hyper region checking
   - `lib/hyper-sudoku-validator.js`: Hyper region validation logic
   - Functions: `getHyperRegion()`, `isValidHyperPlacement()`, `validateHyperSudokuBoard()`
-  - 4 hyper regions defined with precise positioning
-  - Validates all 31 constraints (standard + hyper)
+  - Checks all 4 hyper regions for duplicates
   - Valid number calculation for hint system with hyper constraints
-- 🎲 **Hyper Sudoku Generator**: Backtracking with 31 constraints
+  - Region definition export for frontend highlighting
+- 🎲 **Hyper Sudoku Generator**: Backtracking with hyper region constraints
   - `lib/hyper-sudoku-generator.js`: Generate solvable Hyper Sudoku puzzles
-  - Seeded random generation with full constraint enforcement
-  - Target clues: easy=36, medium=30, hard=26 (more than classic due to added difficulty)
-  - Unique solution validation with all 31 constraints
-  - Hyper region definitions included in API response for frontend rendering
+  - Backtracking algorithm enforces all 31 constraints during generation
+  - Target clues: easy=36, medium=30, hard=26 (slightly more than classic due to difficulty)
+  - Unique solution validation with hyper region checks
+  - Hyper region metadata included in API response for frontend rendering
 - ✅ **Endpoint Conservation**: Hyper Sudoku added to existing `/api/puzzles` endpoint
   - Still at 12/12 endpoints (within free tier limit)
   - Integrated into practice mode variant system
-  - Follows same pattern as other variants
+  - Hyper regions returned as additional metadata in response
 
 ### **Phase 2 Month 10: Killer Sudoku Variant** (November 9, 2025)
 - 🔪 **Killer Sudoku Constraint**: Classic Sudoku PLUS cage sum constraints
