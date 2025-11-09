@@ -66,6 +66,17 @@ class SudokuEngine {
     // Initialize Sudoku UI and game
     async init() {
         this.loadSettings();
+
+        // PHASE 2 MONTH 24: Apply customization preset settings
+        if (window.variantCustomizationManager) {
+            try {
+                window.variantCustomizationManager.applySettingsToGame(this);
+                console.log('✅ Customization settings applied to game');
+            } catch (error) {
+                console.error('Failed to apply customization settings:', error);
+            }
+        }
+
         this.initializeAudioContext();
         this.createSudokuInterface();
 
@@ -4175,6 +4186,112 @@ class SudokuEngine {
                 await this.integrateWithAnalytics(completedGame);
 
                 debugLog('Game completed and integrated with analytics:', completedGame);
+            }
+
+            // PHASE 2 MONTH 19: Track variant-specific statistics
+            if (window.variantStatsManager) {
+                try {
+                    const unlockedAchievements = window.variantStatsManager.recordCompletion(
+                        this.variant,
+                        this.currentDifficulty,
+                        this.timer,
+                        this.errors
+                    );
+
+                    // Check if any new variant achievements were unlocked
+                    if (unlockedAchievements && unlockedAchievements.length > 0) {
+                        console.log('🏆 Variant achievements unlocked:', unlockedAchievements);
+                        // Could trigger achievement notification UI here
+                    }
+                } catch (error) {
+                    console.error('Failed to track variant stats:', error);
+                }
+            }
+
+            // PHASE 2 MONTH 21: Check daily challenges and update streaks
+            if (window.variantChallengesManager && window.variantChallengesUI) {
+                try {
+                    // Check which challenges were completed
+                    const completedChallenges = window.variantChallengesManager.checkChallenges(
+                        this.variant,
+                        this.currentDifficulty,
+                        this.timer,
+                        this.errors
+                    );
+
+                    // Show challenge completion notifications
+                    if (completedChallenges.length > 0) {
+                        window.variantChallengesUI.showChallengeCompletionNotification(completedChallenges);
+                        console.log('✅ Challenges completed:', completedChallenges);
+                    }
+
+                    // Update streak for this variant
+                    const updatedStreak = window.variantChallengesManager.updateStreak(this.variant);
+
+                    // Show streak milestone notification if applicable
+                    if (updatedStreak.current > 1) {
+                        window.variantChallengesUI.showStreakMilestone(this.variant, updatedStreak.current);
+                    }
+                } catch (error) {
+                    console.error('Failed to check daily challenges:', error);
+                }
+            }
+
+            // PHASE 2 MONTH 22: Refresh leaderboards if currently viewing
+            if (window.variantLeaderboardsUI) {
+                try {
+                    // Refresh leaderboards display if the leaderboards page is active
+                    const leaderboardsPage = document.getElementById('leaderboards-page');
+                    if (leaderboardsPage && !leaderboardsPage.classList.contains('hidden')) {
+                        window.variantLeaderboardsUI.refresh();
+                        console.log('✅ Leaderboards refreshed after game completion');
+                    }
+                } catch (error) {
+                    console.error('Failed to refresh leaderboards:', error);
+                }
+            }
+
+            // PHASE 2 MONTH 23: Submit score to active tournaments
+            if (window.variantTournamentsManager) {
+                try {
+                    const activeTournaments = window.variantTournamentsManager.getActiveTournaments();
+
+                    // Check if any active tournaments match this variant
+                    const matchingTournaments = activeTournaments.filter(t => t.variant === this.variant);
+
+                    matchingTournaments.forEach(tournament => {
+                        const result = window.variantTournamentsManager.submitScore(
+                            tournament.id,
+                            this.variant,
+                            this.currentDifficulty,
+                            this.timer,
+                            this.errors
+                        );
+
+                        if (result.success) {
+                            console.log(`✅ Score submitted to tournament: ${tournament.name}`);
+
+                            // Show notification if tournaments UI is available
+                            if (window.variantTournamentsUI) {
+                                const rank = window.variantTournamentsManager.getUserTournamentRank(tournament.id);
+                                if (rank) {
+                                    window.variantTournamentsUI.showNotification(
+                                        `Tournament score submitted! Rank: #${rank.rank}`,
+                                        'success'
+                                    );
+                                }
+                            }
+
+                            // Refresh tournaments UI if currently viewing
+                            const tournamentsPage = document.getElementById('tournaments');
+                            if (tournamentsPage && !tournamentsPage.classList.contains('hidden') && window.variantTournamentsUI) {
+                                window.variantTournamentsUI.refresh();
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Failed to submit tournament scores:', error);
+                }
             }
 
         } catch (error) {

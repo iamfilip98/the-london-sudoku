@@ -1,0 +1,672 @@
+/**
+ * PHASE 2 MONTH 21: Variant Daily Challenges & Streaks Styles
+ *
+ * Styling for daily challenges, streaks, and variant of the day
+ */
+
+/* Variant Challenges Content */
+.variant-challenges-content {
+    padding: 2rem 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Variant of the Day Banner */
+.votd-banner {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
+    border: 2px solid rgba(255, 193, 7, 0.4);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.votd-banner:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(255, 193, 7, 0.3);
+}
+
+.votd-icon-large {
+    font-size: 4rem;
+    line-height: 1;
+}
+
+.votd-content {
+    flex: 1;
+}
+
+.votd-label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.votd-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #FFC107;
+    margin-bottom: 0.5rem;
+}
+
+.votd-bonus {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+}
+
+.votd-action {
+    display: flex;
+    align-items: center;
+}
+
+.votd-play-btn {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #FFC107, #FF9800);
+    border: none;
+    border-radius: 50px;
+    color: #1a1a2e;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+}
+
+.votd-play-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 193, 7, 0.6);
+}
+
+.votd-play-btn i {
+    font-size: 1.2rem;
+}
+
+/* Daily Progress Summary */
+.progress-summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.progress-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.progress-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.progress-content {
+    flex: 1;
+}
+
+.progress-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.progress-label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Daily Progress Bar */
+.daily-progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.daily-progress-bar .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4A90E2, #9B59B6);
+    transition: width 0.5s ease;
+}
+
+/* Challenges Section */
+.challenges-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1.5rem;
+}
+
+.section-title i {
+    color: #4A90E2;
+}
+
+/* Daily Challenges Grid */
+.daily-challenges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 2rem;
+}
+
+/* Variant Challenge Card */
+.variant-challenge-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.variant-challenge-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Variant Challenge Header */
+.variant-challenge-header {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.variant-challenge-header.votd-highlight {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 152, 0, 0.15));
+    border-bottom-color: rgba(255, 193, 7, 0.3);
+}
+
+.variant-challenge-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.variant-challenge-info {
+    flex: 1;
+}
+
+.variant-challenge-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.votd-badge {
+    padding: 0.2rem 0.6rem;
+    background: linear-gradient(135deg, #FFC107, #FF9800);
+    color: #1a1a2e;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.variant-challenge-progress {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.variant-streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, rgba(255, 87, 34, 0.3), rgba(244, 67, 54, 0.3));
+    border-radius: 20px;
+    font-weight: 700;
+    color: #FF5722;
+}
+
+.streak-icon {
+    font-size: 1.2rem;
+}
+
+.streak-count {
+    font-size: 1.1rem;
+}
+
+/* Variant Challenge List */
+.variant-challenge-list {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Challenge Item */
+.challenge-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.challenge-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.challenge-item.completed {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: rgba(76, 175, 80, 0.3);
+}
+
+.challenge-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.challenge-content {
+    flex: 1;
+}
+
+.challenge-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.3rem;
+}
+
+.challenge-description {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.challenge-reward {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: rgba(74, 144, 226, 0.2);
+    border-radius: 8px;
+}
+
+.reward-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #4A90E2;
+}
+
+.reward-type {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+}
+
+.challenge-check {
+    font-size: 1.8rem;
+    color: #4CAF50;
+}
+
+/* Variant Challenge Footer */
+.variant-challenge-footer {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.play-variant-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(74, 144, 226, 0.2);
+    border: 1px solid #4A90E2;
+    border-radius: 8px;
+    color: #4A90E2;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.play-variant-btn:hover {
+    background: rgba(74, 144, 226, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+/* Streaks Section */
+.streaks-section {
+    margin-top: 3rem;
+}
+
+.streaks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.streaks-header h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.longest-streak {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+}
+
+/* Streaks Grid */
+.streaks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Streak Card */
+.streak-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.streak-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-2px);
+}
+
+.streak-card.active {
+    border-color: rgba(255, 87, 34, 0.4);
+    background: rgba(255, 87, 34, 0.05);
+}
+
+.streak-card.inactive {
+    opacity: 0.5;
+}
+
+.streak-variant-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.streak-info {
+    flex: 1;
+}
+
+.streak-variant-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.streak-stats {
+    display: flex;
+    gap: 1rem;
+}
+
+.streak-current,
+.streak-best {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.streak-current {
+    color: #FF5722;
+    font-weight: 600;
+}
+
+/* Challenge Notifications */
+.challenge-notification {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.95), rgba(56, 142, 60, 0.95));
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 400px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+    transform: translateX(500px);
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.challenge-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.notification-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.notification-info {
+    flex: 1;
+}
+
+.notification-title {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+}
+
+.notification-challenge {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.3rem;
+}
+
+.notification-reward {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+}
+
+/* Streak Milestone Notification */
+.streak-notification {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: linear-gradient(135deg, rgba(255, 87, 34, 0.95), rgba(244, 67, 54, 0.95));
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 400px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+    transform: translateX(500px);
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.streak-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.streak-notification.milestone {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.95), rgba(255, 152, 0, 0.95));
+}
+
+.streak-milestone-content {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.milestone-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.milestone-info {
+    flex: 1;
+}
+
+.milestone-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.3rem;
+}
+
+.milestone-variant {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.3rem;
+}
+
+.milestone-message {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .daily-challenges-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .votd-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .votd-play-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .variant-challenges-content {
+        padding: 1rem;
+    }
+
+    .votd-banner {
+        padding: 1.5rem;
+    }
+
+    .votd-name {
+        font-size: 1.5rem;
+    }
+
+    .votd-icon-large {
+        font-size: 3rem;
+    }
+
+    .progress-summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .daily-challenges-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .streaks-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .challenge-notification,
+    .streak-notification {
+        top: 1rem;
+        right: 1rem;
+        left: 1rem;
+        max-width: none;
+    }
+
+    .streaks-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .progress-summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .challenge-item {
+        flex-wrap: wrap;
+    }
+
+    .challenge-reward {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0.75rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .variant-challenge-header {
+        flex-wrap: wrap;
+    }
+
+    .variant-streak-badge {
+        width: 100%;
+        justify-content: center;
+    }
+}

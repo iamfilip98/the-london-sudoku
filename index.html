@@ -6,6 +6,12 @@
     <title>Sudoku Championship Arena - Faidao vs Filip</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/enhancements.css">
+    <link rel="stylesheet" href="css/tutorial.css">
+    <link rel="stylesheet" href="css/variant-mastery.css">
+    <link rel="stylesheet" href="css/variant-challenges.css">
+    <link rel="stylesheet" href="css/variant-leaderboards.css">
+    <link rel="stylesheet" href="css/variant-tournaments.css">
+    <link rel="stylesheet" href="css/variant-customization.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -70,7 +76,7 @@
                     <i class="fas fa-star"></i>
                     <span>Achievements</span>
                 </a>
-                <a href="#" class="nav-link" data-page="challenges" style="display: none;">
+                <a href="#" class="nav-link" data-page="challenges">
                     <i class="fas fa-fire"></i>
                     <span>Challenges</span>
                 </a>
@@ -87,6 +93,10 @@
                 <div class="player-dropdown">
                     <span class="current-player" id="currentPlayerDisplay"></span>
                     <div class="dropdown-content" id="playerDropdownContent">
+                        <a href="#" onclick="window.variantCustomizationUI?.openCustomization(); event.preventDefault();">
+                            <i class="fas fa-sliders-h"></i>
+                            Customization
+                        </a>
                         <a href="settings.html">
                             <i class="fas fa-cog"></i>
                             Settings
@@ -600,44 +610,114 @@
                 <div class="page-header">
                     <h1 class="page-title">
                         <i class="fas fa-medal"></i>
-                        Leaderboards & Records
+                        Variant Leaderboards
                     </h1>
                 </div>
 
-                <div class="leaderboards-content">
-                    <div class="leaderboard-tabs">
-                        <button class="tab-btn active" data-tab="monthly">Monthly</button>
-                        <button class="tab-btn" data-tab="weekly">Weekly</button>
-                        <button class="tab-btn" data-tab="records">Records</button>
-                    </div>
-
-                    <div class="tab-content active" id="monthly-tab">
-                        <div class="leaderboard-section">
-                            <h3>This Month's Champions</h3>
-                            <div class="leaderboard-cards" id="monthlyLeaderboard"></div>
-                        </div>
-                    </div>
-
-                    <div class="tab-content" id="weekly-tab">
-                        <div class="leaderboard-section">
-                            <h3>This Week's Performance</h3>
-                            <div class="leaderboard-cards" id="weeklyLeaderboard"></div>
-                        </div>
-                    </div>
-
-                    <div class="tab-content" id="records-tab">
-                        <div class="records-grid">
-                            <div class="record-category">
-                                <h3>Fastest Times</h3>
-                                <div class="records-list" id="fastestTimes"></div>
-                            </div>
-                            <div class="record-category">
-                                <h3>Perfect Games</h3>
-                                <div class="records-list" id="perfectGames"></div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Category Tabs -->
+                <div class="leaderboard-category-tabs">
+                    <button class="leaderboard-category-tab active" data-category="speed">
+                        <span class="tab-icon">⚡</span>
+                        <span class="tab-label">Speed Legends</span>
+                    </button>
+                    <button class="leaderboard-category-tab" data-category="streak">
+                        <span class="tab-icon">🔥</span>
+                        <span class="tab-label">Streak Masters</span>
+                    </button>
+                    <button class="leaderboard-category-tab" data-category="perfect">
+                        <span class="tab-icon">✨</span>
+                        <span class="tab-label">Perfectionists</span>
+                    </button>
+                    <button class="leaderboard-category-tab" data-category="completions">
+                        <span class="tab-icon">🎯</span>
+                        <span class="tab-label">Dedicated Players</span>
+                    </button>
+                    <button class="leaderboard-category-tab" data-category="xp">
+                        <span class="tab-icon">⭐</span>
+                        <span class="tab-label">XP Champions</span>
+                    </button>
                 </div>
+
+                <!-- Variant Filters -->
+                <div class="leaderboard-variant-filter">
+                    <button class="filter-btn active" data-variant="all">
+                        <span>🌟</span> All Variants
+                    </button>
+                    <button class="filter-btn" data-variant="classic">
+                        <span>🎯</span> Classic
+                    </button>
+                    <button class="filter-btn" data-variant="x-sudoku">
+                        <span>✖️</span> X-Sudoku
+                    </button>
+                    <button class="filter-btn" data-variant="mini">
+                        <span>📐</span> Mini
+                    </button>
+                    <button class="filter-btn" data-variant="anti-knight">
+                        <span>♞</span> Anti-Knight
+                    </button>
+                    <button class="filter-btn" data-variant="killer-sudoku">
+                        <span>🔪</span> Killer
+                    </button>
+                    <button class="filter-btn" data-variant="hyper-sudoku">
+                        <span>🎯</span> Hyper
+                    </button>
+                    <button class="filter-btn" data-variant="consecutive-sudoku">
+                        <span>🔢</span> Consecutive
+                    </button>
+                    <button class="filter-btn" data-variant="thermo-sudoku">
+                        <span>🌡️</span> Thermo
+                    </button>
+                    <button class="filter-btn" data-variant="jigsaw-sudoku">
+                        <span>🧩</span> Jigsaw
+                    </button>
+                </div>
+
+                <!-- Category Info -->
+                <div id="leaderboardCategoryInfo"></div>
+
+                <!-- Podium (Top 3) -->
+                <div class="leaderboard-podium-section">
+                    <h2 class="section-title">Top 3</h2>
+                    <div id="leaderboardPodium"></div>
+                </div>
+
+                <!-- Full Leaderboard Table -->
+                <div class="leaderboard-table-section">
+                    <h2 class="section-title">Full Rankings</h2>
+                    <div id="leaderboardTable"></div>
+                </div>
+
+                <!-- User Ranking Summary -->
+                <div id="userRankingSummary"></div>
+            </div>
+
+            <!-- Tournaments Page -->
+            <div class="page" id="tournaments">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="fas fa-trophy"></i>
+                        Tournaments & Events
+                    </h1>
+                </div>
+
+                <!-- View Tabs -->
+                <div class="tournament-view-tabs">
+                    <button class="tournament-view-tab active" data-view="active">
+                        🔴 Active
+                    </button>
+                    <button class="tournament-view-tab" data-view="upcoming">
+                        📅 Upcoming
+                    </button>
+                    <button class="tournament-view-tab" data-view="ended">
+                        ✅ Ended
+                    </button>
+                </div>
+
+                <!-- Tournaments List -->
+                <div id="tournamentsList"></div>
+
+                <!-- Tournament Detail Modal -->
+                <div id="tournamentDetail" class="hidden"></div>
             </div>
 
             <!-- Achievements Page -->
@@ -647,8 +727,22 @@
                         <i class="fas fa-star"></i>
                         Achievements
                     </h1>
+
+                    <!-- Achievement Tabs -->
+                    <div class="achievement-tabs">
+                        <button class="achievement-tab active" data-tab="general">
+                            <i class="fas fa-trophy"></i>
+                            <span>General</span>
+                        </button>
+                        <button class="achievement-tab" data-tab="variant-mastery">
+                            <i class="fas fa-crown"></i>
+                            <span>Variant Mastery</span>
+                        </button>
+                    </div>
                 </div>
 
+                <!-- General Achievements Tab Content -->
+                <div class="achievement-tab-content active" id="generalAchievements">
                 <!-- Guest User Sign-up Encouragement -->
                 <div class="guest-signup-banner" id="achievementsGuestBanner" style="display: none;">
                     <div class="banner-content">
@@ -783,6 +877,79 @@
                         <!-- Achievement details will be populated here -->
                     </div>
                 </div>
+                </div>
+                <!-- End General Achievements Tab -->
+
+                <!-- Variant Mastery Tab Content -->
+                <div class="achievement-tab-content" id="variantMastery">
+                    <!-- Variant Mastery Dashboard -->
+                    <div class="variant-mastery-dashboard">
+                        <!-- Overall Progress Summary -->
+                        <div class="mastery-summary-cards">
+                            <div class="mastery-card total-completions">
+                                <div class="card-icon">🎮</div>
+                                <div class="card-content">
+                                    <div class="card-value" id="totalVariantCompletions">0</div>
+                                    <div class="card-label">Total Completions</div>
+                                </div>
+                            </div>
+                            <div class="mastery-card perfect-games">
+                                <div class="card-icon">✨</div>
+                                <div class="card-content">
+                                    <div class="card-value" id="totalPerfectGames">0</div>
+                                    <div class="card-label">Perfect Games</div>
+                                </div>
+                            </div>
+                            <div class="mastery-card variants-explored">
+                                <div class="card-icon">🗺️</div>
+                                <div class="card-content">
+                                    <div class="card-value"><span id="variantsExplored">0</span>/9</div>
+                                    <div class="card-label">Variants Explored</div>
+                                </div>
+                            </div>
+                            <div class="mastery-card variant-achievements">
+                                <div class="card-icon">🏆</div>
+                                <div class="card-content">
+                                    <div class="card-value"><span id="variantAchievementsUnlocked">0</span>/<span id="totalVariantAchievements">40</span></div>
+                                    <div class="card-label">Variant Achievements</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Variant Mastery Grid -->
+                        <div class="variant-mastery-grid" id="variantMasteryGrid">
+                            <!-- Variant cards will be populated by JavaScript -->
+                        </div>
+
+                        <!-- Variant Achievement Gallery -->
+                        <div class="variant-achievement-section">
+                            <h2 class="section-title">
+                                <i class="fas fa-trophy"></i>
+                                Variant Achievements
+                            </h2>
+
+                            <div class="variant-achievement-filters">
+                                <button class="filter-btn active" data-variant="all">All Variants</button>
+                                <button class="filter-btn" data-variant="classic">Classic</button>
+                                <button class="filter-btn" data-variant="x-sudoku">X-Sudoku</button>
+                                <button class="filter-btn" data-variant="mini">Mini 6×6</button>
+                                <button class="filter-btn" data-variant="anti-knight">Anti-Knight</button>
+                                <button class="filter-btn" data-variant="killer-sudoku">Killer</button>
+                                <button class="filter-btn" data-variant="hyper-sudoku">Hyper</button>
+                                <button class="filter-btn" data-variant="consecutive-sudoku">Consecutive</button>
+                                <button class="filter-btn" data-variant="thermo-sudoku">Thermo</button>
+                                <button class="filter-btn" data-variant="jigsaw-sudoku">Jigsaw</button>
+                                <button class="filter-btn" data-variant="multi">Multi-Variant</button>
+                            </div>
+
+                            <div class="variant-achievements-grid" id="variantAchievementsGrid">
+                                <!-- Variant achievements will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Variant Mastery Tab -->
+
             </div>
 
             <!-- Challenges Page -->
@@ -794,15 +961,33 @@
                     </h1>
                 </div>
 
-                <div class="challenges-content">
-                    <div class="current-challenge" id="currentChallenge">
-                        <!-- Current challenge will be populated by JavaScript -->
+                <!-- PHASE 2 MONTH 21: Variant Daily Challenges -->
+                <div class="variant-challenges-content">
+                    <!-- Variant of the Day Banner -->
+                    <div id="variantOfTheDay">
+                        <!-- Populated by JavaScript -->
                     </div>
 
-                    <div class="challenge-history">
-                        <h3>Challenge History</h3>
-                        <div class="challenge-list" id="challengeHistory">
-                            <!-- Challenge history will be populated by JavaScript -->
+                    <!-- Daily Progress Summary -->
+                    <div id="dailyProgressSummary">
+                        <!-- Populated by JavaScript -->
+                    </div>
+
+                    <!-- Daily Challenges Grid -->
+                    <div class="challenges-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-tasks"></i>
+                            Today's Challenges
+                        </h2>
+                        <div class="daily-challenges-grid" id="dailyChallengesGrid">
+                            <!-- Challenge cards populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Streaks Summary -->
+                    <div class="streaks-section">
+                        <div id="streaksSummary">
+                            <!-- Streaks populated by JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -813,6 +998,29 @@
                 <div class="sudoku-content">
                     <div class="sudoku-game-container">
                         <!-- Sudoku game will be dynamically built here by sudoku.js -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHASE 2 MONTH 24: Variant Customization Modal -->
+            <div id="customizationModal" class="customization-modal hidden">
+                <div class="customization-modal-content">
+                    <div class="customization-header">
+                        <h2><i class="fas fa-sliders-h"></i> Game Customization</h2>
+                        <button class="close-customization-btn" title="Close">✕</button>
+                    </div>
+
+                    <div class="customization-view-tabs">
+                        <button class="customization-view-tab active" data-view="presets">
+                            🎮 Presets
+                        </button>
+                        <button class="customization-view-tab" data-view="clue-counts">
+                            🔢 Clue Counts
+                        </button>
+                    </div>
+
+                    <div id="customizationContent" class="customization-body">
+                        <!-- Content will be dynamically rendered by variant-customization-ui.js -->
                     </div>
                 </div>
             </div>
@@ -1511,6 +1719,295 @@
 
         // Make ad manager globally available
         window.adManager = adManager;
+    </script>
+
+    <!-- PHASE 2 MONTH 18: Tutorial System -->
+    <script src="/lib/tutorial-content.js"></script>
+    <script src="/js/tutorial-manager.js"></script>
+
+    <!-- PHASE 2 MONTH 19: Variant Achievements & Statistics -->
+    <script src="/lib/variant-achievements.js"></script>
+    <script src="/js/variant-stats-manager.js"></script>
+
+    <!-- PHASE 2 MONTH 20: Variant Mastery UI -->
+    <script src="/js/variant-mastery-ui.js"></script>
+
+    <!-- PHASE 2 MONTH 21: Variant Daily Challenges -->
+    <script src="/js/variant-daily-challenges.js"></script>
+    <script src="/js/variant-challenges-ui.js"></script>
+
+    <!-- PHASE 2 MONTH 22: Variant Leaderboards -->
+    <script src="/js/variant-leaderboards.js"></script>
+    <script src="/js/variant-leaderboards-ui.js"></script>
+
+    <!-- PHASE 2 MONTH 23: Variant Tournaments -->
+    <script src="/js/variant-tournaments.js"></script>
+    <script src="/js/variant-tournaments-ui.js"></script>
+
+    <!-- PHASE 2 MONTH 24: Variant Customization -->
+    <script src="/js/variant-customization.js"></script>
+    <script src="/js/variant-customization-ui.js"></script>
+    <script>
+        // Initialize tutorial system when Sudoku engine is ready
+        let tutorialManager;
+        let variantStatsManager;
+        let variantMasteryUI;
+        let variantChallengesManager;
+        let variantChallengesUI;
+
+        function initializeTutorialSystem() {
+            if (window.sudokuEngine) {
+                tutorialManager = new TutorialManager(window.sudokuEngine);
+                window.tutorialManager = tutorialManager;
+                console.log('✅ Tutorial system initialized');
+
+                // Initialize variant stats manager
+                variantStatsManager = new VariantStatsManager();
+                window.variantStatsManager = variantStatsManager;
+                console.log('✅ Variant statistics manager initialized');
+
+                // Initialize variant mastery UI
+                variantMasteryUI = new VariantMasteryUI(variantStatsManager);
+                window.variantMasteryUI = variantMasteryUI;
+                variantMasteryUI.initialize();
+                console.log('✅ Variant mastery UI initialized');
+
+                // Initialize variant challenges manager
+                variantChallengesManager = new VariantDailyChallengesManager(variantStatsManager);
+                window.variantChallengesManager = variantChallengesManager;
+                console.log('✅ Variant challenges manager initialized');
+
+                // Initialize variant challenges UI
+                variantChallengesUI = new VariantChallengesUI(variantChallengesManager);
+                window.variantChallengesUI = variantChallengesUI;
+                variantChallengesUI.initialize();
+                console.log('✅ Variant challenges UI initialized');
+
+                // PHASE 2 MONTH 22: Initialize variant leaderboards
+                const variantLeaderboardsManager = new VariantLeaderboardsManager(variantStatsManager, variantChallengesManager);
+                window.variantLeaderboardsManager = variantLeaderboardsManager;
+                console.log('✅ Variant leaderboards manager initialized');
+
+                const variantLeaderboardsUI = new VariantLeaderboardsUI(variantLeaderboardsManager);
+                window.variantLeaderboardsUI = variantLeaderboardsUI;
+                variantLeaderboardsUI.initialize();
+                console.log('✅ Variant leaderboards UI initialized');
+
+                // PHASE 2 MONTH 23: Initialize variant tournaments
+                const variantTournamentsManager = new VariantTournamentsManager(variantStatsManager);
+                window.variantTournamentsManager = variantTournamentsManager;
+                console.log('✅ Variant tournaments manager initialized');
+
+                const variantTournamentsUI = new VariantTournamentsUI(variantTournamentsManager);
+                window.variantTournamentsUI = variantTournamentsUI;
+                variantTournamentsUI.initialize();
+                console.log('✅ Variant tournaments UI initialized');
+
+                // PHASE 2 MONTH 24: Initialize variant customization
+                const variantCustomizationManager = new VariantCustomizationManager();
+                window.variantCustomizationManager = variantCustomizationManager;
+                console.log('✅ Variant customization manager initialized');
+
+                const variantCustomizationUI = new VariantCustomizationUI(variantCustomizationManager);
+                window.variantCustomizationUI = variantCustomizationUI;
+                variantCustomizationUI.initialize();
+                console.log('✅ Variant customization UI initialized');
+
+                // Add tutorial triggers to UI
+                addTutorialTriggers();
+            } else {
+                console.warn('Sudoku engine not ready, retrying tutorial initialization...');
+                setTimeout(initializeTutorialSystem, 500);
+            }
+        }
+
+        function addTutorialTriggers() {
+            // Add "Learn How to Play" buttons for each variant
+            // This will be called when the UI is ready
+            console.log('Tutorial triggers ready');
+        }
+
+        // Helper function to launch tutorial for a variant
+        function launchTutorial(variantId) {
+            if (window.tutorialManager) {
+                window.tutorialManager.startTutorial(variantId);
+            } else {
+                console.error('Tutorial manager not initialized');
+            }
+        }
+
+        // Make functions globally available
+        window.launchTutorial = launchTutorial;
+
+        // Initialize after page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(initializeTutorialSystem, 1000); // Wait for Sudoku engine
+            });
+        } else {
+            setTimeout(initializeTutorialSystem, 1000);
+        }
+    </script>
+
+    <!-- Development Utilities -->
+    <script>
+        /**
+         * Development Utilities for LocalStorage Management
+         *
+         * These functions help during development by providing easy ways to
+         * clear localStorage data without manually using browser console.
+         *
+         * Available in browser console: window.devUtils
+         */
+        window.devUtils = {
+            /**
+             * Clear daily challenges data
+             */
+            clearDailyChallenges: () => {
+                localStorage.removeItem('variantDailyChallenges');
+                console.log('✅ Daily challenges cleared. Refresh page to see changes.');
+            },
+
+            /**
+             * Clear variant statistics
+             */
+            clearVariantStats: () => {
+                localStorage.removeItem('variantStats');
+                console.log('✅ Variant statistics cleared. Refresh page to see changes.');
+            },
+
+            /**
+             * Clear tutorial progress
+             */
+            clearTutorialProgress: () => {
+                localStorage.removeItem('tutorialProgress');
+                console.log('✅ Tutorial progress cleared. Refresh page to see changes.');
+            },
+
+            /**
+             * Clear all variant-related data
+             */
+            clearAllVariantData: () => {
+                localStorage.removeItem('variantDailyChallenges');
+                localStorage.removeItem('variantStats');
+                localStorage.removeItem('tutorialProgress');
+                console.log('✅ All variant data cleared. Refresh page to see changes.');
+            },
+
+            /**
+             * Clear ALL localStorage data (use with caution)
+             */
+            clearAll: () => {
+                const confirmed = confirm('This will clear ALL localStorage data. Are you sure?');
+                if (confirmed) {
+                    localStorage.clear();
+                    console.log('✅ All localStorage cleared. Refresh page to see changes.');
+                }
+            },
+
+            /**
+             * Show all localStorage contents
+             */
+            showAll: () => {
+                console.log('=== LocalStorage Contents ===');
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    try {
+                        const value = JSON.parse(localStorage.getItem(key));
+                        console.log(`${key}:`, value);
+                    } catch {
+                        console.log(`${key}: ${localStorage.getItem(key)}`);
+                    }
+                }
+                console.log('=============================');
+            },
+
+            /**
+             * Show daily challenges data
+             */
+            showDailyChallenges: () => {
+                const data = localStorage.getItem('variantDailyChallenges');
+                if (data) {
+                    console.log('Daily Challenges:', JSON.parse(data));
+                } else {
+                    console.log('No daily challenges data found');
+                }
+            },
+
+            /**
+             * Show variant statistics
+             */
+            showVariantStats: () => {
+                const data = localStorage.getItem('variantStats');
+                if (data) {
+                    console.log('Variant Stats:', JSON.parse(data));
+                } else {
+                    console.log('No variant statistics found');
+                }
+            },
+
+            /**
+             * Show tutorial progress
+             */
+            showTutorialProgress: () => {
+                const data = localStorage.getItem('tutorialProgress');
+                if (data) {
+                    console.log('Tutorial Progress:', JSON.parse(data));
+                } else {
+                    console.log('No tutorial progress found');
+                }
+            },
+
+            /**
+             * Get localStorage size in KB
+             */
+            getSize: () => {
+                let total = 0;
+                for (let key in localStorage) {
+                    if (localStorage.hasOwnProperty(key)) {
+                        total += localStorage[key].length + key.length;
+                    }
+                }
+                const sizeKB = (total / 1024).toFixed(2);
+                console.log(`LocalStorage size: ${sizeKB} KB`);
+                return sizeKB;
+            },
+
+            /**
+             * Show help/available commands
+             */
+            help: () => {
+                console.log(`
+=== Dev Utilities Help ===
+
+CLEAR COMMANDS:
+  devUtils.clearDailyChallenges()  - Clear daily challenges data
+  devUtils.clearVariantStats()     - Clear variant statistics
+  devUtils.clearTutorialProgress() - Clear tutorial progress
+  devUtils.clearAllVariantData()   - Clear all variant-related data
+  devUtils.clearAll()              - Clear ALL localStorage (with confirm)
+
+SHOW COMMANDS:
+  devUtils.showAll()               - Show all localStorage contents
+  devUtils.showDailyChallenges()   - Show daily challenges data
+  devUtils.showVariantStats()      - Show variant statistics
+  devUtils.showTutorialProgress()  - Show tutorial progress
+  devUtils.getSize()               - Get total localStorage size
+
+OTHER:
+  devUtils.help()                  - Show this help message
+
+TIP: After clearing data, refresh the page to see changes.
+========================
+                `);
+            }
+        };
+
+        // Auto-display help message on first load (only in development)
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('%c💻 Development Mode Active', 'color: #4CAF50; font-weight: bold; font-size: 14px;');
+            console.log('%cType devUtils.help() to see available commands', 'color: #2196F3; font-size: 12px;');
+        }
     </script>
 </body>
 </html>

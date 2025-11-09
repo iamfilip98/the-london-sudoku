@@ -1,0 +1,1064 @@
+/**
+ * PHASE 2 MONTH 24: Variant Customization Styles
+ *
+ * Comprehensive styling for game customization interface
+ * Includes presets, editor, and clue count controls
+ */
+
+/* ===================================
+   CUSTOMIZATION MODAL - OVERLAY
+   =================================== */
+
+.customization-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.customization-modal.hidden {
+    display: none;
+    opacity: 0;
+}
+
+/* ===================================
+   MODAL CONTENT CONTAINER
+   =================================== */
+
+.customization-modal-content {
+    background: linear-gradient(135deg, rgba(30, 30, 50, 0.95), rgba(20, 20, 35, 0.95));
+    border: 1px solid rgba(100, 200, 255, 0.3);
+    border-radius: 20px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    max-width: 1000px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===================================
+   MODAL HEADER
+   =================================== */
+
+.customization-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px 30px;
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.1), rgba(150, 100, 255, 0.1));
+    border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+}
+
+.customization-header h2 {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.customization-header h2 i {
+    color: #64C8FF;
+}
+
+.close-customization-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-customization-btn:hover {
+    background: rgba(255, 100, 100, 0.3);
+    border-color: #ff6464;
+    transform: rotate(90deg);
+}
+
+/* ===================================
+   VIEW TABS
+   =================================== */
+
+.customization-view-tabs {
+    display: flex;
+    gap: 10px;
+    padding: 20px 30px;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.customization-view-tab {
+    flex: 1;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.customization-view-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(100, 200, 255, 0.3);
+}
+
+.customization-view-tab.active {
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.2), rgba(150, 100, 255, 0.2));
+    border-color: rgba(100, 200, 255, 0.5);
+    color: #fff;
+}
+
+/* ===================================
+   MODAL BODY
+   =================================== */
+
+.customization-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+}
+
+.customization-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.customization-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.customization-body::-webkit-scrollbar-thumb {
+    background: rgba(100, 200, 255, 0.3);
+    border-radius: 4px;
+}
+
+.customization-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 200, 255, 0.5);
+}
+
+/* ===================================
+   PRESETS VIEW
+   =================================== */
+
+.presets-view {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.view-header {
+    text-align: center;
+}
+
+.view-header h2 {
+    color: #fff;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+}
+
+.view-description {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    margin: 0;
+}
+
+.presets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* ===================================
+   PRESET CARDS
+   =================================== */
+
+.preset-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.preset-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.5), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.preset-card:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+    border-color: rgba(100, 200, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.preset-card:hover::before {
+    opacity: 1;
+}
+
+.preset-card.active {
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.2), rgba(150, 100, 255, 0.15));
+    border: 2px solid rgba(100, 200, 255, 0.6);
+    box-shadow: 0 0 30px rgba(100, 200, 255, 0.3);
+}
+
+.active-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+}
+
+.preset-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.preset-icon {
+    font-size: 36px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+.preset-title h3 {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+}
+
+.built-in-badge,
+.custom-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.built-in-badge {
+    background: rgba(100, 200, 255, 0.2);
+    color: #64C8FF;
+    border: 1px solid rgba(100, 200, 255, 0.3);
+}
+
+.custom-badge {
+    background: rgba(255, 200, 100, 0.2);
+    color: #FFC864;
+    border: 1px solid rgba(255, 200, 100, 0.3);
+}
+
+.preset-description {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0 0 15px 0;
+}
+
+.preset-settings-summary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.setting-item {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.setting-item.enabled {
+    color: #4CAF50;
+}
+
+.setting-item.disabled {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.preset-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.preset-action-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.preset-action-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(100, 200, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+.preset-action-btn.delete-btn:hover {
+    background: rgba(255, 100, 100, 0.2);
+    border-color: #ff6464;
+}
+
+.preset-actions .preset-action-btn {
+    padding: 8px 12px;
+    font-size: 11px;
+}
+
+/* ===================================
+   PRESET ACTIONS (Bottom Buttons)
+   =================================== */
+
+.preset-actions:not(.preset-card .preset-actions) {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    padding-top: 10px;
+}
+
+.create-preset-btn,
+.import-preset-btn {
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.2), rgba(150, 100, 255, 0.2));
+    border: 1px solid rgba(100, 200, 255, 0.4);
+    border-radius: 12px;
+    padding: 12px 24px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.create-preset-btn:hover,
+.import-preset-btn:hover {
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.3), rgba(150, 100, 255, 0.3));
+    border-color: rgba(100, 200, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(100, 200, 255, 0.3);
+}
+
+/* ===================================
+   PRESET EDITOR VIEW
+   =================================== */
+
+.editor-view {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.back-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    align-self: flex-start;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(100, 200, 255, 0.5);
+}
+
+.preset-editor-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-section {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.form-section h3 {
+    color: #64C8FF;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group textarea {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: rgba(100, 200, 255, 0.6);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 3px rgba(100, 200, 255, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-group small {
+    display: block;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.form-group.checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.form-group.checkbox label {
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-group.checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.sub-options {
+    margin-left: 30px;
+    margin-top: 10px;
+    padding-left: 15px;
+    border-left: 2px solid rgba(100, 200, 255, 0.3);
+}
+
+.sub-options.hidden {
+    display: none;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    padding-top: 10px;
+}
+
+.cancel-btn,
+.save-btn {
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    border: 1px solid rgba(76, 175, 80, 0.5);
+    color: #fff;
+}
+
+.save-btn:hover {
+    background: linear-gradient(135deg, #45a049, #3d8b40);
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ===================================
+   CLUE COUNTS VIEW
+   =================================== */
+
+.clue-counts-view {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.clue-counts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.variant-clue-section {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.variant-clue-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.variant-icon {
+    font-size: 28px;
+}
+
+.variant-clue-header h3 {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.difficulty-sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.slider-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.difficulty-badge {
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.clue-count-value {
+    color: #64C8FF;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.clue-count-slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.clue-count-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #64C8FF, #9664FF);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(100, 200, 255, 0.5);
+    transition: all 0.2s ease;
+}
+
+.clue-count-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(100, 200, 255, 0.7);
+}
+
+.clue-count-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #64C8FF, #9664FF);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(100, 200, 255, 0.5);
+    transition: all 0.2s ease;
+}
+
+.clue-count-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(100, 200, 255, 0.7);
+}
+
+.slider-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+}
+
+.range-label {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.default-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+}
+
+.reset-clue-btn {
+    background: rgba(255, 100, 100, 0.2);
+    border: 1px solid rgba(255, 100, 100, 0.4);
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: #ff6464;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 5px;
+}
+
+.reset-clue-btn:hover {
+    background: rgba(255, 100, 100, 0.3);
+    border-color: #ff6464;
+    transform: translateY(-1px);
+}
+
+.clue-counts-info {
+    background: rgba(100, 200, 255, 0.1);
+    border: 1px solid rgba(100, 200, 255, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.clue-counts-info h3 {
+    color: #64C8FF;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+}
+
+.clue-counts-info ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.clue-counts-info li {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* ===================================
+   EXPORT/IMPORT DIALOGS
+   =================================== */
+
+.export-modal,
+.import-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 11000;
+    padding: 20px;
+}
+
+.export-dialog,
+.import-dialog {
+    background: linear-gradient(135deg, rgba(30, 30, 50, 0.98), rgba(20, 20, 35, 0.98));
+    border: 1px solid rgba(100, 200, 255, 0.4);
+    border-radius: 15px;
+    padding: 25px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.export-dialog h3,
+.import-dialog h3 {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+}
+
+.export-dialog p,
+.import-dialog p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    margin: 0 0 15px 0;
+}
+
+.export-dialog textarea,
+.import-dialog textarea {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    color: #fff;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    resize: vertical;
+    min-height: 200px;
+}
+
+.dialog-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.copy-btn,
+.import-btn,
+.close-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.copy-btn,
+.import-btn {
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.3), rgba(150, 100, 255, 0.3));
+    border: 1px solid rgba(100, 200, 255, 0.5);
+    color: #fff;
+}
+
+.copy-btn:hover,
+.import-btn:hover {
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.4), rgba(150, 100, 255, 0.4));
+    border-color: rgba(100, 200, 255, 0.7);
+}
+
+.close-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ===================================
+   NOTIFICATIONS
+   =================================== */
+
+.customization-notification {
+    position: fixed;
+    top: 100px;
+    right: -350px;
+    background: linear-gradient(135deg, rgba(30, 30, 50, 0.98), rgba(20, 20, 35, 0.98));
+    border: 1px solid rgba(100, 200, 255, 0.4);
+    border-radius: 12px;
+    padding: 15px 20px;
+    max-width: 320px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    z-index: 11000;
+    transition: right 0.3s ease;
+    color: #fff;
+    font-size: 14px;
+}
+
+.customization-notification.show {
+    right: 20px;
+}
+
+.customization-notification.success {
+    border-color: rgba(76, 175, 80, 0.6);
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(56, 142, 60, 0.2));
+}
+
+.customization-notification.error {
+    border-color: rgba(244, 67, 54, 0.6);
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(211, 47, 47, 0.2));
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+@media (max-width: 1024px) {
+    .presets-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
+    .clue-counts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .customization-modal {
+        padding: 10px;
+    }
+
+    .customization-modal-content {
+        max-height: 95vh;
+        border-radius: 15px;
+    }
+
+    .customization-header {
+        padding: 20px;
+    }
+
+    .customization-header h2 {
+        font-size: 20px;
+    }
+
+    .customization-view-tabs {
+        padding: 15px;
+        gap: 8px;
+    }
+
+    .customization-view-tab {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    .customization-body {
+        padding: 20px;
+    }
+
+    .presets-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .clue-counts-grid {
+        gap: 20px;
+    }
+
+    .preset-settings-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .cancel-btn,
+    .save-btn {
+        width: 100%;
+    }
+
+    .customization-notification {
+        top: 80px;
+        right: -100%;
+        max-width: calc(100% - 40px);
+    }
+
+    .customization-notification.show {
+        right: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .customization-header {
+        padding: 15px;
+    }
+
+    .customization-header h2 {
+        font-size: 18px;
+        gap: 8px;
+    }
+
+    .close-customization-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+    }
+
+    .customization-view-tabs {
+        padding: 10px;
+        gap: 6px;
+    }
+
+    .customization-view-tab {
+        padding: 8px;
+        font-size: 11px;
+    }
+
+    .customization-body {
+        padding: 15px;
+    }
+
+    .view-header h2 {
+        font-size: 22px;
+    }
+
+    .preset-header {
+        gap: 12px;
+    }
+
+    .preset-icon {
+        font-size: 28px;
+        width: 44px;
+        height: 44px;
+    }
+
+    .preset-title h3 {
+        font-size: 16px;
+    }
+
+    .preset-description {
+        font-size: 12px;
+    }
+}
+
+/* ===================================
+   ACCESSIBILITY
+   =================================== */
+
+.customization-view-tab:focus,
+.preset-action-btn:focus,
+.back-btn:focus,
+.cancel-btn:focus,
+.save-btn:focus,
+.close-customization-btn:focus {
+    outline: 2px solid rgba(100, 200, 255, 0.6);
+    outline-offset: 2px;
+}
+
+.preset-card:focus-within {
+    outline: 2px solid rgba(100, 200, 255, 0.6);
+    outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .customization-modal,
+    .customization-modal-content,
+    .preset-card,
+    .customization-view-tab,
+    .preset-action-btn,
+    .clue-count-slider::-webkit-slider-thumb,
+    .clue-count-slider::-moz-range-thumb,
+    .customization-notification {
+        transition: none;
+    }
+
+    .preset-card:hover,
+    .save-btn:hover {
+        transform: none;
+    }
+}
