@@ -48,13 +48,16 @@ module.exports = async function handler(req, res) {
       case 'migrate-phase1-month5':
         await handleMigratePhase1Month5(req, res);
         break;
+      case 'migrate-phase2-month7':
+        await handleMigratePhase2Month7(req, res);
+        break;
       case 'mark-founders':
         await handleMarkFounders(req, res);
         break;
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'mark-founders']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders']
         });
     }
   } catch (error) {
@@ -420,6 +423,117 @@ async function handleMarkFounders(req, res) {
     console.error('Failed to mark founders:', error);
     res.status(500).json({
       error: 'Failed to mark founders',
+      details: error.message
+    });
+  }
+}
+
+// Phase 2 Month 7: Premium subscription schema migration
+async function handleMigratePhase2Month7(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Starting Phase 2 Month 7 migration...');
+    const changes = [];
+
+    // 1. Add premium fields to users table
+    await pool.query(`
+      ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS premium BOOLEAN DEFAULT FALSE,
+      ADD COLUMN IF NOT EXISTS stripe_customer_id VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS stripe_subscription_id VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS subscription_status VARCHAR(50),
+      ADD COLUMN IF NOT EXISTS subscription_start_date TIMESTAMP,
+      ADD COLUMN IF NOT EXISTS subscription_end_date TIMESTAMP,
+      ADD COLUMN IF NOT EXISTS subscription_cancel_at_period_end BOOLEAN DEFAULT FALSE,
+      ADD COLUMN IF NOT EXISTS stripe_price_id VARCHAR(255)
+    `);
+    changes.push('Added premium subscription fields to users table');
+
+    // 2. Add indexes for Stripe lookups
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_stripe_customer ON users(stripe_customer_id)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_stripe_subscription ON users(stripe_subscription_id)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_premium ON users(premium)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_subscription_status ON users(subscription_status)
+    `);
+    changes.push('Created indexes for Stripe lookups');
+
+    // 3. Create subscription_events table for webhook logging
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS subscription_events (
+        id SERIAL PRIMARY KEY,
+        event_id VARCHAR(255) UNIQUE NOT NULL,
+        event_type VARCHAR(100) NOT NULL,
+        customer_id VARCHAR(255),
+        subscription_id VARCHAR(255),
+        username VARCHAR(100),
+        data JSONB,
+        processed BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    changes.push('Created subscription_events table');
+
+    // 4. Add indexes for subscription_events
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_subscription_events_event_id ON subscription_events(event_id)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_subscription_events_customer_id ON subscription_events(customer_id)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_subscription_events_processed ON subscription_events(processed)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_subscription_events_created_at ON subscription_events(created_at)
+    `);
+    changes.push('Created indexes for subscription_events');
+
+    // 5. Create premium_users view
+    await pool.query(`
+      CREATE OR REPLACE VIEW premium_users AS
+      SELECT
+        username,
+        email,
+        premium,
+        subscription_status,
+        subscription_start_date,
+        subscription_end_date,
+        subscription_cancel_at_period_end,
+        created_at
+      FROM users
+      WHERE premium = TRUE
+        AND subscription_status = 'active'
+      ORDER BY subscription_start_date DESC
+    `);
+    changes.push('Created premium_users view');
+
+    res.status(200).json({
+      success: true,
+      message: 'Phase 2 Month 7 schema migration completed successfully',
+      changes: changes,
+      features: [
+        'Stripe subscription integration',
+        'Premium user management',
+        'Webhook event logging',
+        'Subscription status tracking'
+      ]
+    });
+
+  } catch (error) {
+    console.error('Phase 2 Month 7 migration failed:', error);
+    res.status(500).json({
+      error: 'Migration failed',
       details: error.message
     });
   }
