@@ -762,3 +762,100 @@
         font-size: 1rem;
     }
 }
+
+/* Guest Sign-up Banner Styles */
+.guest-signup-banner {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    border: 2px solid rgba(99, 102, 241, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.guest-signup-banner .banner-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.guest-signup-banner .banner-icon {
+    font-size: 2.5rem;
+    color: #fbbf24;
+    flex-shrink: 0;
+}
+
+.guest-signup-banner .banner-text {
+    flex: 1;
+}
+
+.guest-signup-banner .banner-text h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.guest-signup-banner .banner-text p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.guest-signup-banner .banner-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.guest-signup-banner .banner-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .guest-signup-banner .banner-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+
+    .guest-signup-banner .banner-icon {
+        font-size: 2rem;
+    }
+
+    .guest-signup-banner .banner-text h3 {
+        font-size: 1.1rem;
+    }
+
+    .guest-signup-banner .banner-text p {
+        font-size: 0.9rem;
+    }
+
+    .guest-signup-banner .banner-cta {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -86,7 +86,7 @@
             <div class="nav-user">
                 <div class="player-dropdown">
                     <span class="current-player" id="currentPlayerDisplay"></span>
-                    <div class="dropdown-content">
+                    <div class="dropdown-content" id="playerDropdownContent">
                         <a href="settings.html">
                             <i class="fas fa-cog"></i>
                             Settings
@@ -236,6 +236,71 @@
                                     <h4>Mini 6×6</h4>
                                 </div>
                                 <p class="variant-description">Quick 2-4 minute games</p>
+                                <div class="variant-limit unlimited">
+                                    <span class="limit-text">♾️ Unlimited</span>
+                                </div>
+                            </div>
+
+                            <div class="variant-card" data-variant="anti-knight">
+                                <div class="variant-header">
+                                    <div class="variant-icon">
+                                        <i class="fas fa-chess-knight"></i>
+                                    </div>
+                                    <h4>Anti-Knight</h4>
+                                </div>
+                                <p class="variant-description">+ Knight's move constraint</p>
+                                <div class="variant-limit unlimited">
+                                    <span class="limit-text">♾️ Unlimited</span>
+                                </div>
+                            </div>
+
+                            <div class="variant-card" data-variant="killer-sudoku">
+                                <div class="variant-header">
+                                    <div class="variant-icon">
+                                        <i class="fas fa-skull-crossbones"></i>
+                                    </div>
+                                    <h4>Killer Sudoku</h4>
+                                </div>
+                                <p class="variant-description">+ Cage sum constraints</p>
+                                <div class="variant-limit unlimited">
+                                    <span class="limit-text">♾️ Unlimited</span>
+                                </div>
+                            </div>
+
+                            <div class="variant-card" data-variant="hyper-sudoku">
+                                <div class="variant-header">
+                                    <div class="variant-icon">
+                                        <i class="fas fa-th-large"></i>
+                                    </div>
+                                    <h4>Hyper Sudoku</h4>
+                                </div>
+                                <p class="variant-description">+ 4 extra 3×3 regions</p>
+                                <div class="variant-limit unlimited">
+                                    <span class="limit-text">♾️ Unlimited</span>
+                                </div>
+                            </div>
+
+                            <div class="variant-card" data-variant="consecutive-sudoku">
+                                <div class="variant-header">
+                                    <div class="variant-icon">
+                                        <i class="fas fa-link"></i>
+                                    </div>
+                                    <h4>Consecutive</h4>
+                                </div>
+                                <p class="variant-description">+ Consecutive markers</p>
+                                <div class="variant-limit unlimited">
+                                    <span class="limit-text">♾️ Unlimited</span>
+                                </div>
+                            </div>
+
+                            <div class="variant-card" data-variant="thermo-sudoku">
+                                <div class="variant-header">
+                                    <div class="variant-icon">
+                                        <i class="fas fa-thermometer-half"></i>
+                                    </div>
+                                    <h4>Thermo Sudoku</h4>
+                                </div>
+                                <p class="variant-description">+ Thermometer constraints</p>
                                 <div class="variant-limit unlimited">
                                     <span class="limit-text">♾️ Unlimited</span>
                                 </div>
@@ -566,6 +631,23 @@
                     </h1>
                 </div>
 
+                <!-- Guest User Sign-up Encouragement -->
+                <div class="guest-signup-banner" id="achievementsGuestBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="banner-text">
+                            <h3>Unlock Achievements!</h3>
+                            <p>Sign up to track your progress, earn achievements, and compete with friends.</p>
+                        </div>
+                        <a href="/signup.html" class="banner-cta" onclick="if(window.Monitoring)window.Monitoring.trackEvent('guest_signup_clicked', {source: 'achievements_banner'});">
+                            <i class="fas fa-user-plus"></i>
+                            Sign Up Free
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Mobile Head-to-Head Score (visible only on mobile) -->
                 <section class="mobile-head-to-head">
                     <div class="mobile-player-score faidao">
@@ -827,6 +909,17 @@
                     playerDisplayMobile.innerHTML = playerContent;
                 }
 
+                // Update dropdown for guest users - show "Sign up" instead of "Logout"
+                const dropdownContent = document.getElementById('playerDropdownContent');
+                if (dropdownContent) {
+                    dropdownContent.innerHTML = `
+                        <a href="/signup.html" onclick="if(window.Monitoring)window.Monitoring.trackEvent('guest_signup_clicked', {source: 'dropdown'});">
+                            <i class="fas fa-user-plus"></i>
+                            Sign up to save progress
+                        </a>
+                    `;
+                }
+
                 if (sudokuPlayerIndicator) {
                     sudokuPlayerIndicator.innerHTML = `
                         <div class="current-player-card">
@@ -839,6 +932,28 @@
                             </div>
                         </div>
                     `;
+                }
+            }
+
+            // Update guest-specific UI elements (banners, prompts)
+            updateGuestUI();
+        }
+
+        // Update UI elements for guest users
+        function updateGuestUI() {
+            const isAnonymous = window.AnonymousSession && window.AnonymousSession.isAnonymous();
+
+            if (isAnonymous) {
+                // Show sign-up banner on achievements page
+                const achievementsBanner = document.getElementById('achievementsGuestBanner');
+                if (achievementsBanner) {
+                    achievementsBanner.style.display = 'block';
+                }
+            } else {
+                // Hide sign-up banner for authenticated users
+                const achievementsBanner = document.getElementById('achievementsGuestBanner');
+                if (achievementsBanner) {
+                    achievementsBanner.style.display = 'none';
                 }
             }
         }
