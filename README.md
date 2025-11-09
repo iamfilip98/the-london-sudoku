@@ -7,6 +7,33 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 2 Month 10: Killer Sudoku Variant** (November 9, 2025)
+- 🔪 **Killer Sudoku Constraint**: Classic Sudoku PLUS cage sum constraints
+  - Grid divided into "cages" (outlined regions of adjacent cells)
+  - Each cage has a target sum
+  - Numbers within a cage must sum to the cage's target
+  - Numbers CANNOT repeat within a cage (additional constraint beyond standard Sudoku)
+  - More strategic puzzle-solving with combined logical deductions
+  - Unlimited play (no daily limits)
+  - API: `/api/puzzles?mode=practice&variant=killer-sudoku&difficulty=medium`
+- 🧩 **Killer Sudoku Validation Library**: Complete cage and sum checking
+  - `lib/killer-sudoku-validator.js`: Cage validation logic
+  - Functions: `findCageForCell()`, `isValidKillerPlacement()`, `validateKillerSudokuBoard()`
+  - Cage sum validation and duplicate detection within cages
+  - Cage structure validation (all 81 cells covered, no overlaps)
+  - Valid number calculation for hint system with cage constraints
+- 🎲 **Killer Sudoku Generator**: Advanced cage generation algorithm
+  - `lib/killer-sudoku-generator.js`: Generate solvable Killer Sudoku puzzles
+  - Smart cage generation: connected cells with difficulty-based sizing
+  - Easy: larger cages (3-5 cells), Medium: medium cages (2-4 cells), Hard: smaller cages (2-3 cells)
+  - Automatic cage sum calculation from solution
+  - Target clues: easy=25, medium=18, hard=12 (fewer than classic due to cage constraints)
+  - Cage data included in API response for frontend rendering
+- ✅ **Endpoint Conservation**: Killer Sudoku added to existing `/api/puzzles` endpoint
+  - Still at 12/12 endpoints (within free tier limit)
+  - Integrated into practice mode variant system
+  - Cages returned as additional metadata in response
+
 ### **Phase 2 Month 9: Anti-Knight Sudoku Variant** (November 9, 2025)
 - ♞ **Anti-Knight Constraint**: Classic Sudoku PLUS chess knight's move rule
   - Cells that are a knight's move apart cannot contain the same digit

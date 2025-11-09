@@ -9,6 +9,7 @@ const { getCached, invalidateCache, CACHE_DURATIONS, CacheKeys } = require('../l
 const { generateXSudoku } = require('../lib/x-sudoku-generator');
 const { generateMiniSudoku } = require('../lib/mini-sudoku-generator');
 const { generateAntiKnight } = require('../lib/anti-knight-generator');
+const { generateKillerSudoku } = require('../lib/killer-sudoku-generator');
 
 // Helper function for SQL queries
 async function sql(strings, ...values) {
@@ -1551,7 +1552,7 @@ module.exports = async function handler(req, res) {
           const practiceVariant = variant || 'classic';
           const seed = Math.random(); // Unique seed for each practice puzzle
 
-          let puzzle, solution, gridSize;
+          let puzzle, solution, gridSize, cages;
 
           try {
             if (practiceVariant === 'x-sudoku') {
@@ -1572,6 +1573,13 @@ module.exports = async function handler(req, res) {
               puzzle = result.puzzle;
               solution = result.solution;
               gridSize = 9;
+            } else if (practiceVariant === 'killer-sudoku') {
+              // Killer Sudoku variant (Phase 2 Month 10)
+              const result = generateKillerSudoku(practiceDifficulty, seed);
+              puzzle = result.puzzle;
+              solution = result.solution;
+              cages = result.cages;
+              gridSize = 9;
             } else if (practiceVariant === 'classic') {
               // Classic Sudoku - use existing generation logic
               const completeSolution = generateCompleteSolution(seed);
@@ -1581,11 +1589,11 @@ module.exports = async function handler(req, res) {
             } else {
               return res.status(400).json({
                 error: 'Invalid variant',
-                validVariants: ['classic', 'x-sudoku', 'mini', 'anti-knight']
+                validVariants: ['classic', 'x-sudoku', 'mini', 'anti-knight', 'killer-sudoku']
               });
             }
 
-            return res.status(200).json({
+            const response = {
               mode: 'practice',
               variant: practiceVariant,
               difficulty: practiceDifficulty,
@@ -1593,6 +1601,14 @@ module.exports = async function handler(req, res) {
               solution,
               gridSize,
               timestamp: new Date().toISOString()
+            };
+
+            // Include cages for Killer Sudoku variant
+            if (cages) {
+              response.cages = cages;
+            }
+
+            return res.status(200).json(response
             });
           } catch (error) {
             console.error('Practice puzzle generation error:', error);
