@@ -12,6 +12,7 @@ const { generateAntiKnight } = require('../lib/anti-knight-generator');
 const { generateKillerSudoku } = require('../lib/killer-sudoku-generator');
 const { generateHyperSudoku } = require('../lib/hyper-sudoku-generator');
 const { generateConsecutiveSudokuWithRetry } = require('../lib/consecutive-sudoku-generator');
+const { generateThermoSudokuWithRetry } = require('../lib/thermo-sudoku-generator');
 
 // Helper function for SQL queries
 async function sql(strings, ...values) {
@@ -1554,7 +1555,7 @@ module.exports = async function handler(req, res) {
           const practiceVariant = variant || 'classic';
           const seed = Math.random(); // Unique seed for each practice puzzle
 
-          let puzzle, solution, gridSize, cages, hyperRegions, consecutiveMarkers;
+          let puzzle, solution, gridSize, cages, hyperRegions, consecutiveMarkers, thermometers;
 
           try {
             if (practiceVariant === 'x-sudoku') {
@@ -1596,6 +1597,13 @@ module.exports = async function handler(req, res) {
               solution = result.solution;
               consecutiveMarkers = result.consecutiveMarkers;
               gridSize = 9;
+            } else if (practiceVariant === 'thermo-sudoku') {
+              // Thermo Sudoku variant (Phase 2 Month 13)
+              const result = generateThermoSudokuWithRetry(practiceDifficulty, seed);
+              puzzle = result.puzzle;
+              solution = result.solution;
+              thermometers = result.thermometers;
+              gridSize = 9;
             } else if (practiceVariant === 'classic') {
               // Classic Sudoku - use existing generation logic
               const completeSolution = generateCompleteSolution(seed);
@@ -1605,7 +1613,7 @@ module.exports = async function handler(req, res) {
             } else {
               return res.status(400).json({
                 error: 'Invalid variant',
-                validVariants: ['classic', 'x-sudoku', 'mini', 'anti-knight', 'killer-sudoku', 'hyper-sudoku', 'consecutive-sudoku']
+                validVariants: ['classic', 'x-sudoku', 'mini', 'anti-knight', 'killer-sudoku', 'hyper-sudoku', 'consecutive-sudoku', 'thermo-sudoku']
               });
             }
 
@@ -1628,6 +1636,9 @@ module.exports = async function handler(req, res) {
             }
             if (consecutiveMarkers) {
               response.consecutiveMarkers = consecutiveMarkers;
+            }
+            if (thermometers) {
+              response.thermometers = thermometers;
             }
 
             return res.status(200).json(response
