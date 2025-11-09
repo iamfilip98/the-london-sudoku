@@ -17,6 +17,16 @@ This section contains essential workflow rules. Add new rules, but never delete 
 11. **Automatic PR Creation**: After each meaningful change, automatically create a PR with a clear, descriptive message. Use curl with GitHub API directly (token in .github-token file). Never wait for user to create PRs
 12. **Full Autonomy**: You must solve ALL issues yourself without user help. If you need access, tokens, or permissions, explicitly ask for them. Never give up or ask user to do manual work
 13. **Ultrathinking for Solutions**: When facing any issue or blocker, think deeply about alternative approaches. Try multiple solutions, research documentation, analyze error messages thoroughly. Persistence is required
+14. **Ultrathink Every Implementation**: Before implementing ANY feature or fix, spend significant time thinking through:
+    - Architecture and design patterns
+    - Edge cases and potential bugs
+    - Security implications
+    - Performance impact
+    - Backward compatibility
+    - Testing strategy
+    - Documentation needs
+    - Multiple implementation approaches and trade-offs
+    - Never rush to code - think first, code second
 
 ## Git Workflow - Professional Branch Strategy
 
