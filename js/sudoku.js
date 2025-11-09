@@ -1534,6 +1534,35 @@ class SudokuEngine {
 
         const statusDiv = document.getElementById('gameStatus');
 
+        // PHASE 1 MONTH 6: Offer rewarded video for free hint (first hint only)
+        if (this.hintState === 'none' && this.hints === 0 && window.adManager) {
+            const remaining = window.adManager.getRemainingRewardedVideos();
+
+            if (remaining > 0 && !window.adManager.isPremium) {
+                // Offer rewarded video option
+                const watchVideo = confirm(
+                    `💡 FREE HINT AVAILABLE!\n\n` +
+                    `Watch a short video ad to get your first hint FREE (no penalty).\n\n` +
+                    `Remaining videos today: ${remaining}/3\n\n` +
+                    `Click OK to watch video, or Cancel to use hint normally.`
+                );
+
+                if (watchVideo) {
+                    const rewarded = await window.adManager.showRewardedVideo();
+
+                    if (rewarded) {
+                        // Grant free hint without penalty
+                        console.log('✅ Rewarded video watched - granting free hint');
+                        // Continue with hint but skip penalty tracking
+                        this._skipHintPenalty = true;
+                    } else {
+                        // User cancelled - do nothing
+                        return;
+                    }
+                }
+            }
+        }
+
         // 🎯 NEW: 3-Stage Progressive Hint System with Improved Messages
         if (this.hintState === 'none') {
             // 🔍 LEVEL 1: Strategic Guidance - Educational and helpful
@@ -1545,8 +1574,14 @@ class SudokuEngine {
                 this.hintState = 'direction';
 
                 // Track Level 1 hint (fractional penalty, keeps Perfect bonus!)
-                this.hintLevel1Count++;
-                this.hintTimePenalty += 2; // 2 seconds penalty
+                // PHASE 1 MONTH 6: Skip penalty if rewarded video was watched
+                if (this._skipHintPenalty) {
+                    console.log('🎁 Free hint from rewarded video - no penalty applied');
+                    this._skipHintPenalty = false; // Reset flag
+                } else {
+                    this.hintLevel1Count++;
+                    this.hintTimePenalty += 2; // 2 seconds penalty
+                }
                 this.hints++; // Keep total hint count for display
 
                 // Determine hint direction and highlight area
@@ -1556,12 +1591,15 @@ class SudokuEngine {
                 // Get technique explanation
                 const techniqueInfo = this.getTechniqueExplanation(technique);
 
+                // PHASE 1 MONTH 6: Check if this was a free hint
+                const isFreeHint = (this.hints === 1 && this.hintLevel1Count === 0);
+
                 // Show improved Level 1 message
                 statusDiv.innerHTML = `
                     <div class="hint-message direction">
                         <div class="hint-header">
                             <i class="fas fa-compass"></i>
-                            <strong>Level 1: Strategic Guidance</strong>
+                            <strong>Level 1: Strategic Guidance${isFreeHint ? ' 🎁 FREE' : ''}</strong>
                         </div>
                         <div class="hint-body">
                             <strong>🔍 Look at ${hintDirection.text}</strong><br>
@@ -1570,7 +1608,10 @@ class SudokuEngine {
                             Check each one and find which has the ${technique.includes('Hidden') ? 'number that must go there' : 'fewest options'}.
                         </div>
                         <div class="hint-penalty">
-                            💡 Penalty: 0.5% (keeps Perfect bonus!) | Click again for exact cell (+3%, breaks bonus)
+                            ${isFreeHint ?
+                                '🎁 FREE Hint from video ad - No penalty!' :
+                                '💡 Penalty: 0.5% (keeps Perfect bonus!)'
+                            } | Click again for exact cell (+3%, breaks bonus)
                         </div>
                     </div>
                 `;
