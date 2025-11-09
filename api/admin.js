@@ -4,6 +4,7 @@ const { generatePuzzle, solvePuzzle } = require('../lib/sudoku-generator.js');
 const pool = require('../lib/db-pool');
 const bcrypt = require('bcryptjs');
 const { setCorsHeaders } = require('../lib/cors');
+const stripeManager = require('../lib/stripe-manager');
 
 module.exports = async function handler(req, res) {
   // Handle CORS
@@ -20,16 +21,22 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // Verify admin key
-  const adminKey = req.headers['x-admin-key'];
-  const expectedKey = process.env.ADMIN_KEY;
-
-  if (!adminKey || adminKey !== expectedKey) {
-    res.status(401).json({ error: 'Unauthorized' });
-    return;
-  }
-
   const { action } = req.query;
+
+  // Subscription actions have their own authentication (Stripe signature for webhooks, user session for others)
+  const subscriptionActions = ['create-checkout', 'create-portal', 'webhook', 'subscription-status'];
+  const requiresAdminKey = !subscriptionActions.includes(action);
+
+  // Verify admin key for admin-only actions
+  if (requiresAdminKey) {
+    const adminKey = req.headers['x-admin-key'];
+    const expectedKey = process.env.ADMIN_KEY;
+
+    if (!adminKey || adminKey !== expectedKey) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+  }
 
   try {
     switch (action) {
@@ -48,13 +55,28 @@ module.exports = async function handler(req, res) {
       case 'migrate-phase1-month5':
         await handleMigratePhase1Month5(req, res);
         break;
+      case 'migrate-phase2-month7':
+        await handleMigratePhase2Month7(req, res);
+        break;
       case 'mark-founders':
         await handleMarkFounders(req, res);
+        break;
+      case 'create-checkout':
+        await handleCreateCheckout(req, res);
+        break;
+      case 'create-portal':
+        await handleCreatePortal(req, res);
+        break;
+      case 'webhook':
+        await handleWebhook(req, res);
+        break;
+      case 'subscription-status':
+        await handleSubscriptionStatus(req, res);
         break;
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'mark-founders']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
         });
     }
   } catch (error) {
@@ -421,6 +443,261 @@ async function handleMarkFounders(req, res) {
     res.status(500).json({
       error: 'Failed to mark founders',
       details: error.message
+    });
+  }
+}
+
+// Phase 2 Month 7: Premium subscription schema migration
+async function handleMigratePhase2Month7(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Starting Phase 2 Month 7 migration...');
+    const changes = [];
+
+    // 1. Add premium fields to users table
+    await pool.query(`
+      ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS premium BOOLEAN DEFAULT FALSE,
+      ADD COLUMN IF NOT EXISTS stripe_customer_id VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS stripe_subscription_id VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS subscription_status VARCHAR(50),
+      ADD COLUMN IF NOT EXISTS subscription_start_date TIMESTAMP,
+      ADD COLUMN IF NOT EXISTS subscription_end_date TIMESTAMP,
+      ADD COLUMN IF NOT EXISTS subscription_cancel_at_period_end BOOLEAN DEFAULT FALSE,
+      ADD COLUMN IF NOT EXISTS stripe_price_id VARCHAR(255)
+    `);
+    changes.push('Added premium subscription fields to users table');
+
+    // 2. Add indexes for Stripe lookups
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_stripe_customer ON users(stripe_customer_id)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_stripe_subscription ON users(stripe_subscription_id)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_premium ON users(premium)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_subscription_status ON users(subscription_status)
+    `);
+    changes.push('Created indexes for Stripe lookups');
+
+    // 3. Create subscription_events table for webhook logging
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS subscription_events (
+        id SERIAL PRIMARY KEY,
+        event_id VARCHAR(255) UNIQUE NOT NULL,
+        event_type VARCHAR(100) NOT NULL,
+        customer_id VARCHAR(255),
+        subscription_id VARCHAR(255),
+        username VARCHAR(100),
+        data JSONB,
+        processed BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    changes.push('Created subscription_events table');
+
+    // 4. Add indexes for subscription_events
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_subscription_events_event_id ON subscription_events(event_id)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_subscription_events_customer_id ON subscription_events(customer_id)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_subscription_events_processed ON subscription_events(processed)
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_subscription_events_created_at ON subscription_events(created_at)
+    `);
+    changes.push('Created indexes for subscription_events');
+
+    // 5. Create premium_users view
+    await pool.query(`
+      CREATE OR REPLACE VIEW premium_users AS
+      SELECT
+        username,
+        email,
+        premium,
+        subscription_status,
+        subscription_start_date,
+        subscription_end_date,
+        subscription_cancel_at_period_end,
+        created_at
+      FROM users
+      WHERE premium = TRUE
+        AND subscription_status = 'active'
+      ORDER BY subscription_start_date DESC
+    `);
+    changes.push('Created premium_users view');
+
+    res.status(200).json({
+      success: true,
+      message: 'Phase 2 Month 7 schema migration completed successfully',
+      changes: changes,
+      features: [
+        'Stripe subscription integration',
+        'Premium user management',
+        'Webhook event logging',
+        'Subscription status tracking'
+      ]
+    });
+
+  } catch (error) {
+    console.error('Phase 2 Month 7 migration failed:', error);
+    res.status(500).json({
+      error: 'Migration failed',
+      details: error.message
+    });
+  }
+}
+
+// Create Stripe checkout session (from subscription.js)
+async function handleCreateCheckout(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  const { username, email } = req.body;
+
+  if (!username || !email) {
+    return res.status(400).json({
+      success: false,
+      error: 'username and email are required'
+    });
+  }
+
+  try {
+    const session = await stripeManager.createCheckoutSession(username, email);
+
+    return res.status(200).json({
+      success: true,
+      sessionId: session.sessionId,
+      url: session.url
+    });
+  } catch (error) {
+    console.error('Failed to create checkout session:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to create checkout session'
+    });
+  }
+}
+
+// Create customer portal session (from subscription.js)
+async function handleCreatePortal(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  const { username } = req.body;
+
+  if (!username) {
+    return res.status(400).json({
+      success: false,
+      error: 'username is required'
+    });
+  }
+
+  try {
+    const portal = await stripeManager.createPortalSession(username);
+
+    return res.status(200).json({
+      success: true,
+      url: portal.url
+    });
+  } catch (error) {
+    console.error('Failed to create portal session:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to create portal session'
+    });
+  }
+}
+
+// Handle Stripe webhook (from subscription.js)
+async function handleWebhook(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  const signature = req.headers['stripe-signature'];
+
+  if (!signature) {
+    return res.status(400).json({
+      success: false,
+      error: 'Missing stripe-signature header'
+    });
+  }
+
+  try {
+    // Get raw body (Vercel provides this as Buffer)
+    const rawBody = req.body;
+
+    const success = await stripeManager.handleWebhook(rawBody, signature);
+
+    if (success) {
+      return res.status(200).json({ received: true });
+    } else {
+      return res.status(400).json({ received: false });
+    }
+  } catch (error) {
+    console.error('Webhook handling failed:', error);
+    return res.status(400).json({
+      success: false,
+      error: error.message
+    });
+  }
+}
+
+// Get subscription status (from subscription.js)
+async function handleSubscriptionStatus(req, res) {
+  if (req.method !== 'GET') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  const { username } = req.query;
+
+  if (!username) {
+    return res.status(400).json({
+      success: false,
+      error: 'username query parameter is required'
+    });
+  }
+
+  try {
+    const status = await stripeManager.getSubscriptionStatus(username);
+
+    if (!status) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      premium: status.premium,
+      subscriptionStatus: status.subscription_status,
+      subscriptionStartDate: status.subscription_start_date,
+      subscriptionEndDate: status.subscription_end_date,
+      cancelAtPeriodEnd: status.subscription_cancel_at_period_end
+    });
+  } catch (error) {
+    console.error('Failed to get subscription status:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to get subscription status'
     });
   }
 }
