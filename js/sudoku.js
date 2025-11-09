@@ -3003,7 +3003,14 @@ class SudokuEngine {
 
     async saveCompletedGame(score) {
         const currentPlayer = sessionStorage.getItem('currentPlayer');
-        if (!currentPlayer) return;
+
+        // PHASE 0 MONTH 3: Check if user is anonymous
+        const isAnonymous = window.AnonymousSession && window.AnonymousSession.isAnonymous();
+
+        if (!currentPlayer && !isAnonymous) {
+            // Not authenticated and not anonymous - skip saving
+            return;
+        }
 
         try {
             // Determine bonus type based on perfect play criteria
@@ -3022,7 +3029,7 @@ class SudokuEngine {
             // Save completed game data for integration with existing analytics
             const completedGame = {
                 date: this.getTodayDateString(),
-                player: currentPlayer,
+                player: currentPlayer || 'anonymous',
                 difficulty: this.currentDifficulty,
                 time: this.timer,
                 hints: this.hints,
@@ -3038,17 +3045,33 @@ class SudokuEngine {
                 timestamp: Date.now()
             };
 
-            // Store in sessionStorage for session-only caching (prevents stale data)
-            const key = `completed_${currentPlayer}_${this.getTodayDateString()}_${this.currentDifficulty}`;
-            sessionStorage.setItem(key, JSON.stringify(completedGame));
+            // PHASE 0 MONTH 3: Handle anonymous users
+            if (isAnonymous) {
+                // Track completion locally for anonymous users
+                if (window.AnonymousSession) {
+                    window.AnonymousSession.trackAnonymousCompletion({
+                        difficulty: this.currentDifficulty,
+                        time: this.timer,
+                        score: score,
+                        errors: this.errors,
+                        hints: this.hints
+                    });
+                    console.log('✅ Anonymous completion tracked locally');
+                }
+            } else {
+                // Authenticated users: save to database
+                // Store in sessionStorage for session-only caching (prevents stale data)
+                const key = `completed_${currentPlayer}_${this.getTodayDateString()}_${this.currentDifficulty}`;
+                sessionStorage.setItem(key, JSON.stringify(completedGame));
 
-            // Save to database as the source of truth
-            await this.saveGameToDatabase(completedGame);
+                // Save to database as the source of truth
+                await this.saveGameToDatabase(completedGame);
 
-            // Integrate with existing analytics system
-            await this.integrateWithAnalytics(completedGame);
+                // Integrate with existing analytics system
+                await this.integrateWithAnalytics(completedGame);
 
-            debugLog('Game completed and integrated with analytics:', completedGame);
+                debugLog('Game completed and integrated with analytics:', completedGame);
+            }
 
         } catch (error) {
             console.error('Failed to save completed game:', error);

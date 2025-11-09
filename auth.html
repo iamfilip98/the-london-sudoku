@@ -207,6 +207,7 @@
         });
     </script>
     <script src="/lib/monitoring.js"></script>
+    <script src="/lib/anonymous-session.js"></script>
 </head>
 <body>
     <div class="auth-container">
@@ -309,6 +310,19 @@
                         sessionStorage.setItem('clerk_user_id', user.id);
                         sessionStorage.setItem('currentPlayer', user.username || user.id);
                         sessionStorage.setItem('displayName', user.firstName || user.username);
+
+                        // PHASE 0 MONTH 3: Migrate anonymous data if it exists
+                        if (window.AnonymousSession) {
+                            try {
+                                const result = await window.AnonymousSession.migrateAnonymousToUser(user.id);
+                                if (result && result.migrated > 0) {
+                                    console.log(`✅ Migrated ${result.migrated} anonymous items to user account`);
+                                }
+                            } catch (error) {
+                                console.error('Failed to migrate anonymous data:', error);
+                                // Don't block login if migration fails
+                            }
+                        }
 
                         // Redirect to main app
                         window.location.href = 'index.html';
