@@ -1517,15 +1517,25 @@
     <!-- PHASE 2 MONTH 18: Tutorial System -->
     <script src="/lib/tutorial-content.js"></script>
     <script src="/js/tutorial-manager.js"></script>
+
+    <!-- PHASE 2 MONTH 19: Variant Achievements & Statistics -->
+    <script src="/lib/variant-achievements.js"></script>
+    <script src="/js/variant-stats-manager.js"></script>
     <script>
         // Initialize tutorial system when Sudoku engine is ready
         let tutorialManager;
+        let variantStatsManager;
 
         function initializeTutorialSystem() {
             if (window.sudokuEngine) {
                 tutorialManager = new TutorialManager(window.sudokuEngine);
                 window.tutorialManager = tutorialManager;
                 console.log('✅ Tutorial system initialized');
+
+                // Initialize variant stats manager
+                variantStatsManager = new VariantStatsManager();
+                window.variantStatsManager = variantStatsManager;
+                console.log('✅ Variant statistics manager initialized');
 
                 // Add tutorial triggers to UI
                 addTutorialTriggers();
