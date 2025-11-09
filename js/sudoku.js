@@ -1,13 +1,17 @@
 class SudokuEngine {
     constructor() {
-        this.grid = Array(9).fill().map(() => Array(9).fill(0));
-        this.solution = Array(9).fill().map(() => Array(9).fill(0));
-        this.initialGrid = Array(9).fill().map(() => Array(9).fill(0));
-        this.playerGrid = Array(9).fill().map(() => Array(9).fill(0));
-        this.lockedGrid = Array(9).fill().map(() => Array(9).fill(false));
-        this.candidates = Array(9).fill().map(() => Array(9).fill().map(() => new Set()));
-        this.manualCandidates = Array(9).fill().map(() => Array(9).fill().map(() => new Set()));
-        this.removedCandidates = Array(9).fill().map(() => Array(9).fill().map(() => new Set()));
+        // PHASE 1 MONTH 5: Variant support
+        this.variant = sessionStorage.getItem('selectedVariant') || 'classic';
+        this.gridSize = this.variant === 'mini' ? 6 : 9;
+
+        this.grid = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill(0));
+        this.solution = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill(0));
+        this.initialGrid = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill(0));
+        this.playerGrid = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill(0));
+        this.lockedGrid = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill(false));
+        this.candidates = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill().map(() => new Set()));
+        this.manualCandidates = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill().map(() => new Set()));
+        this.removedCandidates = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill().map(() => new Set()));
         this.selectedCell = null;
         this.timer = 0;
         this.timerInterval = null;
@@ -48,6 +52,8 @@ class SudokuEngine {
         };
         this.streakCount = 0;
         this.bestTime = { easy: null, medium: null, hard: null };
+
+        console.log('🎮 Initializing Sudoku with variant:', this.variant, 'gridSize:', this.gridSize);
     }
 
     // Initialize Sudoku UI and game
@@ -55,6 +61,12 @@ class SudokuEngine {
         this.loadSettings();
         this.initializeAudioContext();
         this.createSudokuInterface();
+
+        // PHASE 1 MONTH 5: Apply variant class to grid
+        const gridElement = document.querySelector('.sudoku-grid');
+        if (gridElement) {
+            gridElement.classList.add(`variant-${this.variant}`);
+        }
 
         // NO FALLBACK PUZZLES - All puzzles come from API/database
         if (!this.dailyPuzzles) {
@@ -282,8 +294,8 @@ class SudokuEngine {
 
     generateGridHTML() {
         let html = '';
-        for (let row = 0; row < 9; row++) {
-            for (let col = 0; col < 9; col++) {
+        for (let row = 0; row < this.gridSize; row++) {
+            for (let col = 0; col < this.gridSize; col++) {
                 const cellClass = this.getCellClasses(row, col);
                 html += `
                     <div class="sudoku-cell ${cellClass}"
@@ -303,32 +315,56 @@ class SudokuEngine {
 
     generateNumberInputHTML() {
         const isMobile = window.innerWidth <= 768;
+        const maxNum = this.gridSize;  // PHASE 1 MONTH 5: Dynamic based on variant
 
         if (isMobile) {
             // Mobile: Two rows layout
-            return `
-                <div class="number-input">
-                    <div class="number-row-1">
-                        ${Array.from({length: 5}, (_, i) =>
-                            `<button class="number-btn" data-number="${i + 1}" aria-label="Enter number ${i + 1} (press ${i + 1} key)">${i + 1}</button>`
-                        ).join('')}
+            if (maxNum === 6) {
+                // Mini 6x6: 3 buttons per row
+                return `
+                    <div class="number-input">
+                        <div class="number-row-1">
+                            ${Array.from({length: 3}, (_, i) =>
+                                `<button class="number-btn" data-number="${i + 1}" aria-label="Enter number ${i + 1} (press ${i + 1} key)">${i + 1}</button>`
+                            ).join('')}
+                        </div>
+                        <div class="number-row-2">
+                            ${Array.from({length: 3}, (_, i) =>
+                                `<button class="number-btn" data-number="${i + 4}" aria-label="Enter number ${i + 4} (press ${i + 4} key)">${i + 4}</button>`
+                            ).join('')}
+                            <button class="undo-btn" id="undoBtn" title="Undo last move" aria-label="Undo last move (press U or Ctrl+Z)">
+                                <i class="fas fa-undo-alt" aria-hidden="true"></i>
+                                <span>Undo</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="number-row-2">
-                        ${Array.from({length: 4}, (_, i) =>
-                            `<button class="number-btn" data-number="${i + 6}" aria-label="Enter number ${i + 6} (press ${i + 6} key)">${i + 6}</button>`
-                        ).join('')}
-                        <button class="undo-btn" id="undoBtn" title="Undo last move" aria-label="Undo last move (press U or Ctrl+Z)">
-                            <i class="fas fa-undo-alt" aria-hidden="true"></i>
-                            <span>Undo</span>
-                        </button>
+                `;
+            } else {
+                // Classic 9x9: 5 + 4 layout
+                return `
+                    <div class="number-input">
+                        <div class="number-row-1">
+                            ${Array.from({length: 5}, (_, i) =>
+                                `<button class="number-btn" data-number="${i + 1}" aria-label="Enter number ${i + 1} (press ${i + 1} key)">${i + 1}</button>`
+                            ).join('')}
+                        </div>
+                        <div class="number-row-2">
+                            ${Array.from({length: 4}, (_, i) =>
+                                `<button class="number-btn" data-number="${i + 6}" aria-label="Enter number ${i + 6} (press ${i + 6} key)">${i + 6}</button>`
+                            ).join('')}
+                            <button class="undo-btn" id="undoBtn" title="Undo last move" aria-label="Undo last move (press U or Ctrl+Z)">
+                                <i class="fas fa-undo-alt" aria-hidden="true"></i>
+                                <span>Undo</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         } else {
             // Desktop: Single row layout
             return `
                 <div class="number-input number-input-desktop">
-                    ${Array.from({length: 9}, (_, i) =>
+                    ${Array.from({length: maxNum}, (_, i) =>
                         `<button class="number-btn" data-number="${i + 1}" aria-label="Enter number ${i + 1} (press ${i + 1} key)">${i + 1}</button>`
                     ).join('')}
                     <button class="undo-btn" id="undoBtn" title="Undo last move" aria-label="Undo last move (press U or Ctrl+Z)">
@@ -343,11 +379,34 @@ class SudokuEngine {
     getCellClasses(row, col) {
         let classes = [];
 
-        // Add region classes for visual separation
-        if (row % 3 === 2 && row < 8) classes.push('bottom-thick');
-        if (col % 3 === 2 && col < 8) classes.push('right-thick');
-        if (row % 3 === 0 && row > 0) classes.push('top-thick');
-        if (col % 3 === 0 && col > 0) classes.push('left-thick');
+        // PHASE 1 MONTH 5: Variant-specific box borders
+        if (this.variant === 'mini') {
+            // Mini 6x6: 2×3 boxes
+            if ((row + 1) % 2 === 0 && row < 5) classes.push('bottom-thick');
+            if ((col + 1) % 3 === 0 && col < 5) classes.push('right-thick');
+            if (row % 2 === 0 && row > 0) classes.push('top-thick');
+            if (col % 3 === 0 && col > 0) classes.push('left-thick');
+        } else {
+            // Classic/X-Sudoku: 3×3 boxes
+            if (row % 3 === 2 && row < 8) classes.push('bottom-thick');
+            if (col % 3 === 2 && col < 8) classes.push('right-thick');
+            if (row % 3 === 0 && row > 0) classes.push('top-thick');
+            if (col % 3 === 0 && col > 0) classes.push('left-thick');
+        }
+
+        // X-Sudoku: Diagonal highlighting
+        if (this.variant === 'x-sudoku') {
+            const isMainDiagonal = (row === col);
+            const isAntiDiagonal = (row + col === 8);
+
+            if (isMainDiagonal && isAntiDiagonal) {
+                classes.push('diagonal-both'); // Center cell (4,4)
+            } else if (isMainDiagonal) {
+                classes.push('diagonal-main');
+            } else if (isAntiDiagonal) {
+                classes.push('diagonal-anti');
+            }
+        }
 
         // Add locked class for locked user inputs
         if (this.lockedGrid[row][col]) classes.push('locked');
@@ -532,7 +591,7 @@ class SudokuEngine {
             debugLog('🔄 Loading puzzles from API...');
             try {
                 const today = this.getTodayDateString();
-                const response = await fetch(`/api/puzzles?date=${today}&t=${Date.now()}`);
+                const response = await fetch(`/api/puzzles?date=${today}&variant=${this.variant}&t=${Date.now()}`);
 
                 if (response.ok) {
                     const apiPuzzles = await response.json();
@@ -583,7 +642,7 @@ class SudokuEngine {
 
             // Force reload from API with cache busting
             const today = this.getTodayDateString();
-            const response = await fetch(`/api/puzzles?date=${today}&t=${Date.now()}`);
+            const response = await fetch(`/api/puzzles?date=${today}&variant=${this.variant}&t=${Date.now()}`);
 
             if (response.ok) {
                 this.dailyPuzzles = await response.json();
@@ -842,7 +901,7 @@ class SudokuEngine {
         this.initialGrid = puzzleData.puzzle.map(row => [...row]);
         this.solution = puzzleData.solution.map(row => [...row]);
         this.playerGrid = puzzleData.puzzle.map(row => [...row]);
-        this.lockedGrid = Array(9).fill().map(() => Array(9).fill(false));
+        this.lockedGrid = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill(false));
 
         // Validate that the solution is actually valid
         debugLog(`🔍 Loading ${difficulty} solution. R6C5 should be:`, this.solution[5][4]);
@@ -879,9 +938,9 @@ class SudokuEngine {
         }
 
         // Clear any previous candidates
-        this.candidates = Array(9).fill().map(() => Array(9).fill().map(() => new Set()));
-        this.manualCandidates = Array(9).fill().map(() => Array(9).fill().map(() => new Set()));
-        this.removedCandidates = Array(9).fill().map(() => Array(9).fill().map(() => new Set()));
+        this.candidates = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill().map(() => new Set()));
+        this.manualCandidates = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill().map(() => new Set()));
+        this.removedCandidates = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill().map(() => new Set()));
 
         // Generate candidates if in show all mode (medium/hard)
         if (this.showAllCandidates) {
@@ -902,8 +961,8 @@ class SudokuEngine {
         const grid = document.getElementById('sudokuGrid');
         if (!grid) return;
 
-        for (let row = 0; row < 9; row++) {
-            for (let col = 0; col < 9; col++) {
+        for (let row = 0; row < this.gridSize; row++) {
+            for (let col = 0; col < this.gridSize; col++) {
                 const cell = grid.querySelector(`[data-row="${row}"][data-col="${col}"]`);
                 const valueDiv = cell.querySelector('.cell-value');
                 const candidatesDiv = cell.querySelector('.cell-candidates');
@@ -3258,6 +3317,7 @@ class SudokuEngine {
                     player: gameData.player,
                     date: gameData.date,
                     difficulty: gameData.difficulty,
+                    variant: this.variant,  // PHASE 1 MONTH 5
                     time: gameData.time,
                     errors: gameData.errors,
                     score: gameData.score,

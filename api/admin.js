@@ -45,10 +45,16 @@ module.exports = async function handler(req, res) {
       case 'init-db':
         await handleInitDb(req, res);
         break;
+      case 'migrate-phase1-month5':
+        await handleMigratePhase1Month5(req, res);
+        break;
+      case 'mark-founders':
+        await handleMarkFounders(req, res);
+        break;
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'mark-founders']
         });
     }
   } catch (error) {
@@ -272,6 +278,148 @@ async function handleInitDb(req, res) {
     console.error('Database initialization failed:', error);
     res.status(500).json({
       error: 'Database initialization failed',
+      details: error.message
+    });
+  }
+}
+
+// Migrate database schema for Phase 1 Month 5 (X-Sudoku, Mini 6x6, free tier limits, founder badges)
+async function handleMigratePhase1Month5(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    const changes = [];
+
+    // 1. Add variant support to daily_puzzles
+    await pool.query(`
+      ALTER TABLE daily_puzzles
+      ADD COLUMN IF NOT EXISTS variant VARCHAR(20) DEFAULT 'classic'
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_daily_puzzles_variant
+      ON daily_puzzles(date, variant)
+    `);
+    changes.push('Added variant column to daily_puzzles');
+
+    // 2. Add variant support to game_states
+    await pool.query(`
+      ALTER TABLE game_states
+      ADD COLUMN IF NOT EXISTS variant VARCHAR(20) DEFAULT 'classic'
+    `);
+    await pool.query(`
+      ALTER TABLE game_states DROP CONSTRAINT IF EXISTS game_states_player_date_difficulty_key
+    `);
+    await pool.query(`
+      ALTER TABLE game_states ADD CONSTRAINT game_states_player_date_difficulty_variant_key
+      UNIQUE(player, date, difficulty, variant)
+    `);
+    await pool.query(`
+      DROP INDEX IF EXISTS idx_game_states_player_date
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_game_states_player_date_variant
+      ON game_states(player, date, difficulty, variant)
+    `);
+    changes.push('Added variant column to game_states with updated constraints');
+
+    // 3. Add variant support to individual_games
+    await pool.query(`
+      ALTER TABLE individual_games
+      ADD COLUMN IF NOT EXISTS variant VARCHAR(20) DEFAULT 'classic'
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_individual_games_variant
+      ON individual_games(variant, difficulty)
+    `);
+    changes.push('Added variant column to individual_games');
+
+    // 4. Add variant support to fallback_puzzles
+    await pool.query(`
+      ALTER TABLE fallback_puzzles
+      ADD COLUMN IF NOT EXISTS variant VARCHAR(20) DEFAULT 'classic'
+    `);
+    await pool.query(`
+      DROP INDEX IF EXISTS idx_fallback_difficulty
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_fallback_difficulty_variant
+      ON fallback_puzzles(variant, difficulty, quality_score DESC, times_used ASC)
+    `);
+    changes.push('Added variant column to fallback_puzzles');
+
+    // 5. Add founder badges and free tier tracking to users
+    await pool.query(`
+      ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS founder BOOLEAN DEFAULT FALSE,
+      ADD COLUMN IF NOT EXISTS daily_classic_played INTEGER DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS last_puzzle_date DATE
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_founder
+      ON users(founder) WHERE founder = TRUE
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_daily_limits
+      ON users(username, last_puzzle_date, daily_classic_played)
+    `);
+    changes.push('Added founder badges and free tier tracking to users');
+
+    res.status(200).json({
+      success: true,
+      message: 'Phase 1 Month 5 schema migration completed successfully',
+      changes: changes,
+      features: [
+        'X-Sudoku variant support',
+        'Mini 6x6 variant support',
+        'Free tier limits (3 Classic dailies)',
+        'Founder badges system'
+      ]
+    });
+
+  } catch (error) {
+    console.error('Phase 1 Month 5 migration failed:', error);
+    res.status(500).json({
+      error: 'Migration failed',
+      details: error.message
+    });
+  }
+}
+
+// Mark Faidao & Filip as founders (Phase 1 Month 5)
+async function handleMarkFounders(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    const result = await pool.query(`
+      UPDATE users
+      SET founder = TRUE
+      WHERE username IN ('faidao', 'filip')
+      RETURNING username, display_name, founder
+    `);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Founders not found in database. Run init-db first.'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Founders marked successfully',
+      founders: result.rows
+    });
+
+  } catch (error) {
+    console.error('Failed to mark founders:', error);
+    res.status(500).json({
+      error: 'Failed to mark founders',
       details: error.message
     });
   }

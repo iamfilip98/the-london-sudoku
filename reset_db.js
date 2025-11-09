@@ -1,13 +1,15 @@
 require('dotenv').config({ path: '.env.local' });
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const { Pool } = require('pg');
+
+// ✅ SECURITY FIX: Proper SSL configuration
+const isProduction = process.env.NODE_ENV === 'production';
+const isVercel = process.env.VERCEL === '1';
 
 const pool = new Pool({
   connectionString: process.env.POSTGRES_PRISMA_URL,
-  ssl: {
-    rejectUnauthorized: false,
-    checkServerIdentity: () => undefined
-  }
+  ssl: (isProduction || isVercel) ? {
+    rejectUnauthorized: true  // ✅ SECURE: Prevents man-in-the-middle attacks
+  } : false  // Only disabled in local development
 });
 
 async function resetDatabase() {

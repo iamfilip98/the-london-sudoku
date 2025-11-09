@@ -9128,3 +9128,262 @@ select:focus-visible,
         display: none; /* Hide bullet on mobile */
     }
 }
+
+/* ======================================================================
+   PHASE 1 MONTH 5: Variant Selection Styles
+   ====================================================================== */
+
+/* Variant Selection Container */
+.variant-selection {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+}
+
+.variant-selection h3 {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.variant-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* Variant Card */
+.variant-card {
+    background: var(--background);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.variant-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-large);
+    border-color: var(--accent-blue);
+}
+
+.variant-card.active {
+    border-color: var(--accent-blue);
+    background: rgba(79, 172, 254, 0.1);
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+}
+
+.variant-card.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.variant-card.locked:hover {
+    transform: none;
+    border-color: var(--border-color);
+}
+
+.variant-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.variant-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-blue);
+    color: white;
+    border-radius: 50%;
+    font-size: 1.5rem;
+}
+
+.variant-card.active .variant-icon {
+    background: var(--accent-green);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.variant-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.variant-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+    min-height: 2.5em;
+}
+
+.variant-limit {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: rgba(79, 172, 254, 0.1);
+    border-radius: 4px;
+    text-align: center;
+}
+
+.variant-limit.unlimited {
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.variant-limit.limit-reached {
+    background: rgba(244, 67, 54, 0.1);
+}
+
+.limit-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+}
+
+.variant-limit.unlimited .limit-text {
+    color: var(--accent-green);
+}
+
+.variant-limit.limit-reached .limit-text {
+    color: var(--error-color);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* ======================================================================
+   X-SUDOKU: Diagonal Highlighting
+   ====================================================================== */
+
+/* Diagonal cells styling for X-Sudoku */
+.sudoku-grid.variant-x-sudoku .sudoku-cell.diagonal-main {
+    background-color: rgba(255, 215, 0, 0.08);
+}
+
+.sudoku-grid.variant-x-sudoku .sudoku-cell.diagonal-anti {
+    background-color: rgba(255, 165, 0, 0.08);
+}
+
+.sudoku-grid.variant-x-sudoku .sudoku-cell.diagonal-both {
+    background-color: rgba(255, 140, 0, 0.12);
+}
+
+/* Highlight diagonals on hover in X-Sudoku */
+.sudoku-grid.variant-x-sudoku .sudoku-cell.diagonal-main:hover {
+    background-color: rgba(255, 215, 0, 0.15);
+}
+
+.sudoku-grid.variant-x-sudoku .sudoku-cell.diagonal-anti:hover {
+    background-color: rgba(255, 165, 0, 0.15);
+}
+
+.sudoku-grid.variant-x-sudoku .sudoku-cell.diagonal-both:hover {
+    background-color: rgba(255, 140, 0, 0.2);
+}
+
+/* ======================================================================
+   MINI SUDOKU 6x6: Grid Adjustments
+   ====================================================================== */
+
+/* Mini 6x6 grid adjustments */
+.sudoku-grid.variant-mini {
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    max-width: 500px; /* Slightly smaller than 9x9 */
+}
+
+.sudoku-grid.variant-mini .sudoku-cell {
+    font-size: 1.8rem; /* Larger digits for 6x6 */
+}
+
+/* Mini 6x6 box borders (2 rows × 3 columns) */
+.sudoku-grid.variant-mini .sudoku-cell:nth-child(6n+3),
+.sudoku-grid.variant-mini .sudoku-cell:nth-child(6n+6) {
+    border-right: 3px solid var(--grid-thick-border);
+}
+
+.sudoku-grid.variant-mini .sudoku-cell:nth-child(n+13):nth-child(-n+18),
+.sudoku-grid.variant-mini .sudoku-cell:nth-child(n+31):nth-child(-n+36) {
+    border-bottom: 3px solid var(--grid-thick-border);
+}
+
+/* Adjust candidate notes for 6x6 (only show 1-6) */
+.sudoku-grid.variant-mini .candidate-notes {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    font-size: 0.5rem;
+}
+
+/* ======================================================================
+   MOBILE RESPONSIVE: Variant Selector
+   ====================================================================== */
+
+@media (max-width: 768px) {
+    .variant-selection {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    .variant-selection h3 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .variant-options {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .variant-card {
+        padding: 1rem;
+    }
+
+    .variant-header {
+        gap: 0.75rem;
+    }
+
+    .variant-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .variant-header h4 {
+        font-size: 1rem;
+    }
+
+    .variant-description {
+        font-size: 0.85rem;
+    }
+
+    /* Mini 6x6 on mobile - even larger cells */
+    .sudoku-grid.variant-mini .sudoku-cell {
+        font-size: 1.5rem;
+    }
+
+    /* Adjust X-Sudoku diagonal opacity on mobile (less distracting) */
+    .sudoku-grid.variant-x-sudoku .sudoku-cell.diagonal-main,
+    .sudoku-grid.variant-x-sudoku .sudoku-cell.diagonal-anti {
+        background-color: rgba(255, 215, 0, 0.04);
+    }
+
+    .sudoku-grid.variant-x-sudoku .sudoku-cell.diagonal-both {
+        background-color: rgba(255, 140, 0, 0.06);
+    }
+}

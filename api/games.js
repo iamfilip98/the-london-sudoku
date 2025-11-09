@@ -71,7 +71,70 @@ async function initDatabase() {
   }
 }
 
-async function saveGame(player, date, difficulty, gameData) {
+/**
+ * PHASE 1 MONTH 5: Check if user has reached daily Classic Sudoku limit
+ * Free tier: 3 Classic dailies per day
+ * X-Sudoku and Mini 6x6: Unlimited
+ */
+async function checkDailyLimit(username, variant) {
+  if (variant !== 'classic') return true; // Only Classic has limits
+
+  // TODO: Check if user is premium (for future)
+  // const isPremium = await checkPremiumStatus(username);
+  // if (isPremium) return true;
+
+  try {
+    const result = await pool.query(`
+      SELECT daily_classic_played, last_puzzle_date
+      FROM users
+      WHERE username = $1
+    `, [username]);
+
+    if (!result.rows.length) return true; // New user, allow
+
+    const today = new Date().toISOString().split('T')[0];
+    const { daily_classic_played, last_puzzle_date } = result.rows[0];
+
+    // Reset counter if new day
+    if (!last_puzzle_date || last_puzzle_date !== today) {
+      await pool.query(`
+        UPDATE users
+        SET daily_classic_played = 0, last_puzzle_date = $1
+        WHERE username = $2
+      `, [today, username]);
+      return true;
+    }
+
+    // Check limit (3 Classic dailies per day)
+    return daily_classic_played < 3;
+  } catch (error) {
+    console.error('Daily limit check error:', error);
+    return true; // Fail open - don't block users if check fails
+  }
+}
+
+/**
+ * PHASE 1 MONTH 5: Increment daily Classic Sudoku counter
+ */
+async function incrementDailyCount(username, variant) {
+  if (variant !== 'classic') return; // Only track Classic
+
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    await pool.query(`
+      UPDATE users
+      SET
+        daily_classic_played = daily_classic_played + 1,
+        last_puzzle_date = $1
+      WHERE username = $2
+    `, [today, username]);
+  } catch (error) {
+    console.error('Failed to increment daily count:', error);
+    // Don't throw - this is not critical
+  }
+}
+
+async function saveGame(player, date, difficulty, gameData, variant = 'classic') {
   try {
     const {
       time,
@@ -86,15 +149,16 @@ async function saveGame(player, date, difficulty, gameData) {
 
     await sql`
       INSERT INTO individual_games (
-        player, date, difficulty, time, errors, score, hints,
+        player, date, difficulty, variant, time, errors, score, hints,
         hint_level1_count, hint_level2_count, hint_level3_count, bonus_type
       )
       VALUES (
-        ${player}, ${date}, ${difficulty}, ${time}, ${errors || 0}, ${score || 0}, ${hints || 0},
+        ${player}, ${date}, ${difficulty}, ${variant}, ${time}, ${errors || 0}, ${score || 0}, ${hints || 0},
         ${hintLevel1Count || 0}, ${hintLevel2Count || 0}, ${hintLevel3Count || 0}, ${bonusType || null}
       )
       ON CONFLICT (player, date, difficulty)
       DO UPDATE SET
+        variant = ${variant},
         time = ${time},
         errors = ${errors || 0},
         score = ${score || 0},
@@ -247,7 +311,8 @@ module.exports = async function handler(req, res) {
       }
 
       case 'POST': {
-        const { player, date: gameDate, difficulty, ...gameData } = req.body;
+        const { player, date: gameDate, difficulty, variant, ...gameData } = req.body;
+        const puzzleVariant = variant || 'classic';
 
         // Comprehensive validation
         try {
@@ -256,7 +321,38 @@ module.exports = async function handler(req, res) {
           return res.status(400).json({ error: error.message });
         }
 
-        await saveGame(player, gameDate, difficulty, gameData);
+        // PHASE 1 MONTH 5: Free tier limits (only for Classic dailies)
+        // X-Sudoku and Mini 6x6 are unlimited to encourage adoption
+        if (puzzleVariant === 'classic') {
+          try {
+            const canPlay = await checkDailyLimit(player, puzzleVariant);
+            if (!canPlay) {
+              return res.status(403).json({
+                success: false,
+                error: 'daily_limit_reached',
+                message: 'You\'ve reached your daily limit of 3 Classic Sudoku puzzles. Try X-Sudoku or Mini Sudoku (unlimited), or upgrade to Premium for unlimited Classic puzzles.',
+                dailyPlayed: 3,
+                dailyLimit: 3,
+                upgradeUrl: '/premium'
+              });
+            }
+          } catch (limitError) {
+            console.error('Daily limit check failed:', limitError);
+            // Don't block game save if limit check fails - fail open
+          }
+        }
+
+        await saveGame(player, gameDate, difficulty, gameData, puzzleVariant);
+
+        // Increment daily counter for Classic variant
+        if (puzzleVariant === 'classic') {
+          try {
+            await incrementDailyCount(player, puzzleVariant);
+          } catch (incrementError) {
+            console.error('Failed to increment daily count:', incrementError);
+            // Don't fail the whole request if increment fails
+          }
+        }
 
         return res.status(200).json({
           success: true,
