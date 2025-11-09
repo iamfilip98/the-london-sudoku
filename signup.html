@@ -279,7 +279,7 @@
     ></script>
 
     <script>
-        // Initialize Clerk
+        // Initialize Clerk with timeout
         window.addEventListener('load', async function() {
             // Initialize PostHog monitoring
             if (window.Monitoring) {
@@ -288,8 +288,18 @@
             }
 
             try {
-                // Wait for Clerk to load
-                await window.Clerk.load();
+                // Check if Clerk SDK loaded
+                if (!window.Clerk) {
+                    throw new Error('Clerk SDK failed to load');
+                }
+
+                // Wait for Clerk to load with timeout
+                const loadPromise = window.Clerk.load();
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('Clerk load timeout')), 10000); // 10 second timeout
+                });
+
+                await Promise.race([loadPromise, timeoutPromise]);
 
                 // Hide loading spinner
                 document.getElementById('loading').style.display = 'none';
