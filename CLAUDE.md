@@ -14,6 +14,9 @@ This section contains essential workflow rules. Add new rules, but never delete 
 8. **Root Cause Analysis**: Always seek the root cause of issues - don't just fix symptoms
 9. **Rule Protection**: Never remove or modify existing Critical Rules without explicit user approval - only add new ones
 10. **Token Efficiency**: Don't waste tokens debugging test infrastructure. If automated testing fails, fall back to code inspection and move on
+11. **Automatic PR Creation**: After each meaningful change, automatically create a PR with a clear, descriptive message. Use curl with GitHub API directly (token in .github-token file). Never wait for user to create PRs
+12. **Full Autonomy**: You must solve ALL issues yourself without user help. If you need access, tokens, or permissions, explicitly ask for them. Never give up or ask user to do manual work
+13. **Ultrathinking for Solutions**: When facing any issue or blocker, think deeply about alternative approaches. Try multiple solutions, research documentation, analyze error messages thoroughly. Persistence is required
 
 ## Git Workflow - Professional Branch Strategy
 
@@ -72,6 +75,36 @@ This project follows a professional multi-person development workflow. **NEVER p
 - All changes must be tested before creating PR
 - Use appropriate testing method (Playwright, manual, code inspection)
 - Document test results in PR description
+
+### Automated PR Creation
+Claude MUST create PRs automatically after meaningful changes. Use this exact method:
+
+```bash
+# Method: Direct GitHub API call with curl
+GITHUB_TOKEN=$(cat /home/user/the-london-sudoku/.github-token) && curl -X POST \
+  -H "Authorization: token $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github.v3+json" \
+  "https://api.github.com/repos/iamfilip98/the-london-sudoku/pulls" \
+  -d '{
+    "title": "feat: Your Feature Title",
+    "head": "your-branch-name",
+    "base": "main",
+    "body": "## Summary\n- Changes made\n\n## Impact\nDescription"
+  }'
+```
+
+**Why this method:**
+- Git remote uses local proxy (127.0.0.1:17187) which breaks node scripts
+- Direct curl to api.github.com bypasses proxy issues
+- Token stored in .github-token file (already configured)
+- Works reliably in this environment
+
+**When to create PRs:**
+- After implementing a feature
+- After fixing a bug
+- After meaningful refactoring
+- After documentation updates
+- When work on current branch is complete and ready for review
 
 ## Clue Counts - Single Source of Truth
 

@@ -1,8 +1,10 @@
 /**
  * Puzzles API - SECURITY FIXES (November 2025)
+ * PHASE 0 Month 1 - Redis Caching Integration
  */
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
+const { getCached, invalidateCache, CACHE_DURATIONS, CacheKeys } = require('../lib/cache');
 
 // Helper function for SQL queries
 async function sql(strings, ...values) {
@@ -1543,13 +1545,21 @@ module.exports = async function handler(req, res) {
           const gameState = await getGameState(player, date, difficulty);
           return res.status(200).json(gameState);
         } else if (date) {
-          // Get daily puzzles
-          const puzzles = await getDailyPuzzles(date);
+          // Get daily puzzles - WITH CACHING (Phase 0 Month 1)
+          const puzzles = await getCached(
+            CacheKeys.dailyPuzzles(date),
+            () => getDailyPuzzles(date),
+            CACHE_DURATIONS.DAILY_PUZZLE  // 24 hours
+          );
           return res.status(200).json(puzzles);
         } else {
-          // Get today's puzzles
+          // Get today's puzzles - WITH CACHING (Phase 0 Month 1)
           const today = new Date().toISOString().split('T')[0];
-          const puzzles = await getDailyPuzzles(today);
+          const puzzles = await getCached(
+            CacheKeys.dailyPuzzles(today),
+            () => getDailyPuzzles(today),
+            CACHE_DURATIONS.DAILY_PUZZLE  // 24 hours
+          );
           return res.status(200).json(puzzles);
         }
       }
@@ -1566,6 +1576,8 @@ module.exports = async function handler(req, res) {
           // Generate new puzzles for specific date
           // If forceSeed is provided, use it to generate different puzzles for the same date
           const puzzles = await generateDailyPuzzles(date, forceSeed);
+          // Invalidate cache for this date
+          await invalidateCache(CacheKeys.dailyPuzzles(date));
           return res.status(200).json(puzzles);
         } else if (action === 'save' && player && date && difficulty && state) {
           // Save game state
@@ -1576,6 +1588,8 @@ module.exports = async function handler(req, res) {
           await sql`DELETE FROM daily_puzzles WHERE date = ${date}`;
           await sql`DELETE FROM game_states WHERE date = ${date}`;
           await sql`DELETE FROM individual_games WHERE date = ${date}`;
+          // Invalidate cache for this date
+          await invalidateCache(CacheKeys.dailyPuzzles(date));
           return res.status(200).json({
             success: true,
             message: `Reset completed for ${date} (puzzles, game states, and times cleared)`
@@ -1597,6 +1611,8 @@ module.exports = async function handler(req, res) {
           await sql`DELETE FROM daily_puzzles WHERE date = ${date}`;
           await sql`DELETE FROM game_states WHERE date = ${date}`;
           await sql`DELETE FROM individual_games WHERE date = ${date}`;
+          // Invalidate cache for this date
+          await invalidateCache(CacheKeys.dailyPuzzles(date));
           return res.status(200).json({
             success: true,
             message: `Deleted all data for ${date}`
