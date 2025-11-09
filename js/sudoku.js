@@ -883,6 +883,34 @@ class SudokuEngine {
     }
 
     isValidMove(grid, row, col, num) {
+        // PHASE 2 MONTH 16: Enhanced validation with variant-specific rules
+
+        // Standard Sudoku validation
+        if (!this.isValidStandardMove(grid, row, col, num)) {
+            return false;
+        }
+
+        // Variant-specific validation
+        if (this.variant === 'x-sudoku' && !this.isValidXSudokuMove(grid, row, col, num)) {
+            return false;
+        } else if (this.variant === 'anti-knight' && !this.isValidAntiKnightMove(grid, row, col, num)) {
+            return false;
+        } else if (this.variant === 'killer-sudoku' && !this.isValidKillerMove(grid, row, col, num)) {
+            return false;
+        } else if (this.variant === 'hyper-sudoku' && !this.isValidHyperMove(grid, row, col, num)) {
+            return false;
+        } else if (this.variant === 'consecutive-sudoku' && !this.isValidConsecutiveMove(grid, row, col, num)) {
+            return false;
+        } else if (this.variant === 'thermo-sudoku' && !this.isValidThermoMove(grid, row, col, num)) {
+            return false;
+        } else if (this.variant === 'jigsaw-sudoku' && !this.isValidJigsawMove(grid, row, col, num)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    isValidStandardMove(grid, row, col, num) {
         // Check row (excluding the current cell)
         for (let x = 0; x < 9; x++) {
             if (x !== col && grid[row][x] === num) return false;
@@ -901,6 +929,189 @@ class SudokuEngine {
                 const checkRow = i + startRow;
                 const checkCol = j + startCol;
                 if (!(checkRow === row && checkCol === col) && grid[checkRow][checkCol] === num) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    // PHASE 2 MONTH 16: Variant-specific validation methods
+
+    isValidXSudokuMove(grid, row, col, num) {
+        // Check main diagonal (top-left to bottom-right)
+        if (row === col) {
+            for (let i = 0; i < 9; i++) {
+                if (i !== row && grid[i][i] === num) return false;
+            }
+        }
+
+        // Check anti-diagonal (top-right to bottom-left)
+        if (row + col === 8) {
+            for (let i = 0; i < 9; i++) {
+                if (i !== row && grid[i][8 - i] === num) return false;
+            }
+        }
+
+        return true;
+    }
+
+    isValidAntiKnightMove(grid, row, col, num) {
+        // Check knight's move positions
+        const knightMoves = [
+            [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+            [1, -2], [1, 2], [2, -1], [2, 1]
+        ];
+
+        for (const [dr, dc] of knightMoves) {
+            const newRow = row + dr;
+            const newCol = col + dc;
+            if (newRow >= 0 && newRow < 9 && newCol >= 0 && newCol < 9) {
+                if (grid[newRow][newCol] === num) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    isValidKillerMove(grid, row, col, num) {
+        if (!this.cages) return true;
+
+        // Find cage containing this cell
+        for (const cage of this.cages) {
+            const inCage = cage.cells.some(([r, c]) => r === row && c === col);
+            if (!inCage) continue;
+
+            // Check no duplicates in cage
+            for (const [r, c] of cage.cells) {
+                if (r === row && c === col) continue;
+                if (grid[r][c] === num) return false;
+            }
+
+            // Check cage sum constraint (if all cells filled)
+            let sum = num;
+            let filledCount = 1;
+            for (const [r, c] of cage.cells) {
+                if (r === row && c === col) continue;
+                if (grid[r][c] !== 0) {
+                    sum += grid[r][c];
+                    filledCount++;
+                }
+            }
+
+            // If cage is complete, sum must match target
+            if (filledCount === cage.cells.length && sum !== cage.sum) {
+                return false;
+            }
+
+            // If partial, sum must not exceed target
+            if (sum > cage.sum) {
+                return false;
+            }
+
+            break;
+        }
+
+        return true;
+    }
+
+    isValidHyperMove(grid, row, col, num) {
+        if (!this.hyperRegions) return true;
+
+        // Check which hyper region this cell belongs to
+        for (const region of this.hyperRegions) {
+            const inRegion = region.some(([r, c]) => r === row && c === col);
+            if (!inRegion) continue;
+
+            // Check no duplicates in this hyper region
+            for (const [r, c] of region) {
+                if (r === row && c === col) continue;
+                if (grid[r][c] === num) return false;
+            }
+
+            break;
+        }
+
+        return true;
+    }
+
+    isValidConsecutiveMove(grid, row, col, num) {
+        if (!this.consecutiveMarkers) return true;
+
+        // Check all adjacent cells
+        const adjacent = [
+            [row - 1, col], [row + 1, col],
+            [row, col - 1], [row, col + 1]
+        ];
+
+        for (const [adjRow, adjCol] of adjacent) {
+            if (adjRow < 0 || adjRow >= 9 || adjCol < 0 || adjCol >= 9) continue;
+
+            const adjNum = grid[adjRow][adjCol];
+            if (adjNum === 0) continue;
+
+            // Check if there's a marker between these cells
+            const hasMarker = this.consecutiveMarkers.some(marker => {
+                const [r1, c1] = marker.cell1;
+                const [r2, c2] = marker.cell2;
+                return (r1 === row && c1 === col && r2 === adjRow && c2 === adjCol) ||
+                       (r2 === row && c2 === col && r1 === adjRow && c1 === adjCol);
+            });
+
+            const isConsecutive = Math.abs(num - adjNum) === 1;
+
+            // If marked, must be consecutive
+            if (hasMarker && !isConsecutive) return false;
+
+            // If not marked, must NOT be consecutive
+            if (!hasMarker && isConsecutive) return false;
+        }
+
+        return true;
+    }
+
+    isValidThermoMove(grid, row, col, num) {
+        if (!this.thermometers) return true;
+
+        // Find thermometer containing this cell
+        for (const thermo of this.thermometers) {
+            const cellIndex = thermo.cells.findIndex(([r, c]) => r === row && c === col);
+            if (cellIndex === -1) continue;
+
+            // Check previous cell (must be less)
+            if (cellIndex > 0) {
+                const [prevRow, prevCol] = thermo.cells[cellIndex - 1];
+                const prevNum = grid[prevRow][prevCol];
+                if (prevNum !== 0 && prevNum >= num) return false;
+            }
+
+            // Check next cell (must be greater)
+            if (cellIndex < thermo.cells.length - 1) {
+                const [nextRow, nextCol] = thermo.cells[cellIndex + 1];
+                const nextNum = grid[nextRow][nextCol];
+                if (nextNum !== 0 && nextNum <= num) return false;
+            }
+
+            break;
+        }
+
+        return true;
+    }
+
+    isValidJigsawMove(grid, row, col, num) {
+        if (!this.jigsawRegions) return true;
+
+        // Get region ID for this cell
+        const regionId = this.jigsawRegions[row][col];
+
+        // Check no duplicates in this region
+        for (let r = 0; r < 9; r++) {
+            for (let c = 0; c < 9; c++) {
+                if (r === row && c === col) continue;
+                if (this.jigsawRegions[r][c] === regionId && grid[r][c] === num) {
                     return false;
                 }
             }
