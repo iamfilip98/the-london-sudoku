@@ -7,6 +7,44 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 2 Month 8: Friends System & Social Sharing** (November 9, 2025)
+- 👥 **Friends System**: Complete social friendship management
+  - Send/accept/reject friend requests
+  - View friends list with online status
+  - Remove friends
+  - Activity feed for friend actions
+  - API: `/api/auth?friends=username` (GET friends list)
+  - API: `/api/auth?friend-requests=username` (GET requests)
+  - API: `POST /api/auth?action=send-friend-request` (body: {from, to})
+  - API: `POST /api/auth?action=accept-friend-request` (body: {requestId})
+  - API: `POST /api/auth?action=reject-friend-request` (body: {requestId})
+  - API: `POST /api/auth?action=remove-friend` (body: {user1, user2})
+- 🗄️ **Friends Database Schema**: Comprehensive social infrastructure
+  - `friend_requests` table: Send/receive friend requests with status tracking
+  - `friendships` table: Bidirectional friend relationships
+  - `activity_feed` table: Social activity tracking for news feed
+  - `social_shares` table: Track social media shares
+  - Helper functions: `get_user_friends()`, `are_friends()`, `create_friendship_from_request()`
+  - Views: `pending_friend_requests`, `friends_with_details`
+  - Migration: `POST /api/admin?action=migrate-phase2-month8`
+- 📱 **Social Sharing**: Share achievements and scores
+  - Share to Twitter/X, Facebook, LinkedIn, Reddit
+  - Copy to clipboard functionality
+  - Web Share API support for mobile
+  - Library: `lib/social-sharing.js` with preset share actions
+  - Share achievements, high scores, streaks, puzzle completions
+  - Automatic hashtag generation (#Sudoku #TheLondonSudoku)
+  - Share tracking in database for analytics
+- 🎯 **Activity Feed System**: Track social interactions
+  - Friend additions logged
+  - Achievement unlocks (public/private)
+  - Puzzle completions visible to friends
+  - Streak milestones shared
+- ✅ **Endpoint Conservation**: Friends added to existing `/api/auth` endpoint
+  - Still at 12/12 endpoints (within free tier limit)
+  - Used query parameters for GET operations (`?friends=xxx`, `?friend-requests=xxx`)
+  - Used action parameters for POST operations (`?action=send-friend-request`)
+
 ### **Phase 2 Month 7: Premium Subscription via Stripe** (November 9, 2025)
 - 💳 **Stripe Integration**: Full subscription management system
   - Create checkout sessions ($4.99/mo Premium plan)

@@ -61,6 +61,9 @@ module.exports = async function handler(req, res) {
       case 'mark-founders':
         await handleMarkFounders(req, res);
         break;
+      case 'migrate-phase2-month8':
+        await handleMigratePhase2Month8(req, res);
+        break;
       case 'create-checkout':
         await handleCreateCheckout(req, res);
         break;
@@ -76,7 +79,7 @@ module.exports = async function handler(req, res) {
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
         });
     }
   } catch (error) {
@@ -698,6 +701,105 @@ async function handleSubscriptionStatus(req, res) {
     return res.status(500).json({
       success: false,
       error: 'Failed to get subscription status'
+    });
+  }
+}
+
+// Phase 2 Month 8: Friends System & Social Sharing schema migration
+async function handleMigratePhase2Month8(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Starting Phase 2 Month 8 migration...');
+    const changes = [];
+
+    // Read and execute the migration SQL file
+    const fs = require('fs');
+    const path = require('path');
+    const migrationPath = path.join(process.cwd(), 'migrations', 'phase2-month8-friends-schema.sql');
+
+    let migrationSQL;
+    try {
+      migrationSQL = fs.readFileSync(migrationPath, 'utf8');
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        error: 'Migration file not found',
+        details: error.message
+      });
+    }
+
+    // Execute the migration SQL
+    await pool.query(migrationSQL);
+    changes.push('Executed Phase 2 Month 8 migration SQL');
+
+    // Verify tables were created
+    const tables = ['friend_requests', 'friendships', 'social_shares', 'activity_feed'];
+    for (const table of tables) {
+      const result = await pool.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables
+          WHERE table_name = $1
+        )
+      `, [table]);
+
+      if (result.rows[0].exists) {
+        changes.push(`✅ Table created: ${table}`);
+      }
+    }
+
+    // Verify functions were created
+    const functions = ['get_user_friends', 'are_friends', 'create_friendship_from_request'];
+    for (const func of functions) {
+      const result = await pool.query(`
+        SELECT EXISTS (
+          SELECT FROM pg_proc
+          WHERE proname = $1
+        )
+      `, [func]);
+
+      if (result.rows[0].exists) {
+        changes.push(`✅ Function created: ${func}`);
+      }
+    }
+
+    // Verify views were created
+    const views = ['pending_friend_requests', 'friends_with_details'];
+    for (const view of views) {
+      const result = await pool.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.views
+          WHERE table_name = $1
+        )
+      `, [view]);
+
+      if (result.rows[0].exists) {
+        changes.push(`✅ View created: ${view}`);
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Phase 2 Month 8 schema migration completed successfully',
+      changes: changes,
+      features: [
+        'Friend requests (send, accept, reject)',
+        'Friendships (bidirectional relationships)',
+        'Activity feed for social interactions',
+        'Social sharing tracking',
+        'Helper functions for friend queries',
+        'Views for easy data access'
+      ]
+    });
+
+  } catch (error) {
+    console.error('Phase 2 Month 8 migration failed:', error);
+    res.status(500).json({
+      error: 'Migration failed',
+      details: error.message
     });
   }
 }
