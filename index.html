@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/variant-challenges.css">
     <link rel="stylesheet" href="css/variant-leaderboards.css">
     <link rel="stylesheet" href="css/variant-tournaments.css">
+    <link rel="stylesheet" href="css/variant-customization.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -92,6 +93,10 @@
                 <div class="player-dropdown">
                     <span class="current-player" id="currentPlayerDisplay"></span>
                     <div class="dropdown-content" id="playerDropdownContent">
+                        <a href="#" onclick="window.variantCustomizationUI?.openCustomization(); event.preventDefault();">
+                            <i class="fas fa-sliders-h"></i>
+                            Customization
+                        </a>
                         <a href="settings.html">
                             <i class="fas fa-cog"></i>
                             Settings
@@ -996,6 +1001,29 @@
                     </div>
                 </div>
             </div>
+
+            <!-- PHASE 2 MONTH 24: Variant Customization Modal -->
+            <div id="customizationModal" class="customization-modal hidden">
+                <div class="customization-modal-content">
+                    <div class="customization-header">
+                        <h2><i class="fas fa-sliders-h"></i> Game Customization</h2>
+                        <button class="close-customization-btn" title="Close">✕</button>
+                    </div>
+
+                    <div class="customization-view-tabs">
+                        <button class="customization-view-tab active" data-view="presets">
+                            🎮 Presets
+                        </button>
+                        <button class="customization-view-tab" data-view="clue-counts">
+                            🔢 Clue Counts
+                        </button>
+                    </div>
+
+                    <div id="customizationContent" class="customization-body">
+                        <!-- Content will be dynamically rendered by variant-customization-ui.js -->
+                    </div>
+                </div>
+            </div>
         </main>
 
         <!-- Footer -->
@@ -1715,6 +1743,10 @@
     <!-- PHASE 2 MONTH 23: Variant Tournaments -->
     <script src="/js/variant-tournaments.js"></script>
     <script src="/js/variant-tournaments-ui.js"></script>
+
+    <!-- PHASE 2 MONTH 24: Variant Customization -->
+    <script src="/js/variant-customization.js"></script>
+    <script src="/js/variant-customization-ui.js"></script>
     <script>
         // Initialize tutorial system when Sudoku engine is ready
         let tutorialManager;
@@ -1770,6 +1802,16 @@
                 window.variantTournamentsUI = variantTournamentsUI;
                 variantTournamentsUI.initialize();
                 console.log('✅ Variant tournaments UI initialized');
+
+                // PHASE 2 MONTH 24: Initialize variant customization
+                const variantCustomizationManager = new VariantCustomizationManager();
+                window.variantCustomizationManager = variantCustomizationManager;
+                console.log('✅ Variant customization manager initialized');
+
+                const variantCustomizationUI = new VariantCustomizationUI(variantCustomizationManager);
+                window.variantCustomizationUI = variantCustomizationUI;
+                variantCustomizationUI.initialize();
+                console.log('✅ Variant customization UI initialized');
 
                 // Add tutorial triggers to UI
                 addTutorialTriggers();

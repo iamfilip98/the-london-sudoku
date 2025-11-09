@@ -66,6 +66,17 @@ class SudokuEngine {
     // Initialize Sudoku UI and game
     async init() {
         this.loadSettings();
+
+        // PHASE 2 MONTH 24: Apply customization preset settings
+        if (window.variantCustomizationManager) {
+            try {
+                window.variantCustomizationManager.applySettingsToGame(this);
+                console.log('✅ Customization settings applied to game');
+            } catch (error) {
+                console.error('Failed to apply customization settings:', error);
+            }
+        }
+
         this.initializeAudioContext();
         this.createSudokuInterface();
 
