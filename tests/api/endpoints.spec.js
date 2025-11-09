@@ -4,10 +4,22 @@
  */
 import { test, expect } from '@playwright/test';
 
-// Base URL for API (use environment variable or default to production)
-const API_BASE = process.env.API_BASE_URL || 'https://the-new-london-times-aisx09a52-filips-projects-cf39d09c.vercel.app';
+// Base URL for API (use environment variable or skip tests if not set)
+const API_BASE = process.env.API_BASE_URL || process.env.VERCEL_URL || '';
+
+// Skip all API tests if no API_BASE_URL is provided
+const shouldSkipAPITests = !API_BASE;
+
+if (shouldSkipAPITests) {
+  console.log('⚠️ Skipping API tests: API_BASE_URL not set');
+  console.log('   Set API_BASE_URL environment variable to enable API tests');
+}
 
 test.describe('API Endpoint Tests', () => {
+  // Skip all tests if API_BASE is not configured
+  test.beforeEach(async () => {
+    test.skip(shouldSkipAPITests, 'API_BASE_URL not configured');
+  });
 
   test.describe('Authentication API', () => {
     test('POST /api/auth - should return 400 for missing credentials', async ({ request }) => {

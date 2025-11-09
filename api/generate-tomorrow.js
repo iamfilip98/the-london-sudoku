@@ -1,19 +1,8 @@
-require('dotenv').config({ path: '.env.local' });
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  connectionString: process.env.POSTGRES_PRISMA_URL,
-  ssl: {
-    rejectUnauthorized: false,
-    checkServerIdentity: () => undefined
-  },
-  max: 2,
-  idleTimeoutMillis: 5000,
-  connectionTimeoutMillis: 10000,
-  maxUses: 100,
-  acquireTimeoutMillis: 5000
-});
+/**
+ * Generate Tomorrow Puzzles API - SECURITY FIXES (November 2025)
+ */
+const pool = require('../lib/db-pool');
+const { setCorsHeaders } = require('../lib/cors');
 
 // Helper function for SQL queries
 async function sql(strings, ...values) {
@@ -45,12 +34,9 @@ async function sql(strings, ...values) {
  */
 module.exports = async function handler(req, res) {
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-cron-secret');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  // ✅ SECURITY FIX: Proper CORS handling
+  if (setCorsHeaders(req, res)) {
+    return;  // Preflight request handled
   }
 
   if (req.method !== 'POST') {

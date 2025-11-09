@@ -1,19 +1,8 @@
-require('dotenv').config({ path: '.env.local' });
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  connectionString: process.env.POSTGRES_PRISMA_URL,
-  ssl: {
-    rejectUnauthorized: false,
-    checkServerIdentity: () => undefined
-  },
-  max: 2, // Reduce max connections to avoid hitting limits
-  idleTimeoutMillis: 5000,
-  connectionTimeoutMillis: 10000,
-  maxUses: 100, // Close connections after this many uses
-  acquireTimeoutMillis: 5000 // Timeout when acquiring connections
-});
+/**
+ * Entries API - SECURITY FIXES (November 2025)
+ */
+const pool = require('../lib/db-pool');
+const { setCorsHeaders } = require('../lib/cors');
 
 // Helper function to execute SQL queries using template literals
 async function sql(strings, ...values) {
@@ -332,17 +321,9 @@ module.exports = async function handler(req, res) {
   }
 
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // ⚡ PERFORMANCE: Add caching headers for GET requests
-  if (req.method === 'GET') {
-    res.setHeader('Cache-Control', 'public, max-age=10, stale-while-revalidate=20');
-  }
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  // ✅ SECURITY FIX: Proper CORS handling
+  if (setCorsHeaders(req, res)) {
+    return;  // Preflight request handled
   }
 
   try {
