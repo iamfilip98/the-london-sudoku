@@ -1,6 +1,9 @@
 // Consolidated admin endpoint for Vercel Hobby plan (max 12 functions)
 const { sql } = require('@vercel/postgres');
 const { generatePuzzle, solvePuzzle } = require('../lib/sudoku-generator.js');
+const pool = require('../lib/db-pool');
+const bcrypt = require('bcryptjs');
+const { setCorsHeaders } = require('../lib/cors');
 
 module.exports = async function handler(req, res) {
   // Handle CORS
@@ -39,10 +42,13 @@ module.exports = async function handler(req, res) {
       case 'generate-fallback':
         await handleGenerateFallback(req, res);
         break;
+      case 'init-db':
+        await handleInitDb(req, res);
+        break;
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db']
         });
     }
   } catch (error) {
@@ -162,4 +168,111 @@ function calculateQualityScore(puzzle, difficulty) {
   score -= deviation * 2;
 
   return Math.max(0, Math.min(100, score));
+}
+
+// Initialize database (from init-db.js)
+async function handleInitDb(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    // Test connection
+    await pool.query('SELECT NOW()');
+
+    // Create users table for authentication
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        display_name VARCHAR(100) NOT NULL,
+        avatar VARCHAR(100),
+        clerk_id VARCHAR(255) UNIQUE,
+        email VARCHAR(255),
+        email_verified BOOLEAN DEFAULT false,
+        subscription_tier VARCHAR(50) DEFAULT 'free',
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW(),
+        last_active_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    // Initialize users with passwords from environment variables
+    const faidaoPassword = (process.env.FAIDAO_PASSWORD || 'sudoku2024').trim();
+    const filipPassword = (process.env.FILIP_PASSWORD || 'sudoku2024').trim();
+
+    const faidaoHash = await bcrypt.hash(faidaoPassword, 10);
+    const filipHash = await bcrypt.hash(filipPassword, 10);
+
+    await pool.query(`
+      INSERT INTO users (username, password_hash, display_name, avatar)
+      VALUES
+        ('faidao', $1, 'Faidao - The Queen', NULL),
+        ('filip', $2, 'Filip - The Champion', NULL)
+      ON CONFLICT (username)
+      DO UPDATE SET
+        password_hash = EXCLUDED.password_hash,
+        display_name = EXCLUDED.display_name,
+        updated_at = NOW()
+    `, [faidaoHash, filipHash]);
+
+    // Create entries table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS entries (
+        id SERIAL PRIMARY KEY,
+        date DATE UNIQUE NOT NULL,
+        data JSONB NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    // Create achievements table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS achievements (
+        id SERIAL PRIMARY KEY,
+        achievement_id VARCHAR(255) NOT NULL,
+        player VARCHAR(50) NOT NULL,
+        unlocked_at TIMESTAMP NOT NULL,
+        entry_date DATE,
+        data JSONB,
+        created_at TIMESTAMP DEFAULT NOW(),
+        UNIQUE(achievement_id, player, unlocked_at)
+      )
+    `);
+
+    // Create streaks table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS streaks (
+        id SERIAL PRIMARY KEY,
+        player VARCHAR(50) UNIQUE NOT NULL,
+        current_streak INTEGER DEFAULT 0,
+        best_streak INTEGER DEFAULT 0,
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    // Initialize default streak records for both players
+    await pool.query(`
+      INSERT INTO streaks (player, current_streak, best_streak)
+      VALUES ('faidao', 0, 0), ('filip', 0, 0)
+      ON CONFLICT (player) DO NOTHING
+    `);
+
+    res.status(200).json({
+      success: true,
+      message: 'Database and users initialized successfully',
+      tables: ['users', 'entries', 'achievements', 'streaks'],
+      users: ['faidao', 'filip']
+    });
+
+  } catch (error) {
+    console.error('Database initialization failed:', error);
+    res.status(500).json({
+      error: 'Database initialization failed',
+      details: error.message
+    });
+  }
 }
