@@ -13,6 +13,7 @@ const { generateKillerSudoku } = require('../lib/killer-sudoku-generator');
 const { generateHyperSudoku } = require('../lib/hyper-sudoku-generator');
 const { generateConsecutiveSudokuWithRetry } = require('../lib/consecutive-sudoku-generator');
 const { generateThermoSudokuWithRetry } = require('../lib/thermo-sudoku-generator');
+const { generateJigsawSudokuWithRetry } = require('../lib/jigsaw-sudoku-generator');
 
 // Helper function for SQL queries
 async function sql(strings, ...values) {
@@ -1555,7 +1556,7 @@ module.exports = async function handler(req, res) {
           const practiceVariant = variant || 'classic';
           const seed = Math.random(); // Unique seed for each practice puzzle
 
-          let puzzle, solution, gridSize, cages, hyperRegions, consecutiveMarkers, thermometers;
+          let puzzle, solution, gridSize, cages, hyperRegions, consecutiveMarkers, thermometers, jigsawRegions;
 
           try {
             if (practiceVariant === 'x-sudoku') {
@@ -1604,6 +1605,13 @@ module.exports = async function handler(req, res) {
               solution = result.solution;
               thermometers = result.thermometers;
               gridSize = 9;
+            } else if (practiceVariant === 'jigsaw-sudoku') {
+              // Jigsaw Sudoku variant (Phase 2 Month 14)
+              const result = generateJigsawSudokuWithRetry(practiceDifficulty, seed);
+              puzzle = result.puzzle;
+              solution = result.solution;
+              jigsawRegions = result.regions;
+              gridSize = 9;
             } else if (practiceVariant === 'classic') {
               // Classic Sudoku - use existing generation logic
               const completeSolution = generateCompleteSolution(seed);
@@ -1613,7 +1621,7 @@ module.exports = async function handler(req, res) {
             } else {
               return res.status(400).json({
                 error: 'Invalid variant',
-                validVariants: ['classic', 'x-sudoku', 'mini', 'anti-knight', 'killer-sudoku', 'hyper-sudoku', 'consecutive-sudoku', 'thermo-sudoku']
+                validVariants: ['classic', 'x-sudoku', 'mini', 'anti-knight', 'killer-sudoku', 'hyper-sudoku', 'consecutive-sudoku', 'thermo-sudoku', 'jigsaw-sudoku']
               });
             }
 
@@ -1640,9 +1648,11 @@ module.exports = async function handler(req, res) {
             if (thermometers) {
               response.thermometers = thermometers;
             }
+            if (jigsawRegions) {
+              response.jigsawRegions = jigsawRegions;
+            }
 
-            return res.status(200).json(response
-            });
+            return res.status(200).json(response);
           } catch (error) {
             console.error('Practice puzzle generation error:', error);
             return res.status(500).json({
