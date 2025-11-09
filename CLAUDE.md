@@ -200,3 +200,92 @@ const targetTimes = {
 - ✅ Hard: Challenging but fair (comprehensive validation)
 - ✅ All clue counts match targets (42/28/25)
 - ✅ Day-to-day consistency guaranteed across all difficulties
+
+## Security & Infrastructure Constraints
+
+### **Vercel Free Tier Limit: Maximum 12 API Endpoints**
+⚠️ **CRITICAL CONSTRAINT**: Vercel Hobby plan allows EXACTLY 12 serverless functions per deployment.
+
+**Current Endpoint Count**: 12/12 (AT LIMIT)
+
+**Current API Endpoints**:
+1. `/api/achievements.js` - Achievement management
+2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db)
+3. `/api/auth.js` - Authentication (bcrypt + Clerk)
+4. `/api/cron-verify-puzzles.js` - Scheduled puzzle verification
+5. `/api/entries.js` - Daily battle results
+6. `/api/games.js` - Game state management
+7. `/api/generate-tomorrow.js` - Scheduled puzzle generation
+8. `/api/health.js` - Health check endpoint
+9. `/api/import.js` - **CONSOLIDATED** anonymous data migration (completion + achievement)
+10. `/api/puzzles.js` - Puzzle fetching (with Redis caching)
+11. `/api/ratings.js` - Puzzle rating system
+12. `/api/stats.js` - User statistics
+
+**Consolidation Strategy**:
+- **BEFORE**: 14 endpoints (exceeded limit)
+- **AFTER**: 12 endpoints (at limit)
+- **Changes**:
+  - Merged `import-achievement.js` + `import-completion.js` → `import.js?type=completion|achievement`
+  - Merged `init-db.js` → `admin.js?action=init-db`
+
+**RULE**: Before adding ANY new API endpoint, you MUST consolidate existing endpoints or remove unused ones.
+
+**How to Consolidate**:
+1. Use query parameters: `/api/admin.js?action=init-db`
+2. Use request body parameters: `{ type: 'completion' }` in POST body
+3. Combine related operations into single endpoints
+
+### **Security Best Practices (November 2025 Audit)**
+All critical security issues have been fixed:
+
+✅ **TLS Certificate Verification**
+- `lib/db-pool.js`: Proper SSL configuration with `rejectUnauthorized: true` in production
+- All utility scripts (wipe-user-data.js, reset_db.js, init-db-standalone.js, analyze-scoring-data.js) use environment-based SSL
+- NO `NODE_TLS_REJECT_UNAUTHORIZED = '0'` in codebase
+
+✅ **CORS Security**
+- `lib/cors.js`: Whitelist-only CORS configuration (no wildcards)
+- Allowed origins: thelondonsudoku.com, Vercel preview URLs, localhost (dev only)
+- All API endpoints use `setCorsHeaders()` from centralized library
+- Credentials support enabled for authenticated requests
+
+✅ **Input Validation**
+- `lib/validators.js`: Comprehensive Zod validation schemas
+- All user input validated before database operations
+- XSS protection via HTML sanitization
+- SQL injection prevented via parameterized queries + validation
+
+✅ **Rate Limiting**
+- `lib/rate-limit.js`: Redis-based distributed rate limiting using Vercel KV
+- Auth endpoint: 5 attempts per 15 minutes
+- Game submissions: 100 per hour
+- Puzzle fetching: 200 per hour
+- Admin actions: 10 per 10 minutes
+- Graceful fallback in development (no KV required)
+
+✅ **Security Headers**
+- `vercel.json`: All recommended security headers configured
+  - `X-Content-Type-Options: nosniff`
+  - `X-Frame-Options: DENY`
+  - `X-XSS-Protection: 1; mode=block`
+  - `Strict-Transport-Security: max-age=31536000`
+  - `Referrer-Policy: strict-origin-when-cross-origin`
+  - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+
+✅ **Health Check Endpoint**
+- `/api/health.js`: Database connectivity monitoring
+- Returns service status, version, response times
+- No authentication required (public health check)
+
+✅ **LICENSE File**
+- Proprietary license with "All Rights Reserved"
+- Clear copyright ownership
+
+### **Infrastructure Stack (Phase 0 Complete)**
+- **Database**: Neon (serverless PostgreSQL with connection pooling)
+- **Caching**: Vercel KV (Redis) with 24-hour TTL for puzzles
+- **Authentication**: Clerk (10K free users) + bcrypt (legacy support)
+- **Analytics**: PostHog (1M events/month)
+- **Asset Storage**: Vercel Blob (deferred - not critical)
+- **Deployment**: Vercel (12 API endpoints, free tier)
