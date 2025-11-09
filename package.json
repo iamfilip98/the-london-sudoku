@@ -30,6 +30,7 @@
     "test:install": "playwright install --with-deps"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.0",
     "@vercel/postgres": "^0.10.0",
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.2",
