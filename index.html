@@ -23,6 +23,7 @@
         });
     </script>
     <script src="/lib/monitoring.js"></script>
+    <script src="/lib/anonymous-session.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -692,12 +693,17 @@
 
     <!-- Authentication Check -->
     <script>
-        // Check authentication before loading the app (Clerk or legacy)
+        // Check authentication before loading the app (Clerk, legacy, or anonymous)
         const clerkToken = sessionStorage.getItem('clerk_token');
         const legacyAuth = sessionStorage.getItem('sudokuAuth');
 
-        if (!clerkToken && legacyAuth !== 'authenticated') {
-            window.location.href = 'auth.html';
+        // PHASE 0 MONTH 3: Allow anonymous users to play
+        const isAuthenticated = clerkToken || legacyAuth === 'authenticated';
+
+        if (!isAuthenticated && window.AnonymousSession) {
+            // Create anonymous session for unauthenticated users
+            const anonymousId = window.AnonymousSession.getOrCreateAnonymousSession();
+            console.log('🎮 Anonymous play enabled. Session ID:', anonymousId);
         }
 
         // Display current player and add logout functionality
@@ -708,10 +714,21 @@
             const playerDisplayMobile = document.getElementById('currentPlayerDisplayMobile');
             const sudokuPlayerIndicator = document.getElementById('sudokuPlayerIndicator');
 
+            // Check if user is anonymous
+            const isAnonymous = window.AnonymousSession && window.AnonymousSession.isAnonymous();
+
             // Identify user in PostHog
             if (clerkUserId && window.Monitoring) {
                 window.Monitoring.identifyUser(clerkUserId, {
                     subscription_tier: 'free',
+                    created_at: Date.now()
+                });
+            } else if (isAnonymous && window.Monitoring) {
+                // Track anonymous users without PII
+                const anonymousId = window.AnonymousSession.getOrCreateAnonymousSession();
+                window.Monitoring.identifyUser(`anonymous_${anonymousId}`, {
+                    subscription_tier: 'free',
+                    is_anonymous: true,
                     created_at: Date.now()
                 });
             }
@@ -744,6 +761,36 @@
                             <div class="player-details">
                                 <span class="player-name">${playerName}</span>
                                 <span class="player-subtitle">${playerSubtitle}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else if (isAnonymous && playerDisplay) {
+                // Display "Guest" for anonymous users
+                const playerContent = `
+                    <div class="player-info">
+                        <div class="player-avatar">
+                            G
+                        </div>
+                        <span class="player-name">Guest</span>
+                    </div>
+                `;
+
+                playerDisplay.innerHTML = playerContent;
+
+                if (playerDisplayMobile) {
+                    playerDisplayMobile.innerHTML = playerContent;
+                }
+
+                if (sudokuPlayerIndicator) {
+                    sudokuPlayerIndicator.innerHTML = `
+                        <div class="current-player-card">
+                            <div class="player-avatar">
+                                G
+                            </div>
+                            <div class="player-details">
+                                <span class="player-name">Guest</span>
+                                <span class="player-subtitle">Playing Anonymously</span>
                             </div>
                         </div>
                     `;

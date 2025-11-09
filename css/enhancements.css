@@ -584,3 +584,181 @@
 .technique-item strong {
     color: var(--accent-blue, #3498db);
 }
+
+/* ===================================
+   ANONYMOUS SESSION - SIGNUP PROMPT MODAL
+   =================================== */
+
+.signup-prompt-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.signup-prompt-modal.show {
+    opacity: 1;
+}
+
+.signup-prompt-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+}
+
+.signup-prompt-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, rgba(30, 30, 40, 0.98), rgba(20, 20, 30, 0.98));
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    border-radius: 20px;
+    padding: 40px 30px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(255, 215, 0, 0.15),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.signup-prompt-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: bounceIn 0.6s ease-out;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.signup-prompt-content h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.signup-prompt-message {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.signup-prompt-message strong {
+    color: #FFD700;
+    font-weight: 700;
+}
+
+.signup-prompt-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.signup-prompt-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.signup-prompt-actions .btn-primary,
+.signup-prompt-actions .btn-secondary {
+    width: 100%;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.signup-prompt-actions .btn-primary {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+.signup-prompt-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+}
+
+.signup-prompt-actions .btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.signup-prompt-actions .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.signup-prompt-note {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    opacity: 0.8;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .signup-prompt-content {
+        padding: 30px 20px;
+        max-width: 90%;
+    }
+
+    .signup-prompt-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .signup-prompt-icon {
+        font-size: 3rem;
+    }
+
+    .signup-prompt-message {
+        font-size: 1rem;
+    }
+
+    .signup-prompt-actions .btn-primary,
+    .signup-prompt-actions .btn-secondary {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
