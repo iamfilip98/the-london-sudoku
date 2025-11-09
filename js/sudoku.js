@@ -2288,8 +2288,10 @@ class SudokuEngine {
     }
 
     getTechniqueExplanation(technique) {
+        // PHASE 2 MONTH 17: Variant-aware technique explanations
         // Translate technical terms into user-friendly explanations (jargon + plain English)
         const explanations = {
+            // Classic Sudoku techniques
             'Naked Single': {
                 name: 'Naked Single',
                 description: 'When only one number can fit in a cell',
@@ -2310,10 +2312,121 @@ class SudokuEngine {
                 description: 'When a number can only go in one cell within a 3×3 box',
                 detail: 'This number must go here because all other cells in the box are blocked.'
             },
+
+            // X-Sudoku variant techniques
+            'Hidden Single (Main Diagonal)': {
+                name: 'Hidden Single (Main Diagonal)',
+                description: 'When a number can only go in one cell on the main diagonal',
+                detail: 'This number must go here because all other cells on the main diagonal (top-left to bottom-right) are blocked.'
+            },
+            'Hidden Single (Anti-Diagonal)': {
+                name: 'Hidden Single (Anti-Diagonal)',
+                description: 'When a number can only go in one cell on the anti-diagonal',
+                detail: 'This number must go here because all other cells on the anti-diagonal (top-right to bottom-left) are blocked.'
+            },
+            'Diagonal Constraint': {
+                name: 'Diagonal Constraint',
+                description: 'Limited by X-Sudoku diagonal rules',
+                detail: 'The diagonal constraint eliminates several options. Check which numbers are already on both diagonals.'
+            },
+
+            // Anti-Knight variant techniques
+            'Knight\'s Move Constraint': {
+                name: 'Knight\'s Move Constraint',
+                description: 'Limited by Anti-Knight chess rules',
+                detail: 'This number cannot appear a knight\'s move away (2 squares in one direction + 1 perpendicular). Check all 8 knight positions.'
+            },
+            'Knight-Forced Single': {
+                name: 'Knight-Forced Single',
+                description: 'Only one number avoids knight\'s move conflicts',
+                detail: 'After eliminating numbers that would violate the knight\'s move rule, only one option remains.'
+            },
+
+            // Killer Sudoku variant techniques
+            'Cage Sum Constraint': {
+                name: 'Cage Sum Constraint',
+                description: 'Limited by cage sum requirements',
+                detail: 'This cage must sum to the target. With the numbers already placed, only certain values will work without exceeding the sum.'
+            },
+            'Cage Unique Constraint': {
+                name: 'Cage Unique Constraint',
+                description: 'No duplicates allowed within cage',
+                detail: 'This number is already used elsewhere in the cage, eliminating it as an option here.'
+            },
+            'Cage Completion': {
+                name: 'Cage Completion',
+                description: 'Last number needed to complete cage sum',
+                detail: 'This cage needs exactly this number to reach its target sum.'
+            },
+
+            // Hyper Sudoku variant techniques
+            'Hidden Single (Hyper Region)': {
+                name: 'Hidden Single (Hyper Region)',
+                description: 'When a number can only go in one cell within a hyper region',
+                detail: 'This number must go here because all other cells in this extra 3×3 hyper region are blocked.'
+            },
+            'Hyper Region Constraint': {
+                name: 'Hyper Region Constraint',
+                description: 'Limited by overlapping hyper regions',
+                detail: 'This cell belongs to an extra hyper region. Check which numbers are already in that region.'
+            },
+
+            // Consecutive Sudoku variant techniques
+            'Consecutive Marker Constraint': {
+                name: 'Consecutive Marker Constraint',
+                description: 'Limited by consecutive marking rules',
+                detail: 'White markers indicate cells must differ by exactly 1. Absence of marker means they cannot be consecutive.'
+            },
+            'Negative Consecutive Constraint': {
+                name: 'Negative Consecutive Constraint',
+                description: 'No marker means NOT consecutive',
+                detail: 'Since there\'s no consecutive marker, adjacent cells cannot differ by 1. This eliminates several options.'
+            },
+            'Forced Consecutive Value': {
+                name: 'Forced Consecutive Value',
+                description: 'Only one number satisfies consecutive requirement',
+                detail: 'The marked edge requires adjacent cells to differ by exactly 1. Only this number works.'
+            },
+
+            // Thermo Sudoku variant techniques
+            'Thermometer Constraint': {
+                name: 'Thermometer Constraint',
+                description: 'Limited by thermometer increasing rule',
+                detail: 'Numbers must strictly increase from bulb to tip. This limits which values can go here based on neighbors.'
+            },
+            'Bulb Constraint': {
+                name: 'Bulb Constraint',
+                description: 'Thermometer bulb must be smallest',
+                detail: 'As the bulb of a thermometer, this cell must be smaller than all cells following it on the path.'
+            },
+            'Tip Constraint': {
+                name: 'Tip Constraint',
+                description: 'Thermometer tip must be largest',
+                detail: 'As the tip of a thermometer, this cell must be larger than all cells before it on the path.'
+            },
+            'Middle Thermo Constraint': {
+                name: 'Middle Thermo Constraint',
+                description: 'Must be between bulb and tip values',
+                detail: 'This cell is in the middle of a thermometer, so it must be greater than cells before it and less than cells after it.'
+            },
+
+            // Jigsaw Sudoku variant techniques
+            'Hidden Single (Irregular Region)': {
+                name: 'Hidden Single (Irregular Region)',
+                description: 'When a number can only go in one cell within an irregular region',
+                detail: 'This number must go here because all other cells in this irregular region are blocked.'
+            },
+            'Irregular Region Constraint': {
+                name: 'Irregular Region Constraint',
+                description: 'Limited by irregular region shapes',
+                detail: 'This cell belongs to an irregular region (not a standard 3×3 box). Check which numbers are already in that region.'
+            },
+
+            // Generic techniques
             'Strategic Hint': {
                 name: 'Strategic Hint',
                 description: 'A cell with very few options',
-                detail: 'Try eliminating options based on the row, column, and box.'
+                detail: 'Try eliminating options based on all applicable rules for this variant.'
             },
             'Solution Hint': {
                 name: 'Solution Hint',
@@ -2330,7 +2443,9 @@ class SudokuEngine {
     }
 
     getHintDirection(row, col) {
-        // Generate a hint direction message based on cell location
+        // PHASE 2 MONTH 17: Enhanced with variant-specific hint directions
+        // Generate a hint direction message based on cell location and variant
+
         const boxRow = Math.floor(row / 3);
         const boxCol = Math.floor(col / 3);
         const boxNames = [
@@ -2339,31 +2454,76 @@ class SudokuEngine {
             ['bottom-left box', 'bottom-middle box', 'bottom-right box']
         ];
 
-        // Randomly choose between row/col/box hint
-        const hintType = Math.random();
-        if (hintType < 0.33) {
-            return {
-                area: 'row',
-                number: row + 1,
-                cells: this.getEmptyCellsInRow(row),
-                text: `row ${row + 1}`
-            };
-        } else if (hintType < 0.66) {
-            return {
-                area: 'column',
-                number: col + 1,
-                cells: this.getEmptyCellsInColumn(col),
-                text: `column ${col + 1}`
-            };
-        } else {
-            return {
-                area: 'box',
-                boxRow,
-                boxCol,
-                cells: this.getEmptyCellsInBox(boxRow, boxCol),
-                text: `the ${boxNames[boxRow][boxCol]}`
-            };
+        const possibleDirections = [];
+
+        // Standard directions (always available)
+        possibleDirections.push({
+            area: 'row',
+            number: row + 1,
+            cells: this.getEmptyCellsInRow(row),
+            text: `row ${row + 1}`
+        });
+
+        possibleDirections.push({
+            area: 'column',
+            number: col + 1,
+            cells: this.getEmptyCellsInColumn(col),
+            text: `column ${col + 1}`
+        });
+
+        possibleDirections.push({
+            area: 'box',
+            boxRow,
+            boxCol,
+            cells: this.getEmptyCellsInBox(boxRow, boxCol),
+            text: `the ${boxNames[boxRow][boxCol]}`
+        });
+
+        // Variant-specific directions
+        if (this.variant === 'x-sudoku') {
+            // Add diagonal hints if cell is on a diagonal
+            if (row === col) {
+                possibleDirections.push({
+                    area: 'diagonal',
+                    cells: this.getEmptyCellsOnMainDiagonal(),
+                    text: 'the main diagonal'
+                });
+            }
+            if (row + col === 8) {
+                possibleDirections.push({
+                    area: 'diagonal',
+                    cells: this.getEmptyCellsOnAntiDiagonal(),
+                    text: 'the anti-diagonal'
+                });
+            }
+        } else if (this.variant === 'hyper-sudoku' && this.hyperRegions) {
+            // Add hyper region hint if cell is in a hyper region
+            for (let i = 0; i < this.hyperRegions.length; i++) {
+                const region = this.hyperRegions[i];
+                const inRegion = region.some(([r, c]) => r === row && c === col);
+                if (inRegion) {
+                    possibleDirections.push({
+                        area: 'hyper-region',
+                        number: i + 1,
+                        cells: this.getEmptyCellsInHyperRegion(i),
+                        text: `hyper region ${i + 1}`
+                    });
+                }
+            }
+        } else if (this.variant === 'jigsaw-sudoku' && this.jigsawRegions) {
+            // Add irregular region hint
+            const regionIdx = this.jigsawRegions[row][col];
+            possibleDirections.push({
+                area: 'jigsaw-region',
+                number: regionIdx,
+                cells: this.getEmptyCellsInJigsawRegion(regionIdx),
+                text: `irregular region ${regionIdx}`
+            });
         }
+
+        // Randomly choose from available directions
+        const randomIdx = Math.floor(Math.random() * possibleDirections.length);
+        return possibleDirections[randomIdx];
     }
 
     getEmptyCellsInRow(row) {
@@ -2394,6 +2554,55 @@ class SudokuEngine {
                 const col = boxCol * 3 + c;
                 if (this.playerGrid[row][col] === 0) {
                     cells.push({ row, col });
+                }
+            }
+        }
+        return cells;
+    }
+
+    // PHASE 2 MONTH 17: Variant-specific empty cell finders
+    getEmptyCellsOnMainDiagonal() {
+        const cells = [];
+        for (let i = 0; i < 9; i++) {
+            if (this.playerGrid[i][i] === 0) {
+                cells.push({ row: i, col: i });
+            }
+        }
+        return cells;
+    }
+
+    getEmptyCellsOnAntiDiagonal() {
+        const cells = [];
+        for (let i = 0; i < 9; i++) {
+            if (this.playerGrid[i][8-i] === 0) {
+                cells.push({ row: i, col: 8-i });
+            }
+        }
+        return cells;
+    }
+
+    getEmptyCellsInHyperRegion(regionIdx) {
+        if (!this.hyperRegions || !this.hyperRegions[regionIdx]) return [];
+
+        const cells = [];
+        const region = this.hyperRegions[regionIdx];
+
+        for (const [r, c] of region) {
+            if (this.playerGrid[r][c] === 0) {
+                cells.push({ row: r, col: c });
+            }
+        }
+        return cells;
+    }
+
+    getEmptyCellsInJigsawRegion(regionIdx) {
+        if (!this.jigsawRegions) return [];
+
+        const cells = [];
+        for (let r = 0; r < 9; r++) {
+            for (let c = 0; c < 9; c++) {
+                if (this.jigsawRegions[r][c] === regionIdx && this.playerGrid[r][c] === 0) {
+                    cells.push({ row: r, col: c });
                 }
             }
         }
@@ -2540,6 +2749,12 @@ class SudokuEngine {
             }
         }
 
+        // PHASE 2 MONTH 17: Variant-specific hint detection
+        const variantHint = this.findVariantSpecificHint();
+        if (variantHint) {
+            return variantHint;
+        }
+
         // 3. If no obvious logical moves, find the cell with fewest possibilities
         let bestCell = null;
         let minPossibilities = 10;
@@ -2610,6 +2825,316 @@ class SudokuEngine {
             }
         }
         return possible;
+    }
+
+    // PHASE 2 MONTH 17: Variant-specific hint detection
+    findVariantSpecificHint() {
+        // Dispatch to variant-specific hint finders based on current variant
+        switch (this.variant) {
+            case 'x-sudoku':
+                return this.findXSudokuHint();
+            case 'anti-knight':
+                return this.findAntiKnightHint();
+            case 'killer-sudoku':
+                return this.findKillerSudokuHint();
+            case 'hyper-sudoku':
+                return this.findHyperSudokuHint();
+            case 'consecutive-sudoku':
+                return this.findConsecutiveSudokuHint();
+            case 'thermo-sudoku':
+                return this.findThermoSudokuHint();
+            case 'jigsaw-sudoku':
+                return this.findJigsawSudokuHint();
+            default:
+                return null;
+        }
+    }
+
+    findXSudokuHint() {
+        // Check main diagonal for hidden singles
+        const mainDiagNums = new Set();
+        for (let i = 0; i < 9; i++) {
+            if (this.playerGrid[i][i] !== 0) {
+                mainDiagNums.add(this.playerGrid[i][i]);
+            }
+        }
+
+        for (let num = 1; num <= 9; num++) {
+            if (!mainDiagNums.has(num)) {
+                const possiblePos = [];
+                for (let i = 0; i < 9; i++) {
+                    if (this.playerGrid[i][i] === 0 && this.isValidMove(this.playerGrid, i, i, num)) {
+                        possiblePos.push([i, i]);
+                    }
+                }
+                if (possiblePos.length === 1) {
+                    const [row, col] = possiblePos[0];
+                    if (this.solution[row][col] === num) {
+                        return {
+                            row, col, value: num,
+                            technique: 'Hidden Single (Main Diagonal)',
+                            explanation: `${num} can only go in R${row+1}C${col+1} on the main diagonal`
+                        };
+                    }
+                }
+            }
+        }
+
+        // Check anti-diagonal for hidden singles
+        const antiDiagNums = new Set();
+        for (let i = 0; i < 9; i++) {
+            if (this.playerGrid[i][8-i] !== 0) {
+                antiDiagNums.add(this.playerGrid[i][8-i]);
+            }
+        }
+
+        for (let num = 1; num <= 9; num++) {
+            if (!antiDiagNums.has(num)) {
+                const possiblePos = [];
+                for (let i = 0; i < 9; i++) {
+                    if (this.playerGrid[i][8-i] === 0 && this.isValidMove(this.playerGrid, i, 8-i, num)) {
+                        possiblePos.push([i, 8-i]);
+                    }
+                }
+                if (possiblePos.length === 1) {
+                    const [row, col] = possiblePos[0];
+                    if (this.solution[row][col] === num) {
+                        return {
+                            row, col, value: num,
+                            technique: 'Hidden Single (Anti-Diagonal)',
+                            explanation: `${num} can only go in R${row+1}C${col+1} on the anti-diagonal`
+                        };
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    findAntiKnightHint() {
+        // Look for cells where knight's move constraint creates a naked single
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                if (this.playerGrid[row][col] === 0) {
+                    const possibleValues = this.getPossibleValues(row, col);
+                    if (possibleValues.length === 1 && this.solution[row][col] === possibleValues[0]) {
+                        // Check if knight constraint was the decisive factor
+                        const knightMoves = [
+                            [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+                            [1, -2], [1, 2], [2, -1], [2, 1]
+                        ];
+
+                        let hasKnightConstraint = false;
+                        for (const [dr, dc] of knightMoves) {
+                            const newRow = row + dr;
+                            const newCol = col + dc;
+                            if (newRow >= 0 && newRow < 9 && newCol >= 0 && newCol < 9) {
+                                if (this.playerGrid[newRow][newCol] !== 0) {
+                                    hasKnightConstraint = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (hasKnightConstraint) {
+                            return {
+                                row, col, value: possibleValues[0],
+                                technique: 'Knight-Forced Single',
+                                explanation: `Knight's move constraint leaves only ${possibleValues[0]} valid at R${row+1}C${col+1}`
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    findKillerSudokuHint() {
+        if (!this.cages) return null;
+
+        // Look for cages where sum constraint forces a specific value
+        for (const cage of this.cages) {
+            const emptyCells = cage.cells.filter(([r, c]) => this.playerGrid[r][c] === 0);
+
+            // If only one empty cell in cage, we can calculate what it must be
+            if (emptyCells.length === 1) {
+                const [row, col] = emptyCells[0];
+                let currentSum = 0;
+                for (const [r, c] of cage.cells) {
+                    if (this.playerGrid[r][c] !== 0) {
+                        currentSum += this.playerGrid[r][c];
+                    }
+                }
+                const needed = cage.sum - currentSum;
+
+                if (needed >= 1 && needed <= 9 && this.solution[row][col] === needed) {
+                    // Verify it's valid
+                    if (this.isValidMove(this.playerGrid, row, col, needed)) {
+                        return {
+                            row, col, value: needed,
+                            technique: 'Cage Completion',
+                            explanation: `Cage needs ${needed} to sum to ${cage.sum} at R${row+1}C${col+1}`
+                        };
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    findHyperSudokuHint() {
+        if (!this.hyperRegions) return null;
+
+        // Check each hyper region for hidden singles
+        for (let regionIdx = 0; regionIdx < this.hyperRegions.length; regionIdx++) {
+            const region = this.hyperRegions[regionIdx];
+            const regionNums = new Set();
+
+            for (const [r, c] of region) {
+                if (this.playerGrid[r][c] !== 0) {
+                    regionNums.add(this.playerGrid[r][c]);
+                }
+            }
+
+            for (let num = 1; num <= 9; num++) {
+                if (!regionNums.has(num)) {
+                    const possiblePos = [];
+                    for (const [r, c] of region) {
+                        if (this.playerGrid[r][c] === 0 && this.isValidMove(this.playerGrid, r, c, num)) {
+                            possiblePos.push([r, c]);
+                        }
+                    }
+
+                    if (possiblePos.length === 1) {
+                        const [row, col] = possiblePos[0];
+                        if (this.solution[row][col] === num) {
+                            return {
+                                row, col, value: num,
+                                technique: 'Hidden Single (Hyper Region)',
+                                explanation: `${num} can only go in R${row+1}C${col+1} within hyper region ${regionIdx + 1}`
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    findConsecutiveSudokuHint() {
+        if (!this.consecutiveMarkers) return null;
+
+        // Look for cells where consecutive constraint creates strong hints
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                if (this.playerGrid[row][col] === 0) {
+                    const possibleValues = this.getPossibleValues(row, col);
+
+                    if (possibleValues.length <= 2 && possibleValues.includes(this.solution[row][col])) {
+                        // Check if consecutive markers are affecting this cell
+                        const neighbors = [
+                            [row - 1, col], [row + 1, col],
+                            [row, col - 1], [row, col + 1]
+                        ];
+
+                        let hasConsecutiveConstraint = false;
+                        for (const [nr, nc] of neighbors) {
+                            if (nr >= 0 && nr < 9 && nc >= 0 && nc < 9) {
+                                const markerKey = `${Math.min(row, nr)},${Math.min(col, nc)}-${Math.max(row, nr)},${Math.max(col, nc)}`;
+                                if (this.consecutiveMarkers.includes(markerKey) || this.playerGrid[nr][nc] !== 0) {
+                                    hasConsecutiveConstraint = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (hasConsecutiveConstraint && possibleValues.length === 1) {
+                            return {
+                                row, col, value: possibleValues[0],
+                                technique: 'Forced Consecutive Value',
+                                explanation: `Consecutive constraints force ${possibleValues[0]} at R${row+1}C${col+1}`
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    findThermoSudokuHint() {
+        if (!this.thermometers) return null;
+
+        // Look for thermometer constraints that force specific values
+        for (const thermo of this.thermometers) {
+            for (let i = 0; i < thermo.length; i++) {
+                const [row, col] = thermo[i];
+
+                if (this.playerGrid[row][col] === 0) {
+                    const possibleValues = this.getPossibleValues(row, col);
+
+                    if (possibleValues.length === 1 && this.solution[row][col] === possibleValues[0]) {
+                        let technique = 'Thermometer Constraint';
+                        if (i === 0) technique = 'Bulb Constraint';
+                        else if (i === thermo.length - 1) technique = 'Tip Constraint';
+                        else technique = 'Middle Thermo Constraint';
+
+                        return {
+                            row, col, value: possibleValues[0],
+                            technique,
+                            explanation: `Thermometer constraint forces ${possibleValues[0]} at R${row+1}C${col+1}`
+                        };
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    findJigsawSudokuHint() {
+        if (!this.jigsawRegions) return null;
+
+        // Check each irregular region for hidden singles
+        for (let regionIdx = 1; regionIdx <= 9; regionIdx++) {
+            const regionCells = [];
+            const regionNums = new Set();
+
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    if (this.jigsawRegions[r][c] === regionIdx) {
+                        regionCells.push([r, c]);
+                        if (this.playerGrid[r][c] !== 0) {
+                            regionNums.add(this.playerGrid[r][c]);
+                        }
+                    }
+                }
+            }
+
+            for (let num = 1; num <= 9; num++) {
+                if (!regionNums.has(num)) {
+                    const possiblePos = [];
+                    for (const [r, c] of regionCells) {
+                        if (this.playerGrid[r][c] === 0 && this.isValidMove(this.playerGrid, r, c, num)) {
+                            possiblePos.push([r, c]);
+                        }
+                    }
+
+                    if (possiblePos.length === 1) {
+                        const [row, col] = possiblePos[0];
+                        if (this.solution[row][col] === num) {
+                            return {
+                                row, col, value: num,
+                                technique: 'Hidden Single (Irregular Region)',
+                                explanation: `${num} can only go in R${row+1}C${col+1} within irregular region ${regionIdx}`
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     // Helper methods for hint system
