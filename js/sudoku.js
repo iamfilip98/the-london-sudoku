@@ -4240,6 +4240,49 @@ class SudokuEngine {
                 }
             }
 
+            // PHASE 2 MONTH 23: Submit score to active tournaments
+            if (window.variantTournamentsManager) {
+                try {
+                    const activeTournaments = window.variantTournamentsManager.getActiveTournaments();
+
+                    // Check if any active tournaments match this variant
+                    const matchingTournaments = activeTournaments.filter(t => t.variant === this.variant);
+
+                    matchingTournaments.forEach(tournament => {
+                        const result = window.variantTournamentsManager.submitScore(
+                            tournament.id,
+                            this.variant,
+                            this.currentDifficulty,
+                            this.timer,
+                            this.errors
+                        );
+
+                        if (result.success) {
+                            console.log(`✅ Score submitted to tournament: ${tournament.name}`);
+
+                            // Show notification if tournaments UI is available
+                            if (window.variantTournamentsUI) {
+                                const rank = window.variantTournamentsManager.getUserTournamentRank(tournament.id);
+                                if (rank) {
+                                    window.variantTournamentsUI.showNotification(
+                                        `Tournament score submitted! Rank: #${rank.rank}`,
+                                        'success'
+                                    );
+                                }
+                            }
+
+                            // Refresh tournaments UI if currently viewing
+                            const tournamentsPage = document.getElementById('tournaments');
+                            if (tournamentsPage && !tournamentsPage.classList.contains('hidden') && window.variantTournamentsUI) {
+                                window.variantTournamentsUI.refresh();
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Failed to submit tournament scores:', error);
+                }
+            }
+
         } catch (error) {
             console.error('Failed to save completed game:', error);
         }

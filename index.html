@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/variant-mastery.css">
     <link rel="stylesheet" href="css/variant-challenges.css">
     <link rel="stylesheet" href="css/variant-leaderboards.css">
+    <link rel="stylesheet" href="css/variant-tournaments.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -683,6 +684,35 @@
 
                 <!-- User Ranking Summary -->
                 <div id="userRankingSummary"></div>
+            </div>
+
+            <!-- Tournaments Page -->
+            <div class="page" id="tournaments">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="fas fa-trophy"></i>
+                        Tournaments & Events
+                    </h1>
+                </div>
+
+                <!-- View Tabs -->
+                <div class="tournament-view-tabs">
+                    <button class="tournament-view-tab active" data-view="active">
+                        🔴 Active
+                    </button>
+                    <button class="tournament-view-tab" data-view="upcoming">
+                        📅 Upcoming
+                    </button>
+                    <button class="tournament-view-tab" data-view="ended">
+                        ✅ Ended
+                    </button>
+                </div>
+
+                <!-- Tournaments List -->
+                <div id="tournamentsList"></div>
+
+                <!-- Tournament Detail Modal -->
+                <div id="tournamentDetail" class="hidden"></div>
             </div>
 
             <!-- Achievements Page -->
@@ -1681,6 +1711,10 @@
     <!-- PHASE 2 MONTH 22: Variant Leaderboards -->
     <script src="/js/variant-leaderboards.js"></script>
     <script src="/js/variant-leaderboards-ui.js"></script>
+
+    <!-- PHASE 2 MONTH 23: Variant Tournaments -->
+    <script src="/js/variant-tournaments.js"></script>
+    <script src="/js/variant-tournaments-ui.js"></script>
     <script>
         // Initialize tutorial system when Sudoku engine is ready
         let tutorialManager;
@@ -1726,6 +1760,16 @@
                 window.variantLeaderboardsUI = variantLeaderboardsUI;
                 variantLeaderboardsUI.initialize();
                 console.log('✅ Variant leaderboards UI initialized');
+
+                // PHASE 2 MONTH 23: Initialize variant tournaments
+                const variantTournamentsManager = new VariantTournamentsManager(variantStatsManager);
+                window.variantTournamentsManager = variantTournamentsManager;
+                console.log('✅ Variant tournaments manager initialized');
+
+                const variantTournamentsUI = new VariantTournamentsUI(variantTournamentsManager);
+                window.variantTournamentsUI = variantTournamentsUI;
+                variantTournamentsUI.initialize();
+                console.log('✅ Variant tournaments UI initialized');
 
                 // Add tutorial triggers to UI
                 addTutorialTriggers();
