@@ -14,6 +14,10 @@ class TutorialManager {
         this.completedTutorials = new Set();
         this.tutorialProgress = {};
 
+        // LocalStorage versioning
+        this.STORAGE_VERSION = 1;
+        this.STORAGE_KEY = 'tutorialProgress';
+
         // Load tutorial content
         if (typeof TUTORIAL_CONTENT !== 'undefined') {
             this.tutorials = TUTORIAL_CONTENT;
@@ -672,7 +676,8 @@ class TutorialManager {
      */
     saveProgress() {
         try {
-            localStorage.setItem('tutorialProgress', JSON.stringify({
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
+                version: this.STORAGE_VERSION,
                 completed: Array.from(this.completedTutorials),
                 progress: this.tutorialProgress
             }));
@@ -686,12 +691,37 @@ class TutorialManager {
      */
     loadProgress() {
         try {
-            const saved = localStorage.getItem('tutorialProgress');
-            if (saved) {
-                const data = JSON.parse(saved);
+            const saved = localStorage.getItem(this.STORAGE_KEY);
+            if (!saved) {
+                console.log('No saved tutorial progress found');
+                return;
+            }
+
+            const data = JSON.parse(saved);
+
+            // Handle old format (no version) - migrate to new format
+            if (!data.version) {
+                console.warn('Migrating tutorial progress from old format to versioned format');
                 this.completedTutorials = new Set(data.completed || []);
                 this.tutorialProgress = data.progress || {};
+                this.saveProgress(); // Save in new format
+                console.log('✅ Tutorial progress migrated successfully');
+                return;
             }
+
+            // Check version compatibility
+            if (data.version !== this.STORAGE_VERSION) {
+                console.warn(`Tutorial progress version mismatch. Expected v${this.STORAGE_VERSION}, found v${data.version}. Resetting progress.`);
+                this.completedTutorials = new Set();
+                this.tutorialProgress = {};
+                return;
+            }
+
+            // Safe to load - versions match
+            this.completedTutorials = new Set(data.completed || []);
+            this.tutorialProgress = data.progress || {};
+            console.log('✅ Tutorial progress loaded successfully');
+
         } catch (e) {
             console.error('Failed to load tutorial progress:', e);
             this.completedTutorials = new Set();
