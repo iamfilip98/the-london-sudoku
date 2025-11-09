@@ -7,6 +7,30 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 2 Month 15: Frontend Variant Rendering** (November 9, 2025)
+- 🎨 **Visual Overlays for All Special Variants**: Complete frontend rendering support
+  - **Killer Sudoku**: Dashed cage borders with sum labels displayed in top-left of each cage
+  - **Hyper Sudoku**: Subtle background highlighting for 4 extra 3×3 regions
+  - **Consecutive Sudoku**: White circle markers between cells with consecutive constraints
+  - **Thermo Sudoku**: Gray thermometer paths with bulbs showing increasing direction
+  - **Jigsaw Sudoku**: Bold borders delineating irregular regions with subtle region coloring
+- 📊 **SVG-based Rendering**: Scalable vector overlays that work at any zoom level
+  - Positioned above grid cells but below user input
+  - Non-interactive (pointer-events: none) to allow normal gameplay
+  - Automatically cleared and redrawn when puzzle changes
+- 🧩 **Metadata Integration**: Engine now stores and uses variant-specific data
+  - `cages` (Killer), `hyperRegions` (Hyper), `consecutiveMarkers` (Consecutive)
+  - `thermometers` (Thermo), `jigsawRegions` (Jigsaw)
+  - Loaded from API response and passed to rendering functions
+- 🎯 **Smart Rendering**: Variant overlays only render for matching variant types
+  - Automatic detection based on `this.variant` property
+  - Overlays update on puzzle load and difficulty change
+  - Clean separation between rendering methods for each variant
+- 📱 **Mobile Responsive**: All visualizations adapt to different screen sizes
+  - Scaled text for cage sums on mobile
+  - Touch-friendly marker sizes
+  - Maintains visual clarity on small screens
+
 ### **Phase 2 Month 14: Jigsaw Sudoku Variant** (November 9, 2025)
 - 🧩 **Jigsaw Sudoku Constraint**: Classic Sudoku PLUS irregular regions
   - Instead of standard 3×3 boxes, the grid is divided into 9 irregular regions

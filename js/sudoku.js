@@ -53,6 +53,13 @@ class SudokuEngine {
         this.streakCount = 0;
         this.bestTime = { easy: null, medium: null, hard: null };
 
+        // PHASE 2 MONTH 15: Variant-specific metadata
+        this.cages = null;                  // Killer Sudoku cages
+        this.hyperRegions = null;           // Hyper Sudoku extra regions
+        this.consecutiveMarkers = null;     // Consecutive Sudoku markers
+        this.thermometers = null;           // Thermo Sudoku thermometers
+        this.jigsawRegions = null;          // Jigsaw Sudoku irregular regions
+
         console.log('🎮 Initializing Sudoku with variant:', this.variant, 'gridSize:', this.gridSize);
     }
 
@@ -913,6 +920,13 @@ class SudokuEngine {
         this.playerGrid = puzzleData.puzzle.map(row => [...row]);
         this.lockedGrid = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill(false));
 
+        // PHASE 2 MONTH 15: Load variant-specific metadata
+        this.cages = puzzleData.cages || null;
+        this.hyperRegions = puzzleData.hyperRegions || null;
+        this.consecutiveMarkers = puzzleData.consecutiveMarkers || null;
+        this.thermometers = puzzleData.thermometers || null;
+        this.jigsawRegions = puzzleData.jigsawRegions || null;
+
         // Validate that the solution is actually valid
         debugLog(`🔍 Loading ${difficulty} solution. R6C5 should be:`, this.solution[5][4]);
         if (!this.isValidSudokuSolution(this.solution)) {
@@ -962,6 +976,9 @@ class SudokuEngine {
         this.updateCandidateModeUI();
         this.updateShowAllCandidatesUI();
         this.startTimer();
+
+        // PHASE 2 MONTH 15: Render variant-specific overlays
+        this.renderVariantOverlays();
 
         document.getElementById('gameStatus').innerHTML =
             '<div class="status-message">Game started! Good luck!</div>';
@@ -1083,6 +1100,247 @@ class SudokuEngine {
     isInSameBox(row1, col1, row2, col2) {
         return Math.floor(row1 / 3) === Math.floor(row2 / 3) &&
                Math.floor(col1 / 3) === Math.floor(col2 / 3);
+    }
+
+    // PHASE 2 MONTH 15: Variant-specific rendering methods
+    renderVariantOverlays() {
+        // Remove any existing overlays
+        this.clearVariantOverlays();
+
+        // Render overlays based on variant type
+        if (this.variant === 'killer-sudoku' && this.cages) {
+            this.renderKillerCages();
+        } else if (this.variant === 'hyper-sudoku' && this.hyperRegions) {
+            this.renderHyperRegions();
+        } else if (this.variant === 'consecutive-sudoku' && this.consecutiveMarkers) {
+            this.renderConsecutiveMarkers();
+        } else if (this.variant === 'thermo-sudoku' && this.thermometers) {
+            this.renderThermometers();
+        } else if (this.variant === 'jigsaw-sudoku' && this.jigsawRegions) {
+            this.renderJigsawBorders();
+        }
+    }
+
+    clearVariantOverlays() {
+        // Remove existing SVG overlay if any
+        const existingOverlay = document.querySelector('.variant-overlay');
+        if (existingOverlay) {
+            existingOverlay.remove();
+        }
+    }
+
+    renderKillerCages() {
+        if (!this.cages) return;
+
+        const grid = document.getElementById('sudokuGrid');
+        if (!grid) return;
+
+        // Create SVG overlay
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.classList.add('variant-overlay', 'killer-overlay');
+        svg.setAttribute('viewBox', '0 0 900 900');
+
+        this.cages.forEach(cage => {
+            // Draw cage borders
+            const cells = cage.cells;
+            const cellSize = 100;
+
+            // Create path for cage border
+            const borderPath = this.createCageBorderPath(cells, cellSize);
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', borderPath);
+            path.setAttribute('stroke', '#666');
+            path.setAttribute('stroke-width', '2');
+            path.setAttribute('stroke-dasharray', '5,3');
+            path.setAttribute('fill', 'none');
+            svg.appendChild(path);
+
+            // Add sum label
+            const [firstRow, firstCol] = cells[0];
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', firstCol * cellSize + 8);
+            text.setAttribute('y', firstRow * cellSize + 15);
+            text.setAttribute('font-size', '12');
+            text.setAttribute('fill', '#666');
+            text.textContent = cage.sum;
+            svg.appendChild(text);
+        });
+
+        grid.appendChild(svg);
+    }
+
+    createCageBorderPath(cells, cellSize) {
+        // Simple rectangle for now - can be enhanced to follow exact cell borders
+        const rows = cells.map(c => c[0]);
+        const cols = cells.map(c => c[1]);
+        const minRow = Math.min(...rows);
+        const maxRow = Math.max(...rows);
+        const minCol = Math.min(...cols);
+        const maxCol = Math.max(...cols);
+
+        const x = minCol * cellSize;
+        const y = minRow * cellSize;
+        const width = (maxCol - minCol + 1) * cellSize;
+        const height = (maxRow - minRow + 1) * cellSize;
+
+        return `M ${x} ${y} L ${x + width} ${y} L ${x + width} ${y + height} L ${x} ${y + height} Z`;
+    }
+
+    renderHyperRegions() {
+        if (!this.hyperRegions) return;
+
+        const grid = document.getElementById('sudokuGrid');
+        if (!grid) return;
+
+        // Add visual highlighting to hyper region cells
+        this.hyperRegions.forEach((region, index) => {
+            region.forEach(([row, col]) => {
+                const cell = grid.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                if (cell) {
+                    cell.classList.add('hyper-region-cell');
+                }
+            });
+        });
+    }
+
+    renderConsecutiveMarkers() {
+        if (!this.consecutiveMarkers) return;
+
+        const grid = document.getElementById('sudokuGrid');
+        if (!grid) return;
+
+        // Create SVG overlay for markers
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.classList.add('variant-overlay', 'consecutive-overlay');
+        svg.setAttribute('viewBox', '0 0 900 900');
+
+        this.consecutiveMarkers.forEach(marker => {
+            const { cell1, cell2 } = marker;
+            const [row1, col1] = cell1;
+            const [row2, col2] = cell2;
+            const cellSize = 100;
+
+            // Determine marker position (between cells)
+            let x, y, width, height;
+            if (row1 === row2) {
+                // Horizontal marker
+                const minCol = Math.min(col1, col2);
+                x = (minCol + 1) * cellSize - 8;
+                y = row1 * cellSize + 40;
+                width = 16;
+                height = 20;
+            } else {
+                // Vertical marker
+                const minRow = Math.min(row1, row2);
+                x = col1 * cellSize + 40;
+                y = (minRow + 1) * cellSize - 8;
+                width = 20;
+                height = 16;
+            }
+
+            // Draw white circle marker
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', x + width / 2);
+            circle.setAttribute('cy', y + height / 2);
+            circle.setAttribute('r', '8');
+            circle.setAttribute('fill', 'white');
+            circle.setAttribute('stroke', '#666');
+            circle.setAttribute('stroke-width', '2');
+            svg.appendChild(circle);
+        });
+
+        grid.appendChild(svg);
+    }
+
+    renderThermometers() {
+        if (!this.thermometers) return;
+
+        const grid = document.getElementById('sudokuGrid');
+        if (!grid) return;
+
+        // Create SVG overlay
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.classList.add('variant-overlay', 'thermo-overlay');
+        svg.setAttribute('viewBox', '0 0 900 900');
+
+        this.thermometers.forEach(thermo => {
+            const cells = thermo.cells;
+            const cellSize = 100;
+
+            // Draw thermometer path
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            let pathData = '';
+
+            cells.forEach(([row, col], index) => {
+                const x = col * cellSize + cellSize / 2;
+                const y = row * cellSize + cellSize / 2;
+
+                if (index === 0) {
+                    pathData += `M ${x} ${y}`;
+                } else {
+                    pathData += ` L ${x} ${y}`;
+                }
+            });
+
+            path.setAttribute('d', pathData);
+            path.setAttribute('stroke', '#aaa');
+            path.setAttribute('stroke-width', '20');
+            path.setAttribute('stroke-linecap', 'round');
+            path.setAttribute('stroke-linejoin', 'round');
+            path.setAttribute('fill', 'none');
+            path.setAttribute('opacity', '0.3');
+            svg.appendChild(path);
+
+            // Draw bulb (circle at start)
+            const [bulbRow, bulbCol] = cells[0];
+            const bulb = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            bulb.setAttribute('cx', bulbCol * cellSize + cellSize / 2);
+            bulb.setAttribute('cy', bulbRow * cellSize + cellSize / 2);
+            bulb.setAttribute('r', '15');
+            bulb.setAttribute('fill', '#aaa');
+            bulb.setAttribute('opacity', '0.3');
+            svg.appendChild(bulb);
+        });
+
+        grid.appendChild(svg);
+    }
+
+    renderJigsawBorders() {
+        if (!this.jigsawRegions) return;
+
+        const grid = document.getElementById('sudokuGrid');
+        if (!grid) return;
+
+        // Add classes to cells based on their region
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                const cell = grid.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                if (cell && this.jigsawRegions[row]) {
+                    const regionId = this.jigsawRegions[row][col];
+                    cell.setAttribute('data-jigsaw-region', regionId);
+
+                    // Add border classes based on neighbors
+                    const neighbors = [
+                        { row: row - 1, col, dir: 'top' },
+                        { row: row + 1, col, dir: 'bottom' },
+                        { row, col: col - 1, dir: 'left' },
+                        { row, col: col + 1, dir: 'right' }
+                    ];
+
+                    neighbors.forEach(({ row: r, col: c, dir }) => {
+                        if (r >= 0 && r < 9 && c >= 0 && c < 9) {
+                            const neighborRegion = this.jigsawRegions[r][c];
+                            if (neighborRegion !== regionId) {
+                                cell.classList.add(`jigsaw-border-${dir}`);
+                            }
+                        } else {
+                            // Grid edge
+                            cell.classList.add(`jigsaw-border-${dir}`);
+                        }
+                    });
+                }
+            }
+        }
     }
 
     renderCandidatesGrid(candidatesSet) {
