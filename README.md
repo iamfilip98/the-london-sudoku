@@ -45,6 +45,34 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
   - Used query parameters for GET operations (`?friends=xxx`, `?friend-requests=xxx`)
   - Used action parameters for POST operations (`?action=send-friend-request`)
 
+### **Phase 2 Month 7: Premium Subscription via Stripe** (November 9, 2025)
+- 💳 **Stripe Integration**: Full subscription management system
+  - Create checkout sessions ($4.99/mo Premium plan)
+  - Customer portal (manage subscriptions, update payment, cancel)
+  - Webhook handling (subscription lifecycle events)
+  - Database sync (premium status, subscription status)
+  - API: `/api/admin?action=create-checkout|create-portal|webhook|subscription-status`
+- 🗄️ **Premium Database Schema**: Comprehensive subscription tracking
+  - `users` table: `premium`, `stripe_customer_id`, `stripe_subscription_id`, `subscription_status`
+  - `subscription_events` table: Webhook event logging
+  - `premium_users` view: Active premium users query
+  - Migration: `POST /api/admin?action=migrate-phase2-month7`
+- 📊 **Subscription Status Tracking**: Real-time sync with Stripe
+  - Active, canceled, incomplete, past_due statuses
+  - Subscription start/end dates
+  - Cancel at period end flag
+  - Automatic premium flag updates on payment success/failure
+- 🔒 **Ad-Free Experience**: Premium users see no ads
+  - Ad manager checks `isPremium` flag
+  - Rewarded videos disabled for premium
+  - Ad containers hidden with CSS
+  - Seamless toggle on subscription change
+- ✅ **Endpoint Consolidation**: Subscription consolidated into admin.js (12/12 endpoints)
+  - Subscription actions moved to `/api/admin` to respect Vercel free tier limit
+  - Conditional authentication: subscription actions skip admin key check
+  - Webhooks use Stripe signature verification
+  - User endpoints rely on session authentication
+
 ### **Phase 1 Month 6: Monetization via Ads** (November 9, 2025)
 - 💰 **Google AdSense Integration**: Non-intrusive banner ads for free tier users
   - Banner ads displayed on dashboard and game pages
