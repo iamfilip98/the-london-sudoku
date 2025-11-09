@@ -678,8 +678,11 @@
 
     <!-- Authentication Check -->
     <script>
-        // Check authentication before loading the app
-        if (sessionStorage.getItem('sudokuAuth') !== 'authenticated') {
+        // Check authentication before loading the app (Clerk or legacy)
+        const clerkToken = sessionStorage.getItem('clerk_token');
+        const legacyAuth = sessionStorage.getItem('sudokuAuth');
+
+        if (!clerkToken && legacyAuth !== 'authenticated') {
             window.location.href = 'auth.html';
         }
 

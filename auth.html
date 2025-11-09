@@ -56,27 +56,120 @@
             margin-top: 2rem;
         }
 
-        /* Custom styling for Clerk components to match our theme */
+        /* Comprehensive Clerk component styling */
+        :root {
+            --clerk-primary: #ff6b35;
+            --clerk-border: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Clerk card and layout */
         .cl-rootBox {
-            width: 100%;
+            width: 100% !important;
         }
 
         .cl-card {
             background: transparent !important;
             box-shadow: none !important;
+            border: none !important;
         }
 
-        .cl-formButtonPrimary {
-            background: linear-gradient(135deg, #2d1b69, #ff6b35) !important;
+        /* Form inputs */
+        .cl-formFieldInput,
+        .cl-input {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 2px solid var(--clerk-border) !important;
+            border-radius: 8px !important;
+            color: #ffffff !important;
+            padding: 12px 16px !important;
+            font-size: 14px !important;
+            transition: all 0.3s ease !important;
         }
 
-        .cl-formButtonPrimary:hover {
-            transform: translateY(-2px);
+        .cl-formFieldInput:focus,
+        .cl-input:focus {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-color: var(--clerk-primary) !important;
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2) !important;
+        }
+
+        .cl-formFieldInput::placeholder,
+        .cl-input::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+
+        /* Labels */
+        .cl-formFieldLabel,
+        .cl-label {
+            color: #ffffff !important;
+            font-weight: 500 !important;
+            margin-bottom: 8px !important;
+        }
+
+        /* Primary button */
+        .cl-formButtonPrimary,
+        .cl-button {
+            background: linear-gradient(135deg, #2d1b69, var(--clerk-primary)) !important;
+            border: none !important;
+            border-radius: 8px !important;
+            padding: 12px 24px !important;
+            font-weight: 600 !important;
+            font-size: 16px !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+        }
+
+        .cl-formButtonPrimary:hover,
+        .cl-button:hover {
+            transform: translateY(-2px) !important;
             box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4) !important;
         }
 
-        .cl-footerActionLink {
-            color: var(--accent-orange) !important;
+        /* Links */
+        .cl-footerActionLink,
+        .cl-link {
+            color: var(--clerk-primary) !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+        }
+
+        .cl-footerActionLink:hover,
+        .cl-link:hover {
+            text-decoration: underline !important;
+        }
+
+        /* Social buttons */
+        .cl-socialButtonsBlockButton {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 2px solid var(--clerk-border) !important;
+            border-radius: 8px !important;
+            color: #ffffff !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .cl-socialButtonsBlockButton:hover {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-color: var(--clerk-primary) !important;
+        }
+
+        /* Divider */
+        .cl-dividerLine {
+            background: var(--clerk-border) !important;
+        }
+
+        .cl-dividerText {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        /* Error messages */
+        .cl-formFieldErrorText {
+            color: #ff4444 !important;
+        }
+
+        /* Footer */
+        .cl-footer,
+        .cl-footerAction {
+            color: rgba(255, 255, 255, 0.8) !important;
         }
 
         .loading-spinner {
@@ -157,16 +250,20 @@
                     signUpUrl: '/signup.html',
                     appearance: {
                         elements: {
-                            formButtonPrimary: 'auth-button',
-                            card: 'clerk-card-custom',
-                            rootBox: 'clerk-root-custom'
+                            formButtonPrimary: 'cl-formButtonPrimary',
+                            card: 'cl-card',
+                            rootBox: 'cl-rootBox',
+                            formFieldInput: 'cl-formFieldInput',
+                            footerActionLink: 'cl-footerActionLink'
                         },
                         variables: {
                             colorPrimary: '#ff6b35',
                             colorBackground: 'transparent',
                             colorText: '#ffffff',
                             colorInputBackground: 'rgba(255, 255, 255, 0.1)',
-                            colorInputText: '#ffffff'
+                            colorInputText: '#ffffff',
+                            borderRadius: '8px',
+                            fontFamily: 'Roboto, sans-serif'
                         }
                     }
                 });
