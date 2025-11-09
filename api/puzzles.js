@@ -8,6 +8,7 @@ const { setCorsHeaders } = require('../lib/cors');
 const { getCached, invalidateCache, CACHE_DURATIONS, CacheKeys } = require('../lib/cache');
 const { generateXSudoku } = require('../lib/x-sudoku-generator');
 const { generateMiniSudoku } = require('../lib/mini-sudoku-generator');
+const { generateAntiKnight } = require('../lib/anti-knight-generator');
 
 // Helper function for SQL queries
 async function sql(strings, ...values) {
@@ -1565,6 +1566,12 @@ module.exports = async function handler(req, res) {
               puzzle = result.puzzle;
               solution = result.solution;
               gridSize = 6;
+            } else if (practiceVariant === 'anti-knight') {
+              // Anti-Knight Sudoku variant (Phase 2 Month 9)
+              const result = generateAntiKnight(practiceDifficulty, seed);
+              puzzle = result.puzzle;
+              solution = result.solution;
+              gridSize = 9;
             } else if (practiceVariant === 'classic') {
               // Classic Sudoku - use existing generation logic
               const completeSolution = generateCompleteSolution(seed);
@@ -1574,7 +1581,7 @@ module.exports = async function handler(req, res) {
             } else {
               return res.status(400).json({
                 error: 'Invalid variant',
-                validVariants: ['classic', 'x-sudoku', 'mini']
+                validVariants: ['classic', 'x-sudoku', 'mini', 'anti-knight']
               });
             }
 

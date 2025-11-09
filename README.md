@@ -7,6 +7,28 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 2 Month 9: Anti-Knight Sudoku Variant** (November 9, 2025)
+- ♞ **Anti-Knight Constraint**: Classic Sudoku PLUS chess knight's move rule
+  - Cells that are a knight's move apart cannot contain the same digit
+  - Knight's move: 2 squares in one direction + 1 square perpendicular (8 possible positions)
+  - More challenging puzzles with additional logical deductions required
+  - Unlimited play (no daily limits)
+  - API: `/api/puzzles?mode=practice&variant=anti-knight&difficulty=medium`
+- 🧩 **Anti-Knight Validation Library**: Complete constraint checking
+  - `lib/anti-knight-validator.js`: Knight move validation logic
+  - Functions: `getKnightMoves()`, `isValidAntiKnightPlacement()`, `validateAntiKnightBoard()`
+  - Violation detection and counting for UI feedback
+  - Valid number calculation for hint system
+- 🎲 **Anti-Knight Generator**: Backtracking algorithm with Anti-Knight constraints
+  - `lib/anti-knight-generator.js`: Generate solvable Anti-Knight puzzles
+  - Seeded random generation for deterministic puzzles
+  - Target clues: easy=40, medium=32, hard=28 (adjusted for added difficulty)
+  - Unique solution validation with Anti-Knight constraint enforcement
+- ✅ **Endpoint Conservation**: Anti-Knight added to existing `/api/puzzles` endpoint
+  - Still at 12/12 endpoints (within free tier limit)
+  - Integrated into practice mode variant system
+  - Follows same pattern as X-Sudoku and Mini variants
+
 ### **Phase 2 Month 8: Friends System & Social Sharing** (November 9, 2025)
 - 👥 **Friends System**: Complete social friendship management
   - Send/accept/reject friend requests
