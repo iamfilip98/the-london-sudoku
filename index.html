@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/enhancements.css">
     <link rel="stylesheet" href="css/tutorial.css">
     <link rel="stylesheet" href="css/variant-mastery.css">
+    <link rel="stylesheet" href="css/variant-challenges.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -72,7 +73,7 @@
                     <i class="fas fa-star"></i>
                     <span>Achievements</span>
                 </a>
-                <a href="#" class="nav-link" data-page="challenges" style="display: none;">
+                <a href="#" class="nav-link" data-page="challenges">
                     <i class="fas fa-fire"></i>
                     <span>Challenges</span>
                 </a>
@@ -883,15 +884,33 @@
                     </h1>
                 </div>
 
-                <div class="challenges-content">
-                    <div class="current-challenge" id="currentChallenge">
-                        <!-- Current challenge will be populated by JavaScript -->
+                <!-- PHASE 2 MONTH 21: Variant Daily Challenges -->
+                <div class="variant-challenges-content">
+                    <!-- Variant of the Day Banner -->
+                    <div id="variantOfTheDay">
+                        <!-- Populated by JavaScript -->
                     </div>
 
-                    <div class="challenge-history">
-                        <h3>Challenge History</h3>
-                        <div class="challenge-list" id="challengeHistory">
-                            <!-- Challenge history will be populated by JavaScript -->
+                    <!-- Daily Progress Summary -->
+                    <div id="dailyProgressSummary">
+                        <!-- Populated by JavaScript -->
+                    </div>
+
+                    <!-- Daily Challenges Grid -->
+                    <div class="challenges-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-tasks"></i>
+                            Today's Challenges
+                        </h2>
+                        <div class="daily-challenges-grid" id="dailyChallengesGrid">
+                            <!-- Challenge cards populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Streaks Summary -->
+                    <div class="streaks-section">
+                        <div id="streaksSummary">
+                            <!-- Streaks populated by JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -1612,11 +1631,17 @@
 
     <!-- PHASE 2 MONTH 20: Variant Mastery UI -->
     <script src="/js/variant-mastery-ui.js"></script>
+
+    <!-- PHASE 2 MONTH 21: Variant Daily Challenges -->
+    <script src="/js/variant-daily-challenges.js"></script>
+    <script src="/js/variant-challenges-ui.js"></script>
     <script>
         // Initialize tutorial system when Sudoku engine is ready
         let tutorialManager;
         let variantStatsManager;
         let variantMasteryUI;
+        let variantChallengesManager;
+        let variantChallengesUI;
 
         function initializeTutorialSystem() {
             if (window.sudokuEngine) {
@@ -1634,6 +1659,17 @@
                 window.variantMasteryUI = variantMasteryUI;
                 variantMasteryUI.initialize();
                 console.log('✅ Variant mastery UI initialized');
+
+                // Initialize variant challenges manager
+                variantChallengesManager = new VariantDailyChallengesManager(variantStatsManager);
+                window.variantChallengesManager = variantChallengesManager;
+                console.log('✅ Variant challenges manager initialized');
+
+                // Initialize variant challenges UI
+                variantChallengesUI = new VariantChallengesUI(variantChallengesManager);
+                window.variantChallengesUI = variantChallengesUI;
+                variantChallengesUI.initialize();
+                console.log('✅ Variant challenges UI initialized');
 
                 // Add tutorial triggers to UI
                 addTutorialTriggers();

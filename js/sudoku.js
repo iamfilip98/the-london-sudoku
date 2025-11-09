@@ -4197,6 +4197,35 @@ class SudokuEngine {
                 }
             }
 
+            // PHASE 2 MONTH 21: Check daily challenges and update streaks
+            if (window.variantChallengesManager && window.variantChallengesUI) {
+                try {
+                    // Check which challenges were completed
+                    const completedChallenges = window.variantChallengesManager.checkChallenges(
+                        this.variant,
+                        this.currentDifficulty,
+                        this.timer,
+                        this.errors
+                    );
+
+                    // Show challenge completion notifications
+                    if (completedChallenges.length > 0) {
+                        window.variantChallengesUI.showChallengeCompletionNotification(completedChallenges);
+                        console.log('✅ Challenges completed:', completedChallenges);
+                    }
+
+                    // Update streak for this variant
+                    const updatedStreak = window.variantChallengesManager.updateStreak(this.variant);
+
+                    // Show streak milestone notification if applicable
+                    if (updatedStreak.current > 1) {
+                        window.variantChallengesUI.showStreakMilestone(this.variant, updatedStreak.current);
+                    }
+                } catch (error) {
+                    console.error('Failed to check daily challenges:', error);
+                }
+            }
+
         } catch (error) {
             console.error('Failed to save completed game:', error);
         }
