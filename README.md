@@ -7,7 +7,7 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
-### **Phase 0 Month 3: Anonymous Play System** (November 9, 2025)
+### **Phase 0 Complete: Infrastructure Migration** (November 9, 2025)
 - 🎭 **Anonymous Sessions**: Play without signup using UUID-based sessions
 - 💾 **localStorage Progress**: Game progress stored locally until signup
 - 🔄 **Seamless Migration**: Anonymous data transfers to account on registration
@@ -15,6 +15,9 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 - 🔐 **Clerk Authentication**: Enterprise-grade auth with 10K free users
 - 📊 **PostHog Analytics**: Real-time event tracking (1M events/month free)
 - ⚡ **Better UX**: Authentication timeout handling and improved error messages
+- 🚀 **Redis Caching**: Vercel KV integration for 10-50x faster API responses
+- 📦 **API Consolidation**: 12 serverless functions (within Vercel free tier limit)
+- 🗄️ **Neon Database**: Scalable serverless PostgreSQL with connection pooling
 
 ## 🆕 Recent Updates (October 2025)
 
@@ -257,16 +260,17 @@ The puzzle generation system uses advanced techniques:
 - **Performance Optimized**: Intelligent caching, background loading, efficient DOM manipulation
 
 ### **Backend Infrastructure**
-- **Vercel Serverless**: Scalable serverless API endpoints with CRON jobs
-- **PostgreSQL**: Robust database with connection pooling and optimized indexes
+- **Vercel Serverless**: 12 optimized API endpoints (free tier compliant) with CRON jobs
+- **Neon PostgreSQL**: Serverless database with connection pooling and optimized indexes
+- **Redis Caching**: Vercel KV integration - 10-50x faster responses with 24-hour TTL for puzzles
 - **Clerk Authentication**: Enterprise-grade auth with 10K free users, JWT tokens, session management
 - **PostHog Analytics**: Real-time event tracking (1M events/month free) for user insights
 - **Anonymous Sessions**: UUID-based localStorage sessions for frictionless onboarding
-- **RESTful API**: Clean endpoints for puzzles, games, entries, achievements, statistics
+- **RESTful API**: Consolidated endpoints for puzzles, games, entries, achievements, statistics
 - **Pre-Generation System**: Puzzles generated at 11 PM daily for instant next-day loading
 - **Fallback System**: Emergency backup puzzles ensure zero downtime
 - **Input Validation**: Comprehensive validation module prevents injection attacks
-- **Data Persistence**: Comprehensive data storage with automatic backups
+- **Data Persistence**: Comprehensive data storage with automatic backups and cache invalidation
 
 ### **🔐 Security System (November 2025 Update)**
 - **Clerk Authentication**: Primary auth system with enterprise-grade security, JWT tokens, and OAuth support
@@ -325,8 +329,15 @@ stats: (type, data) -- Flexible JSON storage for various statistics
 - `GET /api/stats?type=all` - Comprehensive statistics
 
 **Admin Endpoints:** (Require authentication headers)
-- `POST /api/generate-fallback-puzzles` - Generate emergency backup puzzles
-- `POST /api/cron-verify-puzzles` - Verify tomorrow's puzzles exist
+- `POST /api/admin?action=generate-fallback` - Generate emergency backup puzzles
+- `POST /api/admin?action=clear-all` - Clear all game data (reset)
+- `POST /api/admin?action=clear-old-puzzles&days=N` - Clean up old puzzles
+- `POST /api/admin?action=init-db` - Initialize database tables
+- `POST /api/cron-verify-puzzles` - CRON: Verify tomorrow's puzzles exist
+
+**Migration Endpoints:** (Phase 0 Month 3 - Anonymous Data Import)
+- `POST /api/import?type=completion` - Import anonymous game completion to user account
+- `POST /api/import?type=achievement` - Import anonymous achievement to user account
 
 **Scheduled Jobs:** (Automatic via Vercel CRON)
 - `POST /api/generate-tomorrow` - Daily at 11:00 PM UTC
@@ -555,6 +566,12 @@ The application is deployed on Vercel with:
    ```bash
    # Database initialization (creates users table)
    npm run init-users
+
+   # Vercel KV (Redis) setup - CRITICAL for caching (Phase 0)
+   # 1. Go to Vercel Dashboard → Storage → Create KV Database
+   # 2. Link to your project (environment variables auto-added)
+   # 3. Deploy - caching will be enabled automatically
+   # Note: Caching gracefully degrades to no-cache in development
 
    # Clerk setup (configure in Clerk dashboard)
    # - Add allowed redirect URLs
