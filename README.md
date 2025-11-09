@@ -7,6 +7,40 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 2 Month 14: Jigsaw Sudoku Variant** (November 9, 2025)
+- 🧩 **Jigsaw Sudoku Constraint**: Classic Sudoku PLUS irregular regions
+  - Instead of standard 3×3 boxes, the grid is divided into 9 irregular regions
+  - Each irregular region contains exactly 9 cells
+  - Regions are connected (no isolated cells)
+  - Each region must contain digits 1-9 (like standard boxes)
+  - Visually unique and more challenging than standard box constraints
+  - Unlimited play (no daily limits)
+  - API: `/api/puzzles?mode=practice&variant=jigsaw-sudoku&difficulty=medium`
+- 🗺️ **Jigsaw Region Generator**: Advanced region creation algorithm
+  - `lib/jigsaw-region-generator.js`: Generate irregular regions
+  - Functions: `generateJigsawRegions()`, `getRegionCells()`, `validateRegions()`
+  - Growth-based algorithm: Start with 9 seed cells, grow regions iteratively
+  - Ensures all regions are connected via flood-fill validation
+  - Regions are aesthetically pleasing and diverse
+  - Fallback to standard boxes if generation fails
+- 🧩 **Jigsaw Sudoku Validation Library**: Complete irregular region checking
+  - `lib/jigsaw-sudoku-validator.js`: Jigsaw validation logic
+  - Functions: `isValidJigsawPlacement()`, `validateJigsawBoard()`, `validateJigsawSolution()`
+  - Checks rows, columns, and irregular regions for duplicates
+  - Valid number calculation for hint system with irregular regions
+  - Region cell lookup for frontend rendering
+- 🎲 **Jigsaw Sudoku Generator**: Backtracking with irregular constraints
+  - `lib/jigsaw-sudoku-generator.js`: Generate solvable Jigsaw Sudoku puzzles
+  - Combines region generation with solution creation
+  - Backtracking algorithm enforces irregular region constraints
+  - Target clues: easy=36, medium=30, hard=26
+  - Unique solution validation with irregular regions
+  - Region map included in API response for frontend rendering
+- ✅ **Endpoint Conservation**: Jigsaw Sudoku added to existing `/api/puzzles` endpoint
+  - Still at 12/12 endpoints (within free tier limit)
+  - Integrated into practice mode variant system
+  - Irregular regions returned as additional metadata in response
+
 ### **Phase 2 Month 13: Thermo Sudoku Variant** (November 9, 2025)
 - 🌡️ **Thermo Sudoku Constraint**: Classic Sudoku PLUS thermometer constraints
   - Grid contains "thermometers" - lines of connected cells
