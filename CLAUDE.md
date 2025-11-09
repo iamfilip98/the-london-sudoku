@@ -216,11 +216,11 @@ const targetTimes = {
 ### **Vercel Free Tier Limit: Maximum 12 API Endpoints**
 ⚠️ **CRITICAL CONSTRAINT**: Vercel Hobby plan allows EXACTLY 12 serverless functions per deployment.
 
-**Current Endpoint Count**: 13/12 (**⚠️ EXCEEDED LIMIT**)
+**Current Endpoint Count**: 12/12 (✅ AT LIMIT)
 
 **Current API Endpoints**:
 1. `/api/achievements.js` - Achievement management
-2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db, **migrate-phase1-month5, migrate-phase2-month7, mark-founders** *[Phase 1-2]*)
+2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db, **migrate-phase1-month5, migrate-phase2-month7, mark-founders**, **create-checkout, create-portal, webhook, subscription-status** *[Phase 1-2, Subscription]*) - **SUBSCRIPTION CONSOLIDATED HERE**
 3. `/api/auth.js` - Authentication (bcrypt + Clerk) + **User Profiles** (GET/PUT for bio, avatar, displayName, founder badge) *[Phase 1 Month 4-5]*
 4. `/api/cron-verify-puzzles.js` - Scheduled puzzle verification
 5. `/api/entries.js` - Daily battle results
@@ -231,32 +231,26 @@ const targetTimes = {
 10. `/api/puzzles.js` - Puzzle fetching (with Redis caching) + **Practice Mode** (?mode=practice&variant=classic|x-sudoku|mini) *[Phase 1 Month 4-5]*
 11. `/api/ratings.js` - Puzzle rating system
 12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) *[Phase 1 Month 4]*
-13. `/api/subscription.js` - **NEW** Stripe subscription management (checkout, portal, webhooks) *[Phase 2 Month 7]* ⚠️ **EXCEEDS FREE TIER**
 
 **Consolidation Strategy**:
 - **BEFORE Phase 0**: 14 endpoints (exceeded limit)
 - **AFTER Phase 0**: 12 endpoints (at limit)
-- **Phase 2 Month 7**: 13 endpoints (**EXCEEDED AGAIN**)
-- **Changes**:
-  - Merged `import-achievement.js` + `import-completion.js` → `import.js?type=completion|achievement`
-  - Merged `init-db.js` → `admin.js?action=init-db`
+- **Phase 2 Month 7**: 12 endpoints (✅ **STILL AT LIMIT**)
+- **Consolidation History**:
+  - Phase 0: Merged `import-achievement.js` + `import-completion.js` → `import.js?type=completion|achievement`
+  - Phase 0: Merged `init-db.js` → `admin.js?action=init-db`
+  - Phase 2 Month 7: Merged `subscription.js` → `admin.js?action=create-checkout|create-portal|webhook|subscription-status`
 
-**⚠️ RESOLUTION REQUIRED**:
-With Phase 2 Month 7's `/api/subscription` endpoint, we've exceeded the free tier limit again. Two options:
+**Subscription Consolidation Details**:
+- Subscription actions added to `/api/admin.js` with conditional authentication
+- Admin-only actions (clear-all, migrate, etc.) require `x-admin-key` header
+- Subscription actions skip admin key check and use their own authentication:
+  - `webhook`: Stripe signature verification via `stripe-signature` header
+  - `create-checkout`, `create-portal`: User session authentication (frontend managed)
+  - `subscription-status`: User session authentication (frontend managed)
+- Clean separation achieved via `subscriptionActions` array in admin handler
 
-**Option 1: Upgrade to Vercel Pro ($20/mo)**
-- Allows 100 serverless functions
-- Required for monetization anyway (Stripe webhooks need reliable uptime)
-- Includes priority support
-- **RECOMMENDED** for production monetization
-
-**Option 2: Consolidate subscription into admin**
-- Merge `/api/subscription` → `/api/admin?action=create-checkout|create-portal|webhook`
-- Keeps under free tier limit
-- Less clean architecture (mixing admin and user-facing endpoints)
-- Webhooks would need admin authentication (not ideal for Stripe)
-
-**RULE**: Before adding ANY new API endpoint, you MUST consolidate existing endpoints or upgrade to Pro.
+**RULE**: Before adding ANY new API endpoint, you MUST consolidate existing endpoints first.
 
 **How to Consolidate**:
 1. Use query parameters: `/api/admin.js?action=init-db`

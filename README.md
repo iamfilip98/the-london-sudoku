@@ -13,7 +13,7 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
   - Customer portal (manage subscriptions, update payment, cancel)
   - Webhook handling (subscription lifecycle events)
   - Database sync (premium status, subscription status)
-  - API: `/api/subscription` for subscription management
+  - API: `/api/admin?action=create-checkout|create-portal|webhook|subscription-status`
 - 🗄️ **Premium Database Schema**: Comprehensive subscription tracking
   - `users` table: `premium`, `stripe_customer_id`, `stripe_subscription_id`, `subscription_status`
   - `subscription_events` table: Webhook event logging
@@ -29,10 +29,11 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
   - Rewarded videos disabled for premium
   - Ad containers hidden with CSS
   - Seamless toggle on subscription change
-- ⚠️ **CRITICAL: Vercel Endpoint Limit**: 13/12 endpoints (EXCEEDED)
-  - Added `/api/subscription` endpoint
-  - Need to either: (1) Consolidate or (2) Upgrade to Vercel Pro
-  - Recommendation: Upgrade to Pro for monetization features
+- ✅ **Endpoint Consolidation**: Subscription consolidated into admin.js (12/12 endpoints)
+  - Subscription actions moved to `/api/admin` to respect Vercel free tier limit
+  - Conditional authentication: subscription actions skip admin key check
+  - Webhooks use Stripe signature verification
+  - User endpoints rely on session authentication
 
 ### **Phase 1 Month 6: Monetization via Ads** (November 9, 2025)
 - 💰 **Google AdSense Integration**: Non-intrusive banner ads for free tier users
