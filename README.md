@@ -7,6 +7,35 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 2 Month 13: Thermo Sudoku Variant** (November 9, 2025)
+- 🌡️ **Thermo Sudoku Constraint**: Classic Sudoku PLUS thermometer constraints
+  - Grid contains "thermometers" - lines of connected cells
+  - Numbers along each thermometer MUST strictly increase from bulb (start) to tip (end)
+  - Bulb is the first cell in the thermometer
+  - Each subsequent cell must contain a strictly greater number than the previous
+  - Strategic placement required to satisfy both Sudoku rules and thermo constraints
+  - Unlimited play (no daily limits)
+  - API: `/api/puzzles?mode=practice&variant=thermo-sudoku&difficulty=medium`
+- 🧩 **Thermo Sudoku Validation Library**: Complete thermometer constraint checking
+  - `lib/thermo-sudoku-validator.js`: Thermometer validation logic
+  - Functions: `findThermometersForCell()`, `isValidThermoPlacement()`, `validateThermoBoard()`
+  - Validates strict increasing constraint along each thermometer
+  - Checks thermometer structure (connectivity, bounds)
+  - Valid number calculation for hint system with thermo constraints
+- 🎲 **Thermo Sudoku Generator**: Dynamic thermometer placement algorithm
+  - `lib/thermo-sudoku-generator.js`: Generate solvable Thermo Sudoku puzzles
+  - Intelligent thermometer path creation using greedy search
+  - Thermometer count and length varies by difficulty:
+    - Easy: 6 thermometers, length 3-5 cells (more guidance)
+    - Medium: 8 thermometers, length 3-6 cells (balanced)
+    - Hard: 10 thermometers, length 4-7 cells (more complex)
+  - Target clues: easy=36, medium=28, hard=24
+  - Thermometer data included in API response for frontend rendering
+- ✅ **Endpoint Conservation**: Thermo Sudoku added to existing `/api/puzzles` endpoint
+  - Still at 12/12 endpoints (within free tier limit)
+  - Integrated into practice mode variant system
+  - Thermometers returned as additional metadata in response
+
 ### **Phase 2 Month 12: Consecutive Sudoku Variant** (November 9, 2025)
 - 🔢 **Consecutive Sudoku Constraint**: Classic Sudoku PLUS consecutive marking constraints
   - Orthogonally adjacent cells may be marked with consecutive indicators
