@@ -4177,6 +4177,26 @@ class SudokuEngine {
                 debugLog('Game completed and integrated with analytics:', completedGame);
             }
 
+            // PHASE 2 MONTH 19: Track variant-specific statistics
+            if (window.variantStatsManager) {
+                try {
+                    const unlockedAchievements = window.variantStatsManager.recordCompletion(
+                        this.variant,
+                        this.currentDifficulty,
+                        this.timer,
+                        this.errors
+                    );
+
+                    // Check if any new variant achievements were unlocked
+                    if (unlockedAchievements && unlockedAchievements.length > 0) {
+                        console.log('🏆 Variant achievements unlocked:', unlockedAchievements);
+                        // Could trigger achievement notification UI here
+                    }
+                } catch (error) {
+                    console.error('Failed to track variant stats:', error);
+                }
+            }
+
         } catch (error) {
             console.error('Failed to save completed game:', error);
         }

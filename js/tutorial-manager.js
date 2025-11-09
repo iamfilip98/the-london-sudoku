@@ -137,6 +137,11 @@ class TutorialManager {
         this.tutorialProgress[this.currentTutorial].completedAt = Date.now();
         this.saveProgress();
 
+        // PHASE 2 MONTH 19: Track tutorial completion in variant stats
+        if (window.variantStatsManager) {
+            window.variantStatsManager.completeTutorial(this.currentTutorial);
+        }
+
         // Show completion screen
         this.showCompletionScreen();
 
