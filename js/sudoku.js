@@ -2127,6 +2127,19 @@ class SudokuEngine {
             // Save the completed state to prevent the game from appearing unfinished when reloaded
             await this.saveGameState();
 
+            // Track puzzle completion in PostHog
+            const score = this.calculateFinalScore();
+            if (window.Monitoring) {
+                window.Monitoring.trackPuzzleCompletion({
+                    variant: 'classic',
+                    difficulty: this.currentDifficulty,
+                    time: this.elapsedTime,
+                    errors: this.errorCount,
+                    hints: this.hintsUsed,
+                    score: score
+                });
+            }
+
             // Trigger completion celebration
             if (this.enhancements) {
                 this.enhancements.showCompletionCelebration();

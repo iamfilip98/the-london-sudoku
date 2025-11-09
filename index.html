@@ -9,6 +9,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init('phc_lomaZP46NnayEjo05eWfAgcbY2cubyaF9Eb14Omm2kY', {
+            api_host: 'https://app.posthog.com',
+            autocapture: false,
+            disable_session_recording: true,
+            persistence: 'localStorage',
+            respect_dnt: true,
+            ip: false
+        });
+    </script>
+    <script src="/lib/monitoring.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -689,9 +703,18 @@
         // Display current player and add logout functionality
         function initializePlayerSession() {
             const currentPlayer = sessionStorage.getItem('currentPlayer');
+            const clerkUserId = sessionStorage.getItem('clerk_user_id');
             const playerDisplay = document.getElementById('currentPlayerDisplay');
             const playerDisplayMobile = document.getElementById('currentPlayerDisplayMobile');
             const sudokuPlayerIndicator = document.getElementById('sudokuPlayerIndicator');
+
+            // Identify user in PostHog
+            if (clerkUserId && window.Monitoring) {
+                window.Monitoring.identifyUser(clerkUserId, {
+                    subscription_tier: 'free',
+                    created_at: Date.now()
+                });
+            }
 
             if (currentPlayer && playerDisplay) {
                 const playerName = currentPlayer === 'faidao' ? 'Faidao' : 'Filip';
@@ -759,6 +782,12 @@
 
         // Initialize player session when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize PostHog monitoring
+            if (window.Monitoring) {
+                window.Monitoring.initMonitoring();
+                window.Monitoring.trackPageView('Dashboard');
+            }
+
             initializePlayerSession();
             initializeDropdown();
         });
