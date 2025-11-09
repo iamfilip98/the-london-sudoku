@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Championship - Login</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-2xl);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .auth-logo {
+            font-size: 4rem;
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+        }
+
+        .auth-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #ff6b35, #ff9500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .auth-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: #ff9500;
+            box-shadow: var(--shadow-focus);
+        }
+
+        .auth-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .auth-button {
+            background: linear-gradient(135deg, #2d1b69, #ff6b35);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 1rem 2rem;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Orbitron', monospace;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .auth-error {
+            color: var(--accent-pink);
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .auth-hint {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h1 class="auth-title">Championship Arena</h1>
+            <p class="auth-subtitle">Choose your champion</p>
+
+            <form class="auth-form" id="authForm">
+                <select class="auth-input" id="playerSelect" required>
+                    <option value="">Select Player</option>
+                    <option value="faidao">Faidao - The Queen</option>
+                    <option value="filip">Filip - The Champion</option>
+                </select>
+                <input
+                    type="password"
+                    class="auth-input"
+                    id="passwordInput"
+                    placeholder="Enter password"
+                    required
+                    autocomplete="current-password"
+                >
+                <button type="submit" class="auth-button">
+                    <i class="fas fa-gamepad"></i> Enter Battle Arena
+                </button>
+            </form>
+
+            <div class="auth-error" id="authError">
+                <i class="fas fa-exclamation-triangle"></i> Invalid credentials. Try again.
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Secure API-based authentication
+        document.getElementById('authForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const player = document.getElementById('playerSelect').value;
+            const password = document.getElementById('passwordInput').value;
+            const errorDiv = document.getElementById('authError');
+            const submitButton = document.querySelector('.auth-button');
+
+            // Disable submit button during authentication
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+
+            try {
+                // Call authentication API
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username: player, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Store authentication and player identity in session
+                    sessionStorage.setItem('sudokuAuth', 'authenticated');
+                    sessionStorage.setItem('currentPlayer', result.player);
+                    sessionStorage.setItem('displayName', result.displayName);
+                    if (result.avatar) {
+                        sessionStorage.setItem('avatar', result.avatar);
+                    }
+                    // Redirect to main app
+                    window.location.href = 'index.html';
+                } else {
+                    // Show error
+                    errorDiv.style.display = 'block';
+                    document.getElementById('passwordInput').value = '';
+                    document.getElementById('passwordInput').focus();
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<i class="fas fa-gamepad"></i> Enter Battle Arena';
+                }
+            } catch (error) {
+                console.error('Authentication error:', error);
+                errorDiv.textContent = 'Authentication failed. Please try again.';
+                errorDiv.style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-gamepad"></i> Enter Battle Arena';
+            }
+        });
+
+        // Check if already authenticated
+        if (sessionStorage.getItem('sudokuAuth') === 'authenticated') {
+            window.location.href = 'index.html';
+        }
+
+        // 🚀 PERFORMANCE OPTIMIZATION: Enhanced comprehensive data preloading
+        // This system loads all critical data while user is on login page for instant game access
+        // - Preloads puzzles, scores, achievements, and progress data in parallel
+        // - Stores data in sessionStorage for instant retrieval on main app
+        // - Reduces localStorage dependency and improves loading times
+        async function preloadDataInBackground() {
+            try {
+                console.log('🚀 Starting comprehensive background preload...');
+                const preloadStart = performance.now();
+
+                // Get today's date for date-specific data
+                const today = new Date().toISOString().split('T')[0];
+
+                // Preload all critical data in parallel for maximum performance
+                const dataPromises = [
+                    // Core game data
+                    fetch('/api/entries').then(response => response.ok ? response.json() : []),
+                    fetch('/api/stats?type=all').then(response => response.ok ? response.json() : {}),
+
+                    // Today's puzzles with cache busting
+                    fetch(`/api/puzzles?date=${today}&t=${Date.now()}`).then(response => response.ok ? response.json() : null),
+
+                    // Today's game progress
+                    fetch(`/api/games?date=${today}`).then(response => response.ok ? response.json() : {}),
+
+                    // Achievement data for instant page loads
+                    fetch('/api/achievements').then(response => response.ok ? response.json() : []),
+
+                    // Challenge data
+                    fetch('/api/stats?type=challenges').then(response => response.ok ? response.json() : [])
+                ];
+
+                const [entries, bulkData, puzzles, todayGames, achievements, challenges] = await Promise.all(dataPromises);
+
+                // Store all preloaded data efficiently
+                const preloadedData = {
+                    entries: entries || [],
+                    bulkData: bulkData || {},
+                    puzzles: puzzles,
+                    todayGames: todayGames || {},
+                    achievements: achievements || [],
+                    challenges: challenges || [],
+                    loadTime: Date.now(),
+                    date: today
+                };
+
+                // Store as single compressed object to reduce sessionStorage operations
+                sessionStorage.setItem('comprehensivePreload', JSON.stringify(preloadedData));
+
+                // Backwards compatibility with existing code
+                sessionStorage.setItem('preloadedEntries', JSON.stringify(entries || []));
+                sessionStorage.setItem('preloadedBulkData', JSON.stringify(bulkData || {}));
+                if (puzzles) {
+                    sessionStorage.setItem('preloadedPuzzles', JSON.stringify(puzzles));
+                    sessionStorage.setItem('puzzlesLoadTime', Date.now().toString());
+                }
+
+                const preloadEnd = performance.now();
+                console.log(`✅ Comprehensive preload completed in ${(preloadEnd - preloadStart).toFixed(1)}ms`);
+                console.log('📊 Preloaded data:', {
+                    entries: (entries || []).length,
+                    puzzles: puzzles ? Object.keys(puzzles).length : 0,
+                    todayGames: Object.keys(todayGames || {}).length,
+                    achievements: (achievements || []).length,
+                    challenges: (challenges || []).length
+                });
+
+            } catch (error) {
+                console.warn('Background preload error:', error);
+                // Fallback: try to preload at least the essentials
+                try {
+                    const today = new Date().toISOString().split('T')[0];
+                    const essentials = await Promise.allSettled([
+                        fetch('/api/entries').then(r => r.json()),
+                        fetch(`/api/puzzles?date=${today}&t=${Date.now()}`).then(r => r.json())
+                    ]);
+
+                    if (essentials[0].status === 'fulfilled') {
+                        sessionStorage.setItem('preloadedEntries', JSON.stringify(essentials[0].value));
+                    }
+                    if (essentials[1].status === 'fulfilled') {
+                        sessionStorage.setItem('preloadedPuzzles', JSON.stringify(essentials[1].value));
+                        sessionStorage.setItem('puzzlesLoadTime', Date.now().toString());
+                    }
+                    console.log('🔄 Fallback preload completed');
+                } catch (fallbackError) {
+                    console.warn('Fallback preload also failed:', fallbackError);
+                }
+            }
+        }
+
+        // Start preloading immediately when page loads
+        preloadDataInBackground();
+
+        // Add logout functionality for testing
+        window.logout = function() {
+            sessionStorage.removeItem('sudokuAuth');
+            sessionStorage.removeItem('currentPlayer');
+            // Clear preloaded data on logout
+            sessionStorage.removeItem('preloadedEntries');
+            sessionStorage.removeItem('preloadedBulkData');
+            sessionStorage.removeItem('preloadedPuzzles');
+            sessionStorage.removeItem('puzzlesLoadTime');
+            window.location.href = 'auth.html';
+        };
+    </script>
+</body>
+</html>
