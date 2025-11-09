@@ -10,6 +10,7 @@ const { generateXSudoku } = require('../lib/x-sudoku-generator');
 const { generateMiniSudoku } = require('../lib/mini-sudoku-generator');
 const { generateAntiKnight } = require('../lib/anti-knight-generator');
 const { generateKillerSudoku } = require('../lib/killer-sudoku-generator');
+const { generateHyperSudoku } = require('../lib/hyper-sudoku-generator');
 
 // Helper function for SQL queries
 async function sql(strings, ...values) {
@@ -1552,7 +1553,7 @@ module.exports = async function handler(req, res) {
           const practiceVariant = variant || 'classic';
           const seed = Math.random(); // Unique seed for each practice puzzle
 
-          let puzzle, solution, gridSize, cages;
+          let puzzle, solution, gridSize, cages, hyperRegions;
 
           try {
             if (practiceVariant === 'x-sudoku') {
@@ -1580,6 +1581,13 @@ module.exports = async function handler(req, res) {
               solution = result.solution;
               cages = result.cages;
               gridSize = 9;
+            } else if (practiceVariant === 'hyper-sudoku') {
+              // Hyper Sudoku variant (Phase 2 Month 11)
+              const result = generateHyperSudoku(practiceDifficulty, seed);
+              puzzle = result.puzzle;
+              solution = result.solution;
+              hyperRegions = result.hyperRegions;
+              gridSize = 9;
             } else if (practiceVariant === 'classic') {
               // Classic Sudoku - use existing generation logic
               const completeSolution = generateCompleteSolution(seed);
@@ -1589,7 +1597,7 @@ module.exports = async function handler(req, res) {
             } else {
               return res.status(400).json({
                 error: 'Invalid variant',
-                validVariants: ['classic', 'x-sudoku', 'mini', 'anti-knight', 'killer-sudoku']
+                validVariants: ['classic', 'x-sudoku', 'mini', 'anti-knight', 'killer-sudoku', 'hyper-sudoku']
               });
             }
 
@@ -1606,6 +1614,11 @@ module.exports = async function handler(req, res) {
             // Include cages for Killer Sudoku variant
             if (cages) {
               response.cages = cages;
+            }
+
+            // Include hyperRegions for Hyper Sudoku variant
+            if (hyperRegions) {
+              response.hyperRegions = hyperRegions;
             }
 
             return res.status(200).json(response
