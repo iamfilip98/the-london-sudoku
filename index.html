@@ -1706,5 +1706,166 @@
             setTimeout(initializeTutorialSystem, 1000);
         }
     </script>
+
+    <!-- Development Utilities -->
+    <script>
+        /**
+         * Development Utilities for LocalStorage Management
+         *
+         * These functions help during development by providing easy ways to
+         * clear localStorage data without manually using browser console.
+         *
+         * Available in browser console: window.devUtils
+         */
+        window.devUtils = {
+            /**
+             * Clear daily challenges data
+             */
+            clearDailyChallenges: () => {
+                localStorage.removeItem('variantDailyChallenges');
+                console.log('✅ Daily challenges cleared. Refresh page to see changes.');
+            },
+
+            /**
+             * Clear variant statistics
+             */
+            clearVariantStats: () => {
+                localStorage.removeItem('variantStats');
+                console.log('✅ Variant statistics cleared. Refresh page to see changes.');
+            },
+
+            /**
+             * Clear tutorial progress
+             */
+            clearTutorialProgress: () => {
+                localStorage.removeItem('tutorialProgress');
+                console.log('✅ Tutorial progress cleared. Refresh page to see changes.');
+            },
+
+            /**
+             * Clear all variant-related data
+             */
+            clearAllVariantData: () => {
+                localStorage.removeItem('variantDailyChallenges');
+                localStorage.removeItem('variantStats');
+                localStorage.removeItem('tutorialProgress');
+                console.log('✅ All variant data cleared. Refresh page to see changes.');
+            },
+
+            /**
+             * Clear ALL localStorage data (use with caution)
+             */
+            clearAll: () => {
+                const confirmed = confirm('This will clear ALL localStorage data. Are you sure?');
+                if (confirmed) {
+                    localStorage.clear();
+                    console.log('✅ All localStorage cleared. Refresh page to see changes.');
+                }
+            },
+
+            /**
+             * Show all localStorage contents
+             */
+            showAll: () => {
+                console.log('=== LocalStorage Contents ===');
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    try {
+                        const value = JSON.parse(localStorage.getItem(key));
+                        console.log(`${key}:`, value);
+                    } catch {
+                        console.log(`${key}: ${localStorage.getItem(key)}`);
+                    }
+                }
+                console.log('=============================');
+            },
+
+            /**
+             * Show daily challenges data
+             */
+            showDailyChallenges: () => {
+                const data = localStorage.getItem('variantDailyChallenges');
+                if (data) {
+                    console.log('Daily Challenges:', JSON.parse(data));
+                } else {
+                    console.log('No daily challenges data found');
+                }
+            },
+
+            /**
+             * Show variant statistics
+             */
+            showVariantStats: () => {
+                const data = localStorage.getItem('variantStats');
+                if (data) {
+                    console.log('Variant Stats:', JSON.parse(data));
+                } else {
+                    console.log('No variant statistics found');
+                }
+            },
+
+            /**
+             * Show tutorial progress
+             */
+            showTutorialProgress: () => {
+                const data = localStorage.getItem('tutorialProgress');
+                if (data) {
+                    console.log('Tutorial Progress:', JSON.parse(data));
+                } else {
+                    console.log('No tutorial progress found');
+                }
+            },
+
+            /**
+             * Get localStorage size in KB
+             */
+            getSize: () => {
+                let total = 0;
+                for (let key in localStorage) {
+                    if (localStorage.hasOwnProperty(key)) {
+                        total += localStorage[key].length + key.length;
+                    }
+                }
+                const sizeKB = (total / 1024).toFixed(2);
+                console.log(`LocalStorage size: ${sizeKB} KB`);
+                return sizeKB;
+            },
+
+            /**
+             * Show help/available commands
+             */
+            help: () => {
+                console.log(`
+=== Dev Utilities Help ===
+
+CLEAR COMMANDS:
+  devUtils.clearDailyChallenges()  - Clear daily challenges data
+  devUtils.clearVariantStats()     - Clear variant statistics
+  devUtils.clearTutorialProgress() - Clear tutorial progress
+  devUtils.clearAllVariantData()   - Clear all variant-related data
+  devUtils.clearAll()              - Clear ALL localStorage (with confirm)
+
+SHOW COMMANDS:
+  devUtils.showAll()               - Show all localStorage contents
+  devUtils.showDailyChallenges()   - Show daily challenges data
+  devUtils.showVariantStats()      - Show variant statistics
+  devUtils.showTutorialProgress()  - Show tutorial progress
+  devUtils.getSize()               - Get total localStorage size
+
+OTHER:
+  devUtils.help()                  - Show this help message
+
+TIP: After clearing data, refresh the page to see changes.
+========================
+                `);
+            }
+        };
+
+        // Auto-display help message on first load (only in development)
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('%c💻 Development Mode Active', 'color: #4CAF50; font-weight: bold; font-size: 14px;');
+            console.log('%cType devUtils.help() to see available commands', 'color: #2196F3; font-size: 12px;');
+        }
+    </script>
 </body>
 </html>

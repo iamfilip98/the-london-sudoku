@@ -13,6 +13,10 @@ class VariantDailyChallengesManager {
         this.todayDate = this.getTodayDateString();
         this.variantOfTheDay = null;
 
+        // LocalStorage versioning
+        this.STORAGE_VERSION = 1;
+        this.STORAGE_KEY = 'variantDailyChallenges';
+
         // Load saved data
         this.loadData();
 
@@ -454,7 +458,8 @@ class VariantDailyChallengesManager {
      */
     saveData() {
         try {
-            localStorage.setItem('variantDailyChallenges', JSON.stringify({
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
+                version: this.STORAGE_VERSION,
                 challenges: this.challenges,
                 streaks: this.streaks,
                 lastUpdated: Date.now()
@@ -469,19 +474,32 @@ class VariantDailyChallengesManager {
      */
     loadData() {
         try {
-            const saved = localStorage.getItem('variantDailyChallenges');
-            if (saved) {
-                const data = JSON.parse(saved);
-                this.challenges = data.challenges || {};
-                this.streaks = data.streaks || {};
-
-                // Clean up old challenges (keep last 7 days)
-                this.cleanupOldChallenges();
+            const saved = localStorage.getItem(this.STORAGE_KEY);
+            if (!saved) {
+                console.log('No saved daily challenges data found');
+                return;
             }
+
+            const data = JSON.parse(saved);
+
+            // Check version compatibility
+            if (data.version !== this.STORAGE_VERSION) {
+                console.warn(`Daily challenges storage version mismatch. Expected v${this.STORAGE_VERSION}, found v${data.version || 'none'}. Resetting data.`);
+                this.resetDataSilent();
+                return;
+            }
+
+            // Safe to load - versions match
+            this.challenges = data.challenges || {};
+            this.streaks = data.streaks || {};
+
+            // Clean up old challenges (keep last 7 days)
+            this.cleanupOldChallenges();
+
+            console.log('✅ Daily challenges data loaded successfully');
         } catch (error) {
             console.error('Failed to load daily challenges data:', error);
-            this.challenges = {};
-            this.streaks = {};
+            this.resetDataSilent();
         }
     }
 
@@ -501,16 +519,24 @@ class VariantDailyChallengesManager {
     }
 
     /**
-     * Reset all data (for testing)
+     * Reset all data silently (for version mismatches or errors)
+     */
+    resetDataSilent() {
+        this.challenges = {};
+        this.streaks = {};
+        console.log('Daily challenges and streaks have been reset (silent)');
+    }
+
+    /**
+     * Reset all data (for testing - with user confirmation)
      */
     resetData() {
         const confirmed = confirm('Are you sure you want to reset all daily challenges and streaks? This cannot be undone.');
         if (confirmed) {
-            this.challenges = {};
-            this.streaks = {};
+            this.resetDataSilent();
             this.generateDailyChallenges();
             this.saveData();
-            console.log('Daily challenges and streaks have been reset');
+            console.log('✅ Daily challenges and streaks have been reset');
             return true;
         }
         return false;

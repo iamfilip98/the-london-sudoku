@@ -7,6 +7,10 @@
 
 class VariantStatsManager {
     constructor() {
+        // LocalStorage versioning
+        this.STORAGE_VERSION = 1;
+        this.STORAGE_KEY = 'variantStats';
+
         this.stats = this.loadStats();
     }
 
@@ -353,7 +357,10 @@ class VariantStatsManager {
      */
     saveStats() {
         try {
-            localStorage.setItem('variantStats', JSON.stringify(this.stats));
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
+                version: this.STORAGE_VERSION,
+                stats: this.stats
+            }));
         } catch (error) {
             console.error('Failed to save variant stats:', error);
         }
@@ -364,14 +371,37 @@ class VariantStatsManager {
      */
     loadStats() {
         try {
-            const saved = localStorage.getItem('variantStats');
-            if (saved) {
-                return JSON.parse(saved);
+            const saved = localStorage.getItem(this.STORAGE_KEY);
+            if (!saved) {
+                console.log('No saved variant stats found');
+                return {};
             }
+
+            const data = JSON.parse(saved);
+
+            // Handle old format (no version) - migrate to new format
+            if (!data.version) {
+                console.warn('Migrating variant stats from old format to versioned format');
+                const migratedData = data; // Old format was just the stats object
+                this.saveStats(); // Save in new format
+                console.log('✅ Variant stats migrated successfully');
+                return migratedData;
+            }
+
+            // Check version compatibility
+            if (data.version !== this.STORAGE_VERSION) {
+                console.warn(`Variant stats version mismatch. Expected v${this.STORAGE_VERSION}, found v${data.version}. Resetting stats.`);
+                return {};
+            }
+
+            // Safe to load - versions match
+            console.log('✅ Variant stats loaded successfully');
+            return data.stats || {};
+
         } catch (error) {
             console.error('Failed to load variant stats:', error);
+            return {};
         }
-        return {};
     }
 
     /**
