@@ -1,0 +1,749 @@
+/**
+ * PHASE 2 MONTH 20: Variant Mastery UI Styles
+ *
+ * Styling for variant achievement and mastery dashboard
+ */
+
+/* Achievement Tabs */
+.achievement-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.achievement-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+}
+
+.achievement-tab i {
+    font-size: 1.2rem;
+}
+
+.achievement-tab:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.achievement-tab.active {
+    color: #fff;
+    border-bottom-color: #4A90E2;
+    background: rgba(74, 144, 226, 0.1);
+}
+
+/* Tab Content */
+.achievement-tab-content {
+    display: none;
+}
+
+.achievement-tab-content.active {
+    display: block;
+}
+
+/* Mastery Summary Cards */
+.mastery-summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.mastery-card {
+    background: linear-gradient(135deg, rgba(74, 144, 226, 0.15), rgba(155, 89, 182, 0.15));
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mastery-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.mastery-card .card-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.mastery-card .card-content {
+    flex: 1;
+}
+
+.mastery-card .card-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.mastery-card .card-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Variant Mastery Grid */
+.variant-mastery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.variant-mastery-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.variant-mastery-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Variant Card Header */
+.variant-card-header {
+    padding: 1.5rem;
+    border-left: 4px solid #4A90E2;
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.variant-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.variant-name {
+    flex: 1;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.variant-tier-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.variant-tier-badge.locked {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Variant Card Body */
+.variant-card-body {
+    padding: 1.5rem;
+}
+
+.variant-stats-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.stat-item {
+    flex: 1;
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* Mastery Progress */
+.mastery-progress-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.progress-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.progress-count {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.progress-bar-container {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: #4A90E2;
+    transition: width 0.5s ease;
+    border-radius: 4px;
+}
+
+.progress-needed {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+}
+
+.mastery-progress-section.mastered {
+    text-align: center;
+}
+
+.mastered-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(142, 68, 173, 0.2));
+    border-radius: 8px;
+}
+
+.mastered-icon {
+    font-size: 2rem;
+}
+
+.mastered-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #9D00FF;
+}
+
+/* Variant Card Footer */
+.variant-card-footer {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.view-details-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(74, 144, 226, 0.2);
+    border: 1px solid #4A90E2;
+    border-radius: 8px;
+    color: #4A90E2;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.view-details-btn:hover {
+    background: rgba(74, 144, 226, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+/* Variant Achievement Section */
+.variant-achievement-section {
+    margin-top: 3rem;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1.5rem;
+}
+
+.section-title i {
+    color: #4A90E2;
+}
+
+/* Variant Achievement Filters */
+.variant-achievement-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: #4A90E2;
+    border-color: #4A90E2;
+    color: #fff;
+}
+
+/* Variant Achievements Grid */
+.variant-achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.variant-achievement-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.variant-achievement-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.variant-achievement-card.locked {
+    opacity: 0.5;
+}
+
+.variant-achievement-card.locked .achievement-icon {
+    filter: grayscale(100%);
+}
+
+/* Rarity colors */
+.variant-achievement-card.rarity-common { border-left: 4px solid #95A5A6; }
+.variant-achievement-card.rarity-rare { border-left: 4px solid #3498DB; }
+.variant-achievement-card.rarity-epic { border-left: 4px solid #9B59B6; }
+.variant-achievement-card.rarity-legendary { border-left: 4px solid #F39C12; }
+
+.achievement-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.achievement-info {
+    flex: 1;
+}
+
+.achievement-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.4rem;
+}
+
+.achievement-description {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.5rem;
+}
+
+.achievement-meta {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.achievement-rarity {
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.rarity-common .achievement-rarity { background: rgba(149, 165, 166, 0.3); color: #95A5A6; }
+.rarity-rare .achievement-rarity { background: rgba(52, 152, 219, 0.3); color: #3498DB; }
+.rarity-epic .achievement-rarity { background: rgba(155, 89, 182, 0.3); color: #9B59B6; }
+.rarity-legendary .achievement-rarity { background: rgba(243, 156, 18, 0.3); color: #F39C12; }
+
+.achievement-category {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.achievement-checkmark {
+    font-size: 1.5rem;
+    color: #27AE60;
+}
+
+.achievement-lock {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Variant Detail Modal */
+.variant-detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.variant-detail-content {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-radius: 16px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.variant-detail-header {
+    padding: 2rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.variant-detail-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.variant-detail-header h2 {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.current-tier {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.variant-detail-stats {
+    padding: 2rem;
+}
+
+.variant-detail-stats h3 {
+    font-size: 1.25rem;
+    color: #fff;
+    margin: 2rem 0 1rem 0;
+}
+
+.variant-detail-stats h3:first-child {
+    margin-top: 0;
+}
+
+.detail-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.detail-stat {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.detail-stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.difficulty-times,
+.difficulty-completions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.difficulty-time,
+.difficulty-completion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.difficulty-label {
+    padding: 0.3rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.difficulty-label.easy {
+    background: rgba(46, 204, 113, 0.3);
+    color: #2ECC71;
+}
+
+.difficulty-label.medium {
+    background: rgba(241, 196, 15, 0.3);
+    color: #F1C40F;
+}
+
+.difficulty-label.hard {
+    background: rgba(231, 76, 60, 0.3);
+    color: #E74C3C;
+}
+
+.time-value,
+.completion-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Achievement Unlock Notification */
+.achievement-unlock-notification {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: linear-gradient(135deg, rgba(74, 144, 226, 0.95), rgba(155, 89, 182, 0.95));
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 400px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+    transform: translateX(500px);
+    opacity: 0;
+    transition: all 0.5s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.achievement-unlock-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.unlock-notification-content {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.unlock-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.unlock-info {
+    flex: 1;
+}
+
+.unlock-title {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+}
+
+.unlock-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.3rem;
+}
+
+.unlock-description {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.unlock-rarity {
+    align-self: flex-start;
+    padding: 0.3rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rarity-legendary .unlock-rarity {
+    background: rgba(243, 156, 18, 0.4);
+    color: #F39C12;
+}
+
+.rarity-epic .unlock-rarity {
+    background: rgba(155, 89, 182, 0.4);
+    color: #9B59B6;
+}
+
+.rarity-rare .unlock-rarity {
+    background: rgba(52, 152, 219, 0.4);
+    color: #3498DB;
+}
+
+.rarity-common .unlock-rarity {
+    background: rgba(149, 165, 166, 0.4);
+    color: #95A5A6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .achievement-tabs {
+        gap: 0.5rem;
+    }
+
+    .achievement-tab {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .achievement-tab span {
+        display: none;
+    }
+
+    .achievement-tab i {
+        font-size: 1.5rem;
+    }
+
+    .mastery-summary-cards {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .variant-mastery-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .variant-achievements-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .variant-achievement-filters {
+        gap: 0.5rem;
+    }
+
+    .filter-btn {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    .achievement-unlock-notification {
+        top: 1rem;
+        right: 1rem;
+        left: 1rem;
+        max-width: none;
+    }
+
+    .variant-detail-modal {
+        padding: 1rem;
+    }
+
+    .detail-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* No achievements message */
+.no-achievements {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.1rem;
+}

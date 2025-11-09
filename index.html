@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/enhancements.css">
     <link rel="stylesheet" href="css/tutorial.css">
+    <link rel="stylesheet" href="css/variant-mastery.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -648,8 +649,22 @@
                         <i class="fas fa-star"></i>
                         Achievements
                     </h1>
+
+                    <!-- Achievement Tabs -->
+                    <div class="achievement-tabs">
+                        <button class="achievement-tab active" data-tab="general">
+                            <i class="fas fa-trophy"></i>
+                            <span>General</span>
+                        </button>
+                        <button class="achievement-tab" data-tab="variant-mastery">
+                            <i class="fas fa-crown"></i>
+                            <span>Variant Mastery</span>
+                        </button>
+                    </div>
                 </div>
 
+                <!-- General Achievements Tab Content -->
+                <div class="achievement-tab-content active" id="generalAchievements">
                 <!-- Guest User Sign-up Encouragement -->
                 <div class="guest-signup-banner" id="achievementsGuestBanner" style="display: none;">
                     <div class="banner-content">
@@ -784,6 +799,79 @@
                         <!-- Achievement details will be populated here -->
                     </div>
                 </div>
+                </div>
+                <!-- End General Achievements Tab -->
+
+                <!-- Variant Mastery Tab Content -->
+                <div class="achievement-tab-content" id="variantMastery">
+                    <!-- Variant Mastery Dashboard -->
+                    <div class="variant-mastery-dashboard">
+                        <!-- Overall Progress Summary -->
+                        <div class="mastery-summary-cards">
+                            <div class="mastery-card total-completions">
+                                <div class="card-icon">🎮</div>
+                                <div class="card-content">
+                                    <div class="card-value" id="totalVariantCompletions">0</div>
+                                    <div class="card-label">Total Completions</div>
+                                </div>
+                            </div>
+                            <div class="mastery-card perfect-games">
+                                <div class="card-icon">✨</div>
+                                <div class="card-content">
+                                    <div class="card-value" id="totalPerfectGames">0</div>
+                                    <div class="card-label">Perfect Games</div>
+                                </div>
+                            </div>
+                            <div class="mastery-card variants-explored">
+                                <div class="card-icon">🗺️</div>
+                                <div class="card-content">
+                                    <div class="card-value"><span id="variantsExplored">0</span>/9</div>
+                                    <div class="card-label">Variants Explored</div>
+                                </div>
+                            </div>
+                            <div class="mastery-card variant-achievements">
+                                <div class="card-icon">🏆</div>
+                                <div class="card-content">
+                                    <div class="card-value"><span id="variantAchievementsUnlocked">0</span>/<span id="totalVariantAchievements">40</span></div>
+                                    <div class="card-label">Variant Achievements</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Variant Mastery Grid -->
+                        <div class="variant-mastery-grid" id="variantMasteryGrid">
+                            <!-- Variant cards will be populated by JavaScript -->
+                        </div>
+
+                        <!-- Variant Achievement Gallery -->
+                        <div class="variant-achievement-section">
+                            <h2 class="section-title">
+                                <i class="fas fa-trophy"></i>
+                                Variant Achievements
+                            </h2>
+
+                            <div class="variant-achievement-filters">
+                                <button class="filter-btn active" data-variant="all">All Variants</button>
+                                <button class="filter-btn" data-variant="classic">Classic</button>
+                                <button class="filter-btn" data-variant="x-sudoku">X-Sudoku</button>
+                                <button class="filter-btn" data-variant="mini">Mini 6×6</button>
+                                <button class="filter-btn" data-variant="anti-knight">Anti-Knight</button>
+                                <button class="filter-btn" data-variant="killer-sudoku">Killer</button>
+                                <button class="filter-btn" data-variant="hyper-sudoku">Hyper</button>
+                                <button class="filter-btn" data-variant="consecutive-sudoku">Consecutive</button>
+                                <button class="filter-btn" data-variant="thermo-sudoku">Thermo</button>
+                                <button class="filter-btn" data-variant="jigsaw-sudoku">Jigsaw</button>
+                                <button class="filter-btn" data-variant="multi">Multi-Variant</button>
+                            </div>
+
+                            <div class="variant-achievements-grid" id="variantAchievementsGrid">
+                                <!-- Variant achievements will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Variant Mastery Tab -->
+
             </div>
 
             <!-- Challenges Page -->
@@ -1521,10 +1609,14 @@
     <!-- PHASE 2 MONTH 19: Variant Achievements & Statistics -->
     <script src="/lib/variant-achievements.js"></script>
     <script src="/js/variant-stats-manager.js"></script>
+
+    <!-- PHASE 2 MONTH 20: Variant Mastery UI -->
+    <script src="/js/variant-mastery-ui.js"></script>
     <script>
         // Initialize tutorial system when Sudoku engine is ready
         let tutorialManager;
         let variantStatsManager;
+        let variantMasteryUI;
 
         function initializeTutorialSystem() {
             if (window.sudokuEngine) {
@@ -1536,6 +1628,12 @@
                 variantStatsManager = new VariantStatsManager();
                 window.variantStatsManager = variantStatsManager;
                 console.log('✅ Variant statistics manager initialized');
+
+                // Initialize variant mastery UI
+                variantMasteryUI = new VariantMasteryUI(variantStatsManager);
+                window.variantMasteryUI = variantMasteryUI;
+                variantMasteryUI.initialize();
+                console.log('✅ Variant mastery UI initialized');
 
                 // Add tutorial triggers to UI
                 addTutorialTriggers();
