@@ -1,10 +1,13 @@
 /**
  * Puzzles API - SECURITY FIXES (November 2025)
  * PHASE 0 Month 1 - Redis Caching Integration
+ * PHASE 1 Month 5 - X-Sudoku and Mini 6x6 Variants
  */
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
 const { getCached, invalidateCache, CACHE_DURATIONS, CacheKeys } = require('../lib/cache');
+const { generateXSudoku } = require('../lib/x-sudoku-generator');
+const { generateMiniSudoku } = require('../lib/mini-sudoku-generator');
 
 // Helper function for SQL queries
 async function sql(strings, ...values) {
@@ -1538,39 +1541,59 @@ module.exports = async function handler(req, res) {
   try {
     switch (req.method) {
       case 'GET': {
-        const { date, player, difficulty, mode } = req.query;
+        const { date, player, difficulty, mode, variant } = req.query;
 
-        // PHASE 1 MONTH 4: Practice Mode
+        // PHASE 1 MONTH 4 & 5: Practice Mode with variant support
         // Generate practice puzzles on-demand (unlimited, not stored)
         if (mode === 'practice') {
           const practiceDifficulty = difficulty || 'medium';
+          const practiceVariant = variant || 'classic';
           const seed = Math.random(); // Unique seed for each practice puzzle
 
-          let puzzle, solution;
+          let puzzle, solution, gridSize;
 
-          if (practiceDifficulty === 'easy') {
-            const result = await generateEasyPuzzle(seed);
-            puzzle = result.puzzle;
-            solution = result.solution;
-          } else if (practiceDifficulty === 'medium') {
-            const result = await generateMediumPuzzle(seed);
-            puzzle = result.puzzle;
-            solution = result.solution;
-          } else if (practiceDifficulty === 'hard') {
-            const result = await generateHardPuzzle(seed);
-            puzzle = result.puzzle;
-            solution = result.solution;
-          } else {
-            return res.status(400).json({ error: 'Invalid difficulty. Must be easy, medium, or hard' });
+          try {
+            if (practiceVariant === 'x-sudoku') {
+              // X-Sudoku variant
+              const result = generateXSudoku(practiceDifficulty, seed);
+              puzzle = result.puzzle;
+              solution = result.solution;
+              gridSize = 9;
+            } else if (practiceVariant === 'mini') {
+              // Mini Sudoku 6x6 variant
+              const result = generateMiniSudoku(practiceDifficulty, seed);
+              puzzle = result.puzzle;
+              solution = result.solution;
+              gridSize = 6;
+            } else if (practiceVariant === 'classic') {
+              // Classic Sudoku - use existing generation logic
+              const completeSolution = generateCompleteSolution(seed);
+              puzzle = gridToString(generateDailyPuzzle(completeSolution, practiceDifficulty, seed + 1));
+              solution = gridToString(completeSolution);
+              gridSize = 9;
+            } else {
+              return res.status(400).json({
+                error: 'Invalid variant',
+                validVariants: ['classic', 'x-sudoku', 'mini']
+              });
+            }
+
+            return res.status(200).json({
+              mode: 'practice',
+              variant: practiceVariant,
+              difficulty: practiceDifficulty,
+              puzzle,
+              solution,
+              gridSize,
+              timestamp: new Date().toISOString()
+            });
+          } catch (error) {
+            console.error('Practice puzzle generation error:', error);
+            return res.status(500).json({
+              error: 'Failed to generate practice puzzle',
+              details: error.message
+            });
           }
-
-          return res.status(200).json({
-            mode: 'practice',
-            difficulty: practiceDifficulty,
-            puzzle,
-            solution,
-            timestamp: new Date().toISOString()
-          });
         }
 
         if (player && date && difficulty) {

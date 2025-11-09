@@ -127,6 +127,7 @@ async function handleGetProfile(req, res) {
         display_name,
         avatar,
         bio,
+        founder,
         created_at,
         last_active_at
       FROM users
@@ -174,6 +175,7 @@ async function handleGetProfile(req, res) {
         displayName: user.display_name,
         avatar: user.avatar,
         bio: user.bio,
+        founder: user.founder || false,  // Phase 1 Month 5: Founder badge
         createdAt: user.created_at,
         lastActiveAt: user.last_active_at,
         stats: {

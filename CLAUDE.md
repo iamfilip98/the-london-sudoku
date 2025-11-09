@@ -220,15 +220,15 @@ const targetTimes = {
 
 **Current API Endpoints**:
 1. `/api/achievements.js` - Achievement management
-2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db)
-3. `/api/auth.js` - Authentication (bcrypt + Clerk) + **User Profiles** (GET/PUT for bio, avatar, displayName) *[Phase 1 Month 4]*
+2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db, **migrate-phase1-month5, mark-founders** *[Phase 1 Month 5]*)
+3. `/api/auth.js` - Authentication (bcrypt + Clerk) + **User Profiles** (GET/PUT for bio, avatar, displayName, founder badge) *[Phase 1 Month 4-5]*
 4. `/api/cron-verify-puzzles.js` - Scheduled puzzle verification
 5. `/api/entries.js` - Daily battle results
-6. `/api/games.js` - Game state management
+6. `/api/games.js` - Game state management + **Free Tier Limits** (3 Classic dailies/day) *[Phase 1 Month 5]*
 7. `/api/generate-tomorrow.js` - Scheduled puzzle generation
 8. `/api/health.js` - Health check endpoint
 9. `/api/import.js` - **CONSOLIDATED** anonymous data migration (completion + achievement)
-10. `/api/puzzles.js` - Puzzle fetching (with Redis caching) + **Practice Mode** (?mode=practice) *[Phase 1 Month 4]*
+10. `/api/puzzles.js` - Puzzle fetching (with Redis caching) + **Practice Mode** (?mode=practice&variant=classic|x-sudoku|mini) *[Phase 1 Month 4-5]*
 11. `/api/ratings.js` - Puzzle rating system
 12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) *[Phase 1 Month 4]*
 

@@ -7,6 +7,35 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 1 Month 5: Variants & Free Tier** (November 9, 2025)
+- 🎯 **X-Sudoku Variant**: Classic Sudoku PLUS diagonal constraints
+  - Both main diagonals must contain digits 1-9
+  - More challenging puzzles with extra constraints
+  - Unlimited play (no daily limits)
+  - API: `/api/puzzles?mode=practice&variant=x-sudoku&difficulty=medium`
+- 📐 **Mini Sudoku 6x6**: Compact variant for quick games
+  - 6×6 grid with digits 1-6
+  - 2×3 boxes instead of 3×3
+  - Faster completion (2-4 minutes)
+  - Unlimited play (no daily limits)
+  - API: `/api/puzzles?mode=practice&variant=mini&difficulty=easy`
+- 🔒 **Free Tier Limits**: 3 Classic Sudoku dailies per day
+  - Free users: 3 Classic puzzles/day
+  - X-Sudoku & Mini: Unlimited (to encourage adoption)
+  - Practice mode: Unlimited for all variants
+  - Premium (future): Unlimited everything
+  - Enforced in `/api/games.js` before game save
+- 👑 **Founder Badges**: VIP recognition for Faidao & Filip
+  - Permanent "Founder" badge in profiles
+  - Migration: `POST /api/admin?action=migrate-phase1-month5`
+  - Mark founders: `POST /api/admin?action=mark-founders`
+  - Visible in `GET /api/auth?username=faidao`
+- 🗄️ **Variant Database Schema**: Full variant support
+  - Added `variant` column to `daily_puzzles`, `game_states`, `individual_games`, `fallback_puzzles`
+  - Added founder tracking to `users` table (`founder`, `daily_classic_played`, `last_puzzle_date`)
+  - Backward compatible with existing Classic puzzles (default variant='classic')
+  - Optimized indexes for variant queries
+
 ### **Phase 1 Month 4: Soft Launch Preparation** (November 9, 2025)
 - 👤 **User Profiles**: Extended `/api/auth` with GET/PUT methods for profile management
   - Bio field (500 char limit with HTML sanitization)
@@ -347,9 +376,13 @@ stats: (type, data) -- Flexible JSON storage for various statistics
 
 **Public Endpoints:**
 - `GET /api/puzzles?date=YYYY-MM-DD` - Daily puzzle retrieval (with fallback system)
-- `GET /api/puzzles?mode=practice&difficulty=LEVEL` - **NEW**: Unlimited practice mode (Phase 1 Month 4)
+- `GET /api/puzzles?mode=practice&variant=VARIANT&difficulty=LEVEL` - **UPDATED**: Unlimited practice mode with variants (Phase 1 Month 5)
+  - Variants: `classic` (default), `x-sudoku`, `mini`
+  - Example: `/api/puzzles?mode=practice&variant=x-sudoku&difficulty=medium`
 - `GET /api/games?date=YYYY-MM-DD` - Game progress tracking (supports anonymous sessions)
-- `POST /api/games` - Save game completion (supports both auth and anonymous)
+- `POST /api/games` - Save game completion (supports variant parameter, free tier limits enforced for Classic) (Phase 1 Month 5)
+  - Body: `{ player, date, difficulty, variant, ...gameData }`
+  - Free tier: 3 Classic dailies/day, unlimited X-Sudoku/Mini
 - `GET /api/entries` - Competition entry management
 - `GET /api/achievements` - Achievement system
 - `GET /api/stats?type=all` - Comprehensive statistics
@@ -360,6 +393,8 @@ stats: (type, data) -- Flexible JSON storage for various statistics
 - `POST /api/admin?action=clear-all` - Clear all game data (reset)
 - `POST /api/admin?action=clear-old-puzzles&days=N` - Clean up old puzzles
 - `POST /api/admin?action=init-db` - Initialize database tables
+- `POST /api/admin?action=migrate-phase1-month5` - **NEW**: Migrate database schema for variants & founder badges (Phase 1 Month 5)
+- `POST /api/admin?action=mark-founders` - **NEW**: Mark Faidao & Filip as founders (Phase 1 Month 5)
 - `POST /api/cron-verify-puzzles` - CRON: Verify tomorrow's puzzles exist
 
 **Migration Endpoints:** (Phase 0 Month 3 - Anonymous Data Import)
