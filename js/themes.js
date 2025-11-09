@@ -1,5 +1,8 @@
 class ThemeManager {
     constructor() {
+        // DISABLE SPECIAL EVENTS (user request)
+        this.EVENTS_ENABLED = false;
+
         this.currentTheme = null;
         this.themes = this.initializeThemes();
         this.specialEvents = this.initializeSpecialEvents();
@@ -328,6 +331,9 @@ class ThemeManager {
     }
 
     displayActiveEvents() {
+        // Check if events are enabled
+        if (!this.EVENTS_ENABLED) return;
+
         const activeEvents = this.checkSpecialEvents();
         if (activeEvents.length === 0) return;
 
