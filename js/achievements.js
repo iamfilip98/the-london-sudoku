@@ -1253,6 +1253,579 @@ class AchievementsManager {
                 requirement: { type: 'final_achievement', value: 1 },
                 rarity: 'legendary',
                 oneTime: true
+            },
+
+            // VARIANT ACHIEVEMENTS - X-Sudoku (5)
+            {
+                id: 'xsudoku_first',
+                title: 'X Marks the Spot',
+                description: 'Complete your first X-Sudoku puzzle',
+                icon: 'fas fa-times',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'x-sudoku', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'xsudoku_10',
+                title: 'Diagonal Learner',
+                description: 'Complete 10 X-Sudoku puzzles',
+                icon: 'fas fa-times',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'x-sudoku', value: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'xsudoku_25',
+                title: 'Diagonal Expert',
+                description: 'Complete 25 X-Sudoku puzzles',
+                icon: 'fas fa-times',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'x-sudoku', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'xsudoku_50',
+                title: 'X Master',
+                description: 'Complete 50 X-Sudoku puzzles',
+                icon: 'fas fa-times',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'x-sudoku', value: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'xsudoku_perfect',
+                title: 'Perfect X',
+                description: 'Complete an X-Sudoku puzzle with no errors and no hints',
+                icon: 'fas fa-times-circle',
+                type: 'variant',
+                requirement: { type: 'variant_perfect', variant: 'x-sudoku' },
+                rarity: 'epic'
+            },
+
+            // VARIANT ACHIEVEMENTS - Mini 6x6 (5)
+            {
+                id: 'mini_first',
+                title: 'Mini Maven',
+                description: 'Complete your first Mini 6×6 puzzle',
+                icon: 'fas fa-compress-alt',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'mini', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'mini_10',
+                title: 'Compact Champion',
+                description: 'Complete 10 Mini 6×6 puzzles',
+                icon: 'fas fa-compress-alt',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'mini', value: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'mini_25',
+                title: 'Small Format Pro',
+                description: 'Complete 25 Mini 6×6 puzzles',
+                icon: 'fas fa-compress-alt',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'mini', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'mini_50',
+                title: 'Mini Mastery',
+                description: 'Complete 50 Mini 6×6 puzzles',
+                icon: 'fas fa-compress-alt',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'mini', value: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'mini_perfect',
+                title: 'Flawless Mini',
+                description: 'Complete a Mini 6×6 puzzle with no errors and no hints',
+                icon: 'fas fa-star',
+                type: 'variant',
+                requirement: { type: 'variant_perfect', variant: 'mini' },
+                rarity: 'epic'
+            },
+
+            // VARIANT ACHIEVEMENTS - Anti-Knight (5)
+            {
+                id: 'antiknight_first',
+                title: 'Knight Slayer',
+                description: 'Complete your first Anti-Knight puzzle',
+                icon: 'fas fa-chess-knight',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'anti-knight', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'antiknight_10',
+                title: 'Chess Master',
+                description: 'Complete 10 Anti-Knight puzzles',
+                icon: 'fas fa-chess-knight',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'anti-knight', value: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'antiknight_25',
+                title: 'Knight Whisperer',
+                description: 'Complete 25 Anti-Knight puzzles',
+                icon: 'fas fa-chess-knight',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'anti-knight', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'antiknight_50',
+                title: 'Anti-Knight Legend',
+                description: 'Complete 50 Anti-Knight puzzles',
+                icon: 'fas fa-chess-knight',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'anti-knight', value: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'antiknight_perfect',
+                title: 'Perfect Knight',
+                description: 'Complete an Anti-Knight puzzle with no errors and no hints',
+                icon: 'fas fa-chess',
+                type: 'variant',
+                requirement: { type: 'variant_perfect', variant: 'anti-knight' },
+                rarity: 'epic'
+            },
+
+            // VARIANT ACHIEVEMENTS - Killer Sudoku (5)
+            {
+                id: 'killer_first',
+                title: 'Killer Instinct',
+                description: 'Complete your first Killer Sudoku puzzle',
+                icon: 'fas fa-skull-crossbones',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'killer-sudoku', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'killer_10',
+                title: 'Cage Calculator',
+                description: 'Complete 10 Killer Sudoku puzzles',
+                icon: 'fas fa-skull-crossbones',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'killer-sudoku', value: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'killer_25',
+                title: 'Sum Master',
+                description: 'Complete 25 Killer Sudoku puzzles',
+                icon: 'fas fa-skull-crossbones',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'killer-sudoku', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'killer_50',
+                title: 'Killer Legend',
+                description: 'Complete 50 Killer Sudoku puzzles',
+                icon: 'fas fa-skull-crossbones',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'killer-sudoku', value: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'killer_perfect',
+                title: 'Perfect Killer',
+                description: 'Complete a Killer Sudoku puzzle with no errors and no hints',
+                icon: 'fas fa-crosshairs',
+                type: 'variant',
+                requirement: { type: 'variant_perfect', variant: 'killer-sudoku' },
+                rarity: 'epic'
+            },
+
+            // VARIANT ACHIEVEMENTS - Hyper Sudoku (5)
+            {
+                id: 'hyper_first',
+                title: 'Hyper Active',
+                description: 'Complete your first Hyper Sudoku puzzle',
+                icon: 'fas fa-th-large',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'hyper-sudoku', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'hyper_10',
+                title: 'Region Runner',
+                description: 'Complete 10 Hyper Sudoku puzzles',
+                icon: 'fas fa-th-large',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'hyper-sudoku', value: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'hyper_25',
+                title: 'Hyper Expert',
+                description: 'Complete 25 Hyper Sudoku puzzles',
+                icon: 'fas fa-th-large',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'hyper-sudoku', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'hyper_50',
+                title: 'Hyper Master',
+                description: 'Complete 50 Hyper Sudoku puzzles',
+                icon: 'fas fa-th-large',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'hyper-sudoku', value: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'hyper_perfect',
+                title: 'Perfect Hyper',
+                description: 'Complete a Hyper Sudoku puzzle with no errors and no hints',
+                icon: 'fas fa-gem',
+                type: 'variant',
+                requirement: { type: 'variant_perfect', variant: 'hyper-sudoku' },
+                rarity: 'epic'
+            },
+
+            // VARIANT ACHIEVEMENTS - Consecutive Sudoku (5)
+            {
+                id: 'consecutive_first',
+                title: 'Consecutive Starter',
+                description: 'Complete your first Consecutive Sudoku puzzle',
+                icon: 'fas fa-link',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'consecutive-sudoku', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'consecutive_10',
+                title: 'Chain Solver',
+                description: 'Complete 10 Consecutive Sudoku puzzles',
+                icon: 'fas fa-link',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'consecutive-sudoku', value: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'consecutive_25',
+                title: 'Consecutive Pro',
+                description: 'Complete 25 Consecutive Sudoku puzzles',
+                icon: 'fas fa-link',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'consecutive-sudoku', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'consecutive_50',
+                title: 'Consecutive Legend',
+                description: 'Complete 50 Consecutive Sudoku puzzles',
+                icon: 'fas fa-link',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'consecutive-sudoku', value: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'consecutive_perfect',
+                title: 'Perfect Chain',
+                description: 'Complete a Consecutive Sudoku puzzle with no errors and no hints',
+                icon: 'fas fa-link',
+                type: 'variant',
+                requirement: { type: 'variant_perfect', variant: 'consecutive-sudoku' },
+                rarity: 'epic'
+            },
+
+            // VARIANT ACHIEVEMENTS - Thermo Sudoku (5)
+            {
+                id: 'thermo_first',
+                title: 'Temperature Rising',
+                description: 'Complete your first Thermo Sudoku puzzle',
+                icon: 'fas fa-thermometer-half',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'thermo-sudoku', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'thermo_10',
+                title: 'Heat Seeker',
+                description: 'Complete 10 Thermo Sudoku puzzles',
+                icon: 'fas fa-thermometer-half',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'thermo-sudoku', value: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'thermo_25',
+                title: 'Thermo Expert',
+                description: 'Complete 25 Thermo Sudoku puzzles',
+                icon: 'fas fa-thermometer-half',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'thermo-sudoku', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'thermo_50',
+                title: 'Thermo Master',
+                description: 'Complete 50 Thermo Sudoku puzzles',
+                icon: 'fas fa-thermometer-half',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'thermo-sudoku', value: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'thermo_perfect',
+                title: 'Perfect Temperature',
+                description: 'Complete a Thermo Sudoku puzzle with no errors and no hints',
+                icon: 'fas fa-temperature-low',
+                type: 'variant',
+                requirement: { type: 'variant_perfect', variant: 'thermo-sudoku' },
+                rarity: 'epic'
+            },
+
+            // VARIANT ACHIEVEMENTS - Jigsaw Sudoku (5)
+            {
+                id: 'jigsaw_first',
+                title: 'Jigsaw Beginner',
+                description: 'Complete your first Jigsaw Sudoku puzzle',
+                icon: 'fas fa-puzzle-piece',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'jigsaw-sudoku', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'jigsaw_10',
+                title: 'Irregular Expert',
+                description: 'Complete 10 Jigsaw Sudoku puzzles',
+                icon: 'fas fa-puzzle-piece',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'jigsaw-sudoku', value: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'jigsaw_25',
+                title: 'Jigsaw Pro',
+                description: 'Complete 25 Jigsaw Sudoku puzzles',
+                icon: 'fas fa-puzzle-piece',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'jigsaw-sudoku', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'jigsaw_50',
+                title: 'Jigsaw Legend',
+                description: 'Complete 50 Jigsaw Sudoku puzzles',
+                icon: 'fas fa-puzzle-piece',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'jigsaw-sudoku', value: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'jigsaw_perfect',
+                title: 'Perfect Jigsaw',
+                description: 'Complete a Jigsaw Sudoku puzzle with no errors and no hints',
+                icon: 'fas fa-puzzle-piece',
+                type: 'variant',
+                requirement: { type: 'variant_perfect', variant: 'jigsaw-sudoku' },
+                rarity: 'epic'
+            },
+
+            // VARIANT ACHIEVEMENTS - Classic (5)
+            {
+                id: 'classic_100',
+                title: 'Classic Century',
+                description: 'Complete 100 Classic Sudoku puzzles',
+                icon: 'fas fa-border-all',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'classic', value: 100 },
+                rarity: 'epic'
+            },
+            {
+                id: 'classic_250',
+                title: 'Traditional Master',
+                description: 'Complete 250 Classic Sudoku puzzles',
+                icon: 'fas fa-border-all',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'classic', value: 250 },
+                rarity: 'epic'
+            },
+            {
+                id: 'classic_500',
+                title: 'Classic Legend',
+                description: 'Complete 500 Classic Sudoku puzzles',
+                icon: 'fas fa-border-all',
+                type: 'variant',
+                requirement: { type: 'variant_count', variant: 'classic', value: 500 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'classic_perfect_10',
+                title: 'Perfect Classic Streak',
+                description: 'Complete 10 Classic Sudoku puzzles in a row with no errors',
+                icon: 'fas fa-fire',
+                type: 'variant',
+                requirement: { type: 'variant_perfect_streak', variant: 'classic', value: 10 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'all_variants_unlocked',
+                title: 'Variant Collector',
+                description: 'Complete at least one puzzle in every variant',
+                icon: 'fas fa-th',
+                type: 'variant',
+                requirement: { type: 'all_variants_tried', value: 9 },
+                rarity: 'rare',
+                oneTime: true
+            },
+
+            // BATTLE PASS ACHIEVEMENTS (15)
+            {
+                id: 'bp_tier_10',
+                title: 'Rising Star',
+                description: 'Reach Battle Pass Tier 10',
+                icon: 'fas fa-star',
+                type: 'battle_pass',
+                requirement: { type: 'bp_tier_reached', value: 10 },
+                rarity: 'common',
+                oneTime: true
+            },
+            {
+                id: 'bp_tier_25',
+                title: 'Quarter Master',
+                description: 'Reach Battle Pass Tier 25',
+                icon: 'fas fa-medal',
+                type: 'battle_pass',
+                requirement: { type: 'bp_tier_reached', value: 25 },
+                rarity: 'common',
+                oneTime: true
+            },
+            {
+                id: 'bp_tier_50',
+                title: 'Halfway Hero',
+                description: 'Reach Battle Pass Tier 50',
+                icon: 'fas fa-trophy',
+                type: 'battle_pass',
+                requirement: { type: 'bp_tier_reached', value: 50 },
+                rarity: 'rare',
+                oneTime: true
+            },
+            {
+                id: 'bp_tier_75',
+                title: 'Almost There',
+                description: 'Reach Battle Pass Tier 75',
+                icon: 'fas fa-award',
+                type: 'battle_pass',
+                requirement: { type: 'bp_tier_reached', value: 75 },
+                rarity: 'epic',
+                oneTime: true
+            },
+            {
+                id: 'bp_tier_100',
+                title: 'Season Champion',
+                description: 'Reach Battle Pass Tier 100',
+                icon: 'fas fa-crown',
+                type: 'battle_pass',
+                requirement: { type: 'bp_tier_reached', value: 100 },
+                rarity: 'legendary',
+                oneTime: true
+            },
+            {
+                id: 'bp_xp_1000',
+                title: 'XP Grinder',
+                description: 'Earn 1,000 total Battle Pass XP',
+                icon: 'fas fa-bolt',
+                type: 'battle_pass',
+                requirement: { type: 'bp_total_xp', value: 1000 },
+                rarity: 'common',
+                oneTime: true
+            },
+            {
+                id: 'bp_xp_5000',
+                title: 'XP Farmer',
+                description: 'Earn 5,000 total Battle Pass XP',
+                icon: 'fas fa-fire',
+                type: 'battle_pass',
+                requirement: { type: 'bp_total_xp', value: 5000 },
+                rarity: 'rare',
+                oneTime: true
+            },
+            {
+                id: 'bp_xp_10000',
+                title: 'XP Legend',
+                description: 'Earn 10,000 total Battle Pass XP',
+                icon: 'fas fa-star-half-alt',
+                type: 'battle_pass',
+                requirement: { type: 'bp_total_xp', value: 10000 },
+                rarity: 'epic',
+                oneTime: true
+            },
+            {
+                id: 'bp_free_track_complete',
+                title: 'Free Rider',
+                description: 'Claim all Free Track rewards in a season',
+                icon: 'fas fa-gift',
+                type: 'battle_pass',
+                requirement: { type: 'bp_all_free_claimed', value: 1 },
+                rarity: 'rare',
+                oneTime: true
+            },
+            {
+                id: 'bp_premium_track_complete',
+                title: 'Premium Player',
+                description: 'Claim all Premium Track rewards in a season',
+                icon: 'fas fa-gem',
+                type: 'battle_pass',
+                requirement: { type: 'bp_all_premium_claimed', value: 1 },
+                rarity: 'epic',
+                oneTime: true
+            },
+            {
+                id: 'bp_daily_grind',
+                title: 'Daily Grinder',
+                description: 'Earn Battle Pass XP for 7 consecutive days',
+                icon: 'fas fa-calendar-check',
+                type: 'battle_pass',
+                requirement: { type: 'bp_daily_streak', value: 7 },
+                rarity: 'rare'
+            },
+            {
+                id: 'bp_dedication',
+                title: 'Battle Pass Dedication',
+                description: 'Earn Battle Pass XP for 30 consecutive days',
+                icon: 'fas fa-calendar-alt',
+                type: 'battle_pass',
+                requirement: { type: 'bp_daily_streak', value: 30 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'bp_weekly_warrior',
+                title: 'Weekly Warrior',
+                description: 'Earn 1,000 XP in a single week',
+                icon: 'fas fa-trophy',
+                type: 'battle_pass',
+                requirement: { type: 'bp_weekly_xp', value: 1000 },
+                rarity: 'rare'
+            },
+            {
+                id: 'bp_speed_runner',
+                title: 'Speed Runner',
+                description: 'Reach Tier 100 in under 30 days',
+                icon: 'fas fa-running',
+                type: 'battle_pass',
+                requirement: { type: 'bp_fast_completion', value: 30 },
+                rarity: 'legendary',
+                oneTime: true
+            },
+            {
+                id: 'bp_first_season',
+                title: 'Founding Season',
+                description: 'Complete Season 1 Battle Pass to Tier 100',
+                icon: 'fas fa-certificate',
+                type: 'battle_pass',
+                requirement: { type: 'bp_season_complete', season: 1, value: 100 },
+                rarity: 'legendary',
+                oneTime: true
             }
         ];
 
@@ -1551,6 +2124,44 @@ class AchievementsManager {
 
             case 'flawless_bonus_count':
                 return this.checkFlawlessBonusCount(req, allEntries);
+
+            // PHASE 3 MONTH 13: Variant achievements
+            case 'variant_count':
+                return this.checkVariantCount(req);
+
+            case 'variant_perfect':
+                return this.checkVariantPerfect(req);
+
+            case 'variant_perfect_streak':
+                return this.checkVariantPerfectStreak(req);
+
+            case 'all_variants_tried':
+                return this.checkAllVariantsTried(req);
+
+            // PHASE 3 MONTH 13: Battle pass achievements
+            case 'bp_tier_reached':
+                return this.checkBPTierReached(req);
+
+            case 'bp_total_xp':
+                return this.checkBPTotalXP(req);
+
+            case 'bp_all_free_claimed':
+                return this.checkBPAllFreeClaimed(req);
+
+            case 'bp_all_premium_claimed':
+                return this.checkBPAllPremiumClaimed(req);
+
+            case 'bp_daily_streak':
+                return this.checkBPDailyStreak(req);
+
+            case 'bp_weekly_xp':
+                return this.checkBPWeeklyXP(req);
+
+            case 'bp_fast_completion':
+                return this.checkBPFastCompletion(req);
+
+            case 'bp_season_complete':
+                return this.checkBPSeasonComplete(req);
 
             default:
                 return [];
@@ -2668,6 +3279,216 @@ class AchievementsManager {
             };
         }
     }
+
+    // PHASE 3 MONTH 13: Variant achievement handlers
+    async checkVariantCount(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const games = await this.fetchPlayerGames(player);
+            const variantGames = games.filter(game => game.variant === req.variant);
+
+            if (variantGames.length >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkVariantPerfect(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const games = await this.fetchPlayerGames(player);
+            const hasPerfect = games.some(game =>
+                game.variant === req.variant &&
+                game.errors === 0 &&
+                game.hints === 0
+            );
+
+            if (hasPerfect) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkVariantPerfectStreak(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const games = await this.fetchPlayerGames(player);
+            const variantGames = games.filter(game => game.variant === req.variant);
+
+            // Check for streak of perfect games
+            let maxStreak = 0;
+            let currentStreak = 0;
+
+            for (const game of variantGames) {
+                if (game.errors === 0) {
+                    currentStreak++;
+                    maxStreak = Math.max(maxStreak, currentStreak);
+                } else {
+                    currentStreak = 0;
+                }
+            }
+
+            if (maxStreak >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkAllVariantsTried(req) {
+        const players = [];
+        const requiredVariants = ['classic', 'x-sudoku', 'mini', 'anti-knight', 'killer-sudoku',
+                                   'hyper-sudoku', 'consecutive-sudoku', 'thermo-sudoku', 'jigsaw-sudoku'];
+
+        for (const player of ['faidao', 'filip']) {
+            const games = await this.fetchPlayerGames(player);
+            const triedVariants = new Set(games.map(game => game.variant));
+
+            if (requiredVariants.every(variant => triedVariants.has(variant))) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    // PHASE 3 MONTH 13: Battle pass achievement handlers
+    async checkBPTierReached(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const bpData = await this.fetchBattlePassData(player);
+            if (bpData && bpData.currentTier >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkBPTotalXP(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const bpData = await this.fetchBattlePassData(player);
+            if (bpData && bpData.totalXP >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkBPAllFreeClaimed(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const bpData = await this.fetchBattlePassData(player);
+            if (bpData && bpData.allFreeClaimedThisSeason) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkBPAllPremiumClaimed(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const bpData = await this.fetchBattlePassData(player);
+            if (bpData && bpData.allPremiumClaimedThisSeason) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkBPDailyStreak(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const bpData = await this.fetchBattlePassData(player);
+            if (bpData && bpData.dailyXPStreak >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkBPWeeklyXP(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const bpData = await this.fetchBattlePassData(player);
+            if (bpData && bpData.weeklyXP >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkBPFastCompletion(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const bpData = await this.fetchBattlePassData(player);
+            if (bpData && bpData.tier100ReachedInDays && bpData.tier100ReachedInDays <= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkBPSeasonComplete(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const bpData = await this.fetchBattlePassData(player);
+            if (bpData &&
+                bpData.seasonNumber === req.season &&
+                bpData.currentTier >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async fetchBattlePassData(player) {
+        try {
+            // Get user ID from username
+            const authResponse = await fetch(`/api/auth?username=${player}`);
+            if (!authResponse.ok) return null;
+
+            const authData = await authResponse.json();
+            const userId = authData.profile?.id;
+
+            if (!userId) return null;
+
+            // Fetch battle pass progress
+            const bpResponse = await fetch(`/api/stats?type=battle-pass&userId=${userId}`);
+            if (!bpResponse.ok) return null;
+
+            const bpData = await bpResponse.json();
+            return bpData;
+        } catch (error) {
+            console.error('Failed to fetch battle pass data:', error);
+            return null;
+        }
+    }
 }
 
 // Initialize achievements manager
@@ -2692,6 +3513,7 @@ class AchievementPopup {
 
     initializePopup() {
         if (!this.popup || !this.closeBtn) {
+            console.log('Achievement popup elements not found:', {
                 popup: !!this.popup,
                 closeBtn: !!this.closeBtn
             });
