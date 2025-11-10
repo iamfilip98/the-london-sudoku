@@ -10,6 +10,7 @@ const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
 const { getCached, CACHE_DURATIONS } = require('../lib/cache');
 const battlePass = require('../lib/battle-pass-api');
+const leagues = require('../lib/leagues-api');
 
 // Helper function to execute SQL queries
 async function sql(strings, ...values) {
@@ -296,6 +297,54 @@ module.exports = async function handler(req, res) {
           });
         }
 
+        // PHASE 4 MONTH 15: Official Leagues
+        if (type === 'leagues-official') {
+          const result = await leagues.getOfficialLeagues();
+          if (!result.success) {
+            return res.status(500).json({ error: result.error });
+          }
+          return res.status(200).json(result);
+        }
+
+        // PHASE 4 MONTH 15: League Rankings
+        if (type === 'leagues-rankings') {
+          const { leagueId, limit } = req.query;
+          if (!leagueId) {
+            return res.status(400).json({ error: 'leagueId is required' });
+          }
+          const result = await leagues.getLeagueRankings(parseInt(leagueId), parseInt(limit) || 100);
+          if (!result.success) {
+            return res.status(500).json({ error: result.error });
+          }
+          return res.status(200).json(result);
+        }
+
+        // PHASE 4 MONTH 15: User League Status
+        if (type === 'leagues-user-status') {
+          const { userId } = req.query;
+          if (!userId) {
+            return res.status(400).json({ error: 'userId is required' });
+          }
+          const result = await leagues.getUserLeagueStatus(parseInt(userId));
+          if (!result.success) {
+            return res.status(500).json({ error: result.error });
+          }
+          return res.status(200).json(result);
+        }
+
+        // PHASE 4 MONTH 15: Custom Leagues
+        if (type === 'leagues-custom') {
+          const { userId } = req.query;
+          if (!userId) {
+            return res.status(400).json({ error: 'userId is required' });
+          }
+          const result = await leagues.getCustomLeagues(parseInt(userId));
+          if (!result.success) {
+            return res.status(500).json({ error: result.error });
+          }
+          return res.status(200).json(result);
+        }
+
         // Return empty for other types for now
         return res.status(200).json({});
 
@@ -339,6 +388,58 @@ module.exports = async function handler(req, res) {
             parseInt(userId),
             parseInt(tier),
             track || 'free'
+          );
+
+          if (!result.success) {
+            return res.status(400).json({ error: result.error });
+          }
+
+          return res.status(200).json(result);
+        }
+
+        // PHASE 4 MONTH 15: Join League
+        if (postType === 'leagues-join') {
+          const { userId, leagueId } = req.body;
+          if (!userId || !leagueId) {
+            return res.status(400).json({ error: 'userId and leagueId are required' });
+          }
+
+          const result = await leagues.joinLeague(parseInt(userId), parseInt(leagueId));
+          if (!result.success) {
+            return res.status(400).json({ error: result.error });
+          }
+
+          return res.status(200).json(result);
+        }
+
+        // PHASE 4 MONTH 15: Leave League
+        if (postType === 'leagues-leave') {
+          const { userId } = req.body;
+          if (!userId) {
+            return res.status(400).json({ error: 'userId is required' });
+          }
+
+          const result = await leagues.leaveLeague(parseInt(userId));
+          if (!result.success) {
+            return res.status(400).json({ error: result.error });
+          }
+
+          return res.status(200).json(result);
+        }
+
+        // PHASE 4 MONTH 15: Create Custom League (Premium)
+        if (postType === 'leagues-create') {
+          const { creatorId, name, description, isPublic, maxMembers } = req.body;
+          if (!creatorId || !name) {
+            return res.status(400).json({ error: 'creatorId and name are required' });
+          }
+
+          const result = await leagues.createCustomLeague(
+            parseInt(creatorId),
+            name,
+            description || '',
+            isPublic !== false, // default to true
+            parseInt(maxMembers) || 100
           );
 
           if (!result.success) {
