@@ -6,7 +6,7 @@ class AchievementsManager {
             {
                 id: 'streak_3',
                 title: 'Hot Start',
-                description: 'Win 3 consecutive days',
+                description: 'Complete puzzles 3 consecutive days',
                 icon: 'fas fa-fire',
                 type: 'streak',
                 requirement: { type: 'win_streak', value: 3 },
@@ -15,7 +15,7 @@ class AchievementsManager {
             {
                 id: 'streak_5',
                 title: 'Five-peat',
-                description: 'Win 5 consecutive days',
+                description: 'Complete puzzles 5 consecutive days',
                 icon: 'fas fa-fire',
                 type: 'streak',
                 requirement: { type: 'win_streak', value: 5 },
@@ -24,7 +24,7 @@ class AchievementsManager {
             {
                 id: 'streak_7',
                 title: 'Lucky Seven',
-                description: 'Win 7 consecutive days',
+                description: 'Complete puzzles 7 consecutive days',
                 icon: 'fas fa-dice',
                 type: 'streak',
                 requirement: { type: 'win_streak', value: 7 },
@@ -33,7 +33,7 @@ class AchievementsManager {
             {
                 id: 'streak_10',
                 title: 'Dominator',
-                description: 'Win 10 consecutive days',
+                description: 'Complete puzzles 10 consecutive days',
                 icon: 'fas fa-crown',
                 type: 'streak',
                 requirement: { type: 'win_streak', value: 10 },
@@ -42,7 +42,7 @@ class AchievementsManager {
             {
                 id: 'streak_15',
                 title: 'Unstoppable Force',
-                description: 'Win 15 consecutive days',
+                description: 'Complete puzzles 15 consecutive days',
                 icon: 'fas fa-meteor',
                 type: 'streak',
                 requirement: { type: 'win_streak', value: 15 },
@@ -51,7 +51,7 @@ class AchievementsManager {
             {
                 id: 'streak_20',
                 title: 'Sudoku Overlord',
-                description: 'Win 20 consecutive days',
+                description: 'Complete puzzles 20 consecutive days',
                 icon: 'fas fa-crown',
                 type: 'streak',
                 requirement: { type: 'win_streak', value: 20 },
@@ -60,7 +60,7 @@ class AchievementsManager {
             {
                 id: 'streak_30',
                 title: 'Month of Madness',
-                description: 'Win 30 consecutive days',
+                description: 'Complete puzzles 30 consecutive days',
                 icon: 'fas fa-dragon',
                 type: 'streak',
                 requirement: { type: 'win_streak', value: 30 },
@@ -69,7 +69,7 @@ class AchievementsManager {
             {
                 id: 'streak_25',
                 title: 'Legendary Streak',
-                description: 'Win 25 consecutive days',
+                description: 'Complete puzzles 25 consecutive days',
                 icon: 'fas fa-infinity',
                 type: 'streak',
                 requirement: { type: 'win_streak', value: 25 },
@@ -78,7 +78,7 @@ class AchievementsManager {
             {
                 id: 'perfect_week',
                 title: 'Perfect Week',
-                description: 'Win all 7 days in a week',
+                description: 'Complete all daily puzzles for 7 days',
                 icon: 'fas fa-calendar-check',
                 type: 'weekly',
                 requirement: { type: 'weekly_sweep', value: 7 },
@@ -87,7 +87,7 @@ class AchievementsManager {
             {
                 id: 'weekend_warrior',
                 title: 'Weekend Warrior',
-                description: 'Win both Saturday and Sunday',
+                description: 'Complete both Saturday and Sunday puzzles',
                 icon: 'fas fa-calendar',
                 type: 'weekend',
                 requirement: { type: 'weekend_sweep', value: 1 },
@@ -475,7 +475,7 @@ class AchievementsManager {
             {
                 id: 'getting_started',
                 title: 'Getting Started',
-                description: 'Complete 7 days of competition',
+                description: 'Complete 7 days of puzzles',
                 icon: 'fas fa-play',
                 type: 'consistency',
                 requirement: { type: 'total_days', value: 7 },
@@ -485,7 +485,7 @@ class AchievementsManager {
             {
                 id: 'consistent_performer',
                 title: 'Consistent Performer',
-                description: 'Complete 30 days of competition',
+                description: 'Complete 30 days of puzzles',
                 icon: 'fas fa-calendar',
                 type: 'consistency',
                 requirement: { type: 'total_days', value: 30 },
@@ -494,8 +494,8 @@ class AchievementsManager {
             },
             {
                 id: 'dedicated_competitor',
-                title: 'Dedicated Competitor',
-                description: 'Complete 100 days of competition',
+                title: 'Dedicated Solver',
+                description: 'Complete 100 days of puzzles',
                 icon: 'fas fa-medal',
                 type: 'consistency',
                 requirement: { type: 'total_days', value: 100 },
@@ -505,7 +505,7 @@ class AchievementsManager {
             {
                 id: 'sudoku_veteran',
                 title: 'Sudoku Veteran',
-                description: 'Complete 365 days of competition',
+                description: 'Complete 365 days of puzzles',
                 icon: 'fas fa-shield',
                 type: 'consistency',
                 requirement: { type: 'total_days', value: 365 },
