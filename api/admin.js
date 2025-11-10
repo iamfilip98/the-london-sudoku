@@ -5,6 +5,7 @@ const pool = require('../lib/db-pool');
 const bcrypt = require('bcryptjs');
 const { setCorsHeaders } = require('../lib/cors');
 const stripeManager = require('../lib/stripe-manager');
+const { migrateBattlePass } = require('../lib/battle-pass-migration');
 
 module.exports = async function handler(req, res) {
   // Handle CORS
@@ -64,6 +65,9 @@ module.exports = async function handler(req, res) {
       case 'migrate-phase2-month8':
         await handleMigratePhase2Month8(req, res);
         break;
+      case 'migrate-battle-pass':
+        await handleMigrateBattlePass(req, res);
+        break;
       case 'create-checkout':
         await handleCreateCheckout(req, res);
         break;
@@ -79,7 +83,7 @@ module.exports = async function handler(req, res) {
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
         });
     }
   } catch (error) {
@@ -797,6 +801,56 @@ async function handleMigratePhase2Month8(req, res) {
 
   } catch (error) {
     console.error('Phase 2 Month 8 migration failed:', error);
+    res.status(500).json({
+      error: 'Migration failed',
+      details: error.message
+    });
+  }
+}
+
+// Phase 3 Month 12: Battle Pass System migration
+async function handleMigrateBattlePass(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Starting Battle Pass migration...');
+
+    // Run the migration
+    const result = await migrateBattlePass();
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        error: 'Battle Pass migration failed'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Battle Pass migration completed successfully',
+      features: [
+        'Battle Pass seasons (Season 1: Launch Season created)',
+        'Battle Pass tiers (100 tiers with rewards)',
+        'User XP tracking (automatic on puzzle completion)',
+        'Reward claiming system (free + premium tracks)',
+        'Token economy (earn/spend tokens)',
+        'User inventory (themes, badges, avatars, titles)',
+        'Leaderboard system (tier-based rankings)'
+      ],
+      season1: {
+        name: 'Launch Season',
+        startDate: '2025-12-01',
+        endDate: '2026-03-01',
+        duration: '90 days',
+        totalTiers: 100
+      }
+    });
+
+  } catch (error) {
+    console.error('Battle Pass migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
       details: error.message

@@ -3,10 +3,13 @@
  * PHASE 1 MONTH 4 (November 2025):
  * - Extended for global leaderboards
  * - Supports daily, weekly, monthly, all-time rankings
+ * PHASE 3 MONTH 12 (November 2025):
+ * - Battle pass integration (progress, leaderboard, claim rewards)
  */
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
 const { getCached, CACHE_DURATIONS } = require('../lib/cache');
+const battlePass = require('../lib/battle-pass-api');
 
 // Helper function to execute SQL queries
 async function sql(strings, ...values) {
@@ -247,6 +250,52 @@ module.exports = async function handler(req, res) {
           });
         }
 
+        // PHASE 3 MONTH 12: Battle Pass Progress
+        if (type === 'battle-pass') {
+          const { userId } = req.query;
+
+          if (!userId) {
+            return res.status(400).json({ error: 'userId is required' });
+          }
+
+          const status = await battlePass.getBattlePassStatus(parseInt(userId));
+
+          if (!status.success && status.error) {
+            return res.status(404).json({ error: status.error });
+          }
+
+          return res.status(200).json(status);
+        }
+
+        // PHASE 3 MONTH 12: Battle Pass Leaderboard
+        if (type === 'battle-pass-leaderboard') {
+          const { limit } = req.query;
+          const leaderboard = await battlePass.getLeaderboard(parseInt(limit) || 100);
+
+          return res.status(200).json({
+            leaderboard
+          });
+        }
+
+        // PHASE 3 MONTH 12: Battle Pass All Tiers
+        if (type === 'battle-pass-tiers') {
+          const season = await battlePass.getActiveSeason();
+          if (!season) {
+            return res.status(404).json({ error: 'No active season' });
+          }
+
+          const tiers = await battlePass.getAllTiers(season.id);
+
+          return res.status(200).json({
+            season: {
+              id: season.id,
+              name: season.name,
+              seasonNumber: season.season_number
+            },
+            tiers
+          });
+        }
+
         // Return empty for other types for now
         return res.status(200).json({});
 
@@ -277,8 +326,32 @@ module.exports = async function handler(req, res) {
 
         return res.status(400).json({ error: 'Invalid type for PUT request' });
 
+      case 'POST':
+        const { type: postType, userId, tier, track } = req.body;
+
+        // PHASE 3 MONTH 12: Claim Battle Pass Reward
+        if (postType === 'battle-pass-claim') {
+          if (!userId || !tier) {
+            return res.status(400).json({ error: 'userId and tier are required' });
+          }
+
+          const result = await battlePass.claimReward(
+            parseInt(userId),
+            parseInt(tier),
+            track || 'free'
+          );
+
+          if (!result.success) {
+            return res.status(400).json({ error: result.error });
+          }
+
+          return res.status(200).json(result);
+        }
+
+        return res.status(400).json({ error: 'Invalid type for POST request' });
+
       default:
-        res.setHeader('Allow', ['GET', 'PUT']);
+        res.setHeader('Allow', ['GET', 'PUT', 'POST']);
         return res.status(405).json({ error: `Method ${req.method} not allowed` });
     }
   } catch (error) {

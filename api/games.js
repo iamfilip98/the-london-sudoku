@@ -1,9 +1,12 @@
 /**
  * Games API - SECURITY FIXES (November 2025)
+ * PHASE 3 MONTH 12 (November 2025):
+ * - Battle pass XP integration (automatic XP on puzzle completion)
  */
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
 const { validateSaveGameRequest, validateDate } = require('../lib/validation');
+const { addXP, calculatePuzzleXP, getXPSourceName } = require('../lib/battle-pass-api');
 
 // Helper function to execute SQL queries using template literals
 async function sql(strings, ...values) {
@@ -354,9 +357,57 @@ module.exports = async function handler(req, res) {
           }
         }
 
+        // PHASE 3 MONTH 12: Award Battle Pass XP
+        let battlePassResult = null;
+        try {
+          // Get user ID from username
+          const userResult = await pool.query('SELECT id, premium FROM users WHERE username = $1', [player]);
+          if (userResult.rows.length > 0) {
+            const userId = userResult.rows[0].id;
+            const isPremium = userResult.rows[0].premium || false;
+
+            // Get user's streak (for bonus XP)
+            const streakResult = await pool.query('SELECT current_streak FROM streaks WHERE player = $1', [player]);
+            const streak = streakResult.rows.length > 0 ? streakResult.rows[0].current_streak : 0;
+
+            // Check if this is first puzzle today
+            const todayCount = await pool.query(`
+              SELECT COUNT(*) as count FROM individual_games
+              WHERE player = $1 AND date = $2
+            `, [player, gameDate]);
+            const isFirstToday = parseInt(todayCount.rows[0].count) === 1; // Just saved = first one
+
+            // Calculate XP
+            const xpBreakdown = calculatePuzzleXP({
+              variant: puzzleVariant,
+              difficulty,
+              errors: gameData.errors || 0,
+              hints: (gameData.hints || 0) + (gameData.hintLevel1Count || 0) + (gameData.hintLevel2Count || 0) + (gameData.hintLevel3Count || 0),
+              isPremium,
+              isFirstToday,
+              streak
+            });
+
+            // Award XP
+            const source = getXPSourceName({
+              type: 'puzzle',
+              variant: puzzleVariant,
+              difficulty
+            });
+
+            battlePassResult = await addXP(userId, xpBreakdown.total, source, `${gameDate}_${difficulty}`);
+
+            console.log(`Battle Pass XP awarded: ${xpBreakdown.total} XP to user ${player} (${userId})`);
+          }
+        } catch (xpError) {
+          console.error('Failed to award battle pass XP:', xpError);
+          // Don't fail the game save if XP award fails
+        }
+
         return res.status(200).json({
           success: true,
-          message: 'Game saved successfully'
+          message: 'Game saved successfully',
+          battlePass: battlePassResult || undefined
         });
       }
 
