@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudoku Championship Arena - Faidao vs Filip</title>
+    <title>The London Sudoku - Championship Arena</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/enhancements.css">
     <link rel="stylesheet" href="css/tutorial.css">
@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/variant-leaderboards.css">
     <link rel="stylesheet" href="css/variant-tournaments.css">
     <link rel="stylesheet" href="css/variant-customization.css">
+    <link rel="stylesheet" href="css/puzzle-history.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -80,6 +81,10 @@
                     <i class="fas fa-fire"></i>
                     <span>Challenges</span>
                 </a>
+                <a href="#" class="nav-link" data-page="history">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
                 <a href="#" class="nav-link" data-page="sudoku">
                     <i class="fas fa-puzzle-piece"></i>
                     <span>Play Sudoku</span>
@@ -138,19 +143,19 @@
                     <div class="current-date" id="currentDate"></div>
                 </div>
 
-                <!-- Mobile Head-to-Head Score (visible only on mobile) -->
-                <section class="mobile-head-to-head">
-                    <div class="mobile-player-score faidao">
-                        <div class="mobile-player-name">Faidao</div>
-                        <div class="mobile-player-score-value" id="mobileScoreFaidao">0</div>
+                <!-- Mobile Stats Summary (visible only on mobile) -->
+                <section class="mobile-stats-summary">
+                    <div class="mobile-stat-card">
+                        <div class="mobile-stat-label">Rank</div>
+                        <div class="mobile-stat-value" id="mobileGlobalRank">-</div>
                     </div>
-                    <div class="mobile-vs-divider">
-                        <div class="mobile-vs-circle">VS</div>
-                        <div class="mobile-overall-record" id="mobileOverallRecord">Loading...</div>
+                    <div class="mobile-stat-card">
+                        <div class="mobile-stat-label">Streak</div>
+                        <div class="mobile-stat-value" id="mobileCurrentStreak">0</div>
                     </div>
-                    <div class="mobile-player-score filip">
-                        <div class="mobile-player-name">Filip</div>
-                        <div class="mobile-player-score-value" id="mobileScoreFilip">0</div>
+                    <div class="mobile-stat-card">
+                        <div class="mobile-stat-label">XP</div>
+                        <div class="mobile-stat-value" id="mobileTotalXP">0</div>
                     </div>
                 </section>
 
@@ -159,48 +164,54 @@
                     <div class="ad-placeholder">Advertisement</div>
                 </div>
 
-                <!-- Win Streaks Display -->
-                <section class="win-streaks-section">
-                    <div class="streak-cards">
-                        <div class="streak-card faidao">
-                            <div class="streak-header">
-                                <h3><i class="fas fa-fire"></i> Faidao</h3>
-                                <div class="player-avatar faidao-avatar">F</div>
-                            </div>
-                            <div class="streak-stats">
-                                <div class="current-streak">
-                                    <span class="streak-number" id="faidaoCurrentStreak">0</span>
-                                    <span class="streak-label">Current Streak</span>
-                                </div>
-                                <div class="best-streak">
-                                    <span class="streak-number" id="faidaoBestStreak">0</span>
-                                    <span class="streak-label">Best Streak</span>
-                                </div>
+                <!-- Personal Stats Dashboard -->
+                <section class="personal-stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userGlobalRank">-</div>
+                                <div class="stat-label">Global Rank</div>
                             </div>
                         </div>
 
-                        <div class="vs-divider">
-                            <div class="vs-circle-container">
-                                <span class="vs-circle-shine"></span>
-                                VS
+                        <div class="stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userCurrentStreak">0</div>
+                                <div class="stat-label">Current Streak</div>
                             </div>
-                            <div class="overall-record" id="overallRecord">0 - 0</div>
                         </div>
 
-                        <div class="streak-card filip">
-                            <div class="streak-header">
-                                <h3><i class="fas fa-fire"></i> Filip</h3>
-                                <div class="player-avatar filip-avatar">F</div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⭐</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userBestStreak">0</div>
+                                <div class="stat-label">Best Streak</div>
                             </div>
-                            <div class="streak-stats">
-                                <div class="current-streak">
-                                    <span class="streak-number" id="filipCurrentStreak">0</span>
-                                    <span class="streak-label">Current Streak</span>
-                                </div>
-                                <div class="best-streak">
-                                    <span class="streak-number" id="filipBestStreak">0</span>
-                                    <span class="streak-label">Best Streak</span>
-                                </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">🎮</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userTotalGames">0</div>
+                                <div class="stat-label">Games Played</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">✨</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userPerfectGames">0</div>
+                                <div class="stat-label">Perfect Games</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">💎</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="userTotalXP">0</div>
+                                <div class="stat-label">Total XP</div>
                             </div>
                         </div>
                     </div>
@@ -718,6 +729,79 @@
 
                 <!-- Tournament Detail Modal -->
                 <div id="tournamentDetail" class="hidden"></div>
+            </div>
+
+            <!-- PHASE 2 MONTH 25: Puzzle History Page -->
+            <div class="page" id="history">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="fas fa-history"></i>
+                        Puzzle History
+                    </h1>
+                </div>
+
+                <!-- Statistics Summary -->
+                <div id="historyStatistics" class="history-statistics"></div>
+
+                <!-- Filters and Search -->
+                <div class="history-controls">
+                    <div class="history-filters">
+                        <div class="filter-group">
+                            <label>Variant:</label>
+                            <div class="filter-buttons">
+                                <button class="history-variant-filter active" data-variant="all">All</button>
+                                <button class="history-variant-filter" data-variant="classic">Classic</button>
+                                <button class="history-variant-filter" data-variant="x-sudoku">X-Sudoku</button>
+                                <button class="history-variant-filter" data-variant="mini">Mini</button>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Difficulty:</label>
+                            <div class="filter-buttons">
+                                <button class="history-difficulty-filter active" data-difficulty="all">All</button>
+                                <button class="history-difficulty-filter" data-difficulty="easy">Easy</button>
+                                <button class="history-difficulty-filter" data-difficulty="medium">Medium</button>
+                                <button class="history-difficulty-filter" data-difficulty="hard">Hard</button>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Status:</label>
+                            <div class="filter-buttons">
+                                <button class="history-status-filter active" data-status="all">All</button>
+                                <button class="history-status-filter" data-status="completed">Completed</button>
+                                <button class="history-status-filter" data-status="abandoned">Abandoned</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="history-search-sort">
+                        <input type="text" id="historySearch" placeholder="Search..." class="history-search">
+                        <select id="historySort" class="history-sort">
+                            <option value="date">Sort by Date</option>
+                            <option value="time">Sort by Time</option>
+                            <option value="score">Sort by Score</option>
+                            <option value="errors">Sort by Errors</option>
+                        </select>
+                        <label class="perfect-filter">
+                            <input type="checkbox" id="perfectOnly">
+                            Perfect Only
+                        </label>
+                    </div>
+
+                    <div class="history-actions">
+                        <button id="exportHistoryBtn" class="history-action-btn">
+                            📤 Export History
+                        </button>
+                        <button id="clearHistoryBtn" class="history-action-btn danger">
+                            🗑️ Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History List -->
+                <div id="historyList" class="history-list"></div>
             </div>
 
             <!-- Achievements Page -->
@@ -1747,6 +1831,11 @@
     <!-- PHASE 2 MONTH 24: Variant Customization -->
     <script src="/js/variant-customization.js"></script>
     <script src="/js/variant-customization-ui.js"></script>
+
+    <!-- PHASE 2 MONTH 25: Puzzle History -->
+    <script src="/js/puzzle-history-manager.js"></script>
+    <script src="/js/puzzle-history-ui.js"></script>
+    <script src="/js/puzzle-replay.js"></script>
     <script>
         // Initialize tutorial system when Sudoku engine is ready
         let tutorialManager;
@@ -1812,6 +1901,20 @@
                 window.variantCustomizationUI = variantCustomizationUI;
                 variantCustomizationUI.initialize();
                 console.log('✅ Variant customization UI initialized');
+
+                // PHASE 2 MONTH 25: Initialize puzzle history
+                const puzzleHistoryManager = new PuzzleHistoryManager();
+                window.puzzleHistoryManager = puzzleHistoryManager;
+                console.log('✅ Puzzle history manager initialized');
+
+                const puzzleHistoryUI = new PuzzleHistoryUI(puzzleHistoryManager);
+                window.puzzleHistoryUI = puzzleHistoryUI;
+                puzzleHistoryUI.initialize();
+                console.log('✅ Puzzle history UI initialized');
+
+                const puzzleReplaySystem = new PuzzleReplaySystem(puzzleHistoryManager);
+                window.puzzleReplaySystem = puzzleReplaySystem;
+                console.log('✅ Puzzle replay system initialized');
 
                 // Add tutorial triggers to UI
                 addTutorialTriggers();

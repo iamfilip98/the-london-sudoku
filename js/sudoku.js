@@ -4208,6 +4208,28 @@ class SudokuEngine {
                 }
             }
 
+            // PHASE 2 MONTH 25: Save to puzzle history for review and replay
+            if (window.puzzleHistoryManager) {
+                try {
+                    const historyEntry = window.puzzleHistoryManager.saveGame({
+                        variant: this.variant,
+                        difficulty: this.currentDifficulty,
+                        status: 'completed',
+                        timeElapsed: this.timer,
+                        errors: this.errors,
+                        hints: this.hints,
+                        score: score,
+                        initialGrid: this.initialGrid,
+                        solution: this.solution,
+                        playerGrid: this.playerGrid,
+                        moves: this.moveHistory
+                    });
+                    console.log('✅ Game saved to history:', historyEntry);
+                } catch (error) {
+                    console.error('Failed to save to puzzle history:', error);
+                }
+            }
+
             // PHASE 2 MONTH 21: Check daily challenges and update streaks
             if (window.variantChallengesManager && window.variantChallengesUI) {
                 try {
