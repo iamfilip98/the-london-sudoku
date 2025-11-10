@@ -1,8 +1,11 @@
 /**
  * Achievements API - SECURITY FIXES (November 2025)
+ * PHASE 3 MONTH 13 (November 2025):
+ * - Battle pass XP integration for achievement unlocks
  */
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
+const battlePass = require('../lib/battle-pass-api');
 
 // Helper function to execute SQL queries
 async function sql(strings, ...values) {
@@ -49,7 +52,7 @@ module.exports = async function handler(req, res) {
         return res.status(200).json(achievements);
 
       case 'POST':
-        const { id, player, unlockedAt, ...data } = req.body;
+        const { id, player, unlockedAt, rarity, ...data } = req.body;
 
         if (!id || !player || !unlockedAt) {
           return res.status(400).json({ error: 'Achievement ID, player, and unlockedAt are required' });
@@ -60,6 +63,33 @@ module.exports = async function handler(req, res) {
           VALUES (${id}, ${player}, ${unlockedAt}, ${JSON.stringify(data)})
           ON CONFLICT (achievement_id, player, unlocked_at) DO NOTHING
         `;
+
+        // PHASE 3 MONTH 13: Award Battle Pass XP for achievement unlock
+        if (rarity) {
+          try {
+            // Get user ID from username (player)
+            const userResult = await sql`
+              SELECT id FROM users WHERE username = ${player}
+            `;
+
+            if (userResult.rows.length > 0) {
+              const userId = userResult.rows[0].id;
+              const xpResult = await battlePass.calculateAchievementXP(rarity, false); // isPremium handled by addXP
+
+              await battlePass.addXP(
+                userId,
+                xpResult.total,
+                'achievement',
+                id
+              );
+
+              console.log(`✨ Awarded ${xpResult.total} XP to ${player} for ${rarity} achievement: ${id}`);
+            }
+          } catch (error) {
+            console.error('Failed to award achievement XP:', error);
+            // Don't fail the achievement save if XP award fails
+          }
+        }
 
         return res.status(200).json({
           success: true,
