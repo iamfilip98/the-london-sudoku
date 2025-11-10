@@ -2589,43 +2589,64 @@ class AchievementsManager {
     updateAchievementsSummary() {
         this.ensureUnlockedAchievementsArray();
 
-        // Count achievements per player
-        const playerCounts = {
-            faidao: 0,
-            filip: 0
-        };
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
 
-        // Count unique achievements per player (not individual unlocks)
+        // Count personal achievements for current player
+        let personalCount = 0;
         const uniqueAchievements = new Set();
+
         this.unlockedAchievements.forEach(achievement => {
-            const key = `${achievement.id}-${achievement.player}`;
-            if (!uniqueAchievements.has(key)) {
-                uniqueAchievements.add(key);
-                if (playerCounts.hasOwnProperty(achievement.player)) {
-                    playerCounts[achievement.player]++;
+            if (achievement.player === currentPlayer) {
+                if (!uniqueAchievements.has(achievement.id)) {
+                    uniqueAchievements.add(achievement.id);
+                    personalCount++;
                 }
             }
         });
 
-        // Update DOM elements
-        const faidaoCountEl = document.getElementById('faidaoAchievementCount');
-        const filipCountEl = document.getElementById('filipAchievementCount');
+        // Count total unique achievements unlocked across all players
+        const totalUniqueAchievements = new Set();
+        this.unlockedAchievements.forEach(achievement => {
+            totalUniqueAchievements.add(achievement.id);
+        });
+
+        const totalUnlocked = totalUniqueAchievements.size;
+        const totalAchievements = this.achievementDefinitions.length;
+        const completionPercentage = totalAchievements > 0 ? Math.round((totalUnlocked / totalAchievements) * 100) : 0;
+
+        // Update personal achievement count (desktop)
+        const personalAchievementCountEl = document.getElementById('personalAchievementCount');
+        if (personalAchievementCountEl) {
+            personalAchievementCountEl.textContent = personalCount;
+        }
+
+        // Update mobile achievement count
+        const achievementsMobileCountEl = document.getElementById('achievementsMobileCount');
+        if (achievementsMobileCountEl) {
+            achievementsMobileCountEl.textContent = personalCount;
+        }
+
+        // Update total achievements display
         const totalUnlockedEl = document.getElementById('totalAchievementsUnlocked');
         const totalAchievementsEl = document.getElementById('totalAchievements');
 
-        if (faidaoCountEl) faidaoCountEl.textContent = playerCounts.faidao;
-        if (filipCountEl) filipCountEl.textContent = playerCounts.filip;
         if (totalUnlockedEl) {
-            // Count unique achievements unlocked (not per player)
-            const uniqueAchievementsUnlocked = new Set();
-            this.unlockedAchievements.forEach(achievement => {
-                uniqueAchievementsUnlocked.add(achievement.id);
-            });
-            totalUnlockedEl.textContent = uniqueAchievementsUnlocked.size;
+            totalUnlockedEl.textContent = totalUnlocked;
         }
         if (totalAchievementsEl) {
-            // Total unique achievements (encouraging teamwork to unlock all)
-            totalAchievementsEl.textContent = this.achievementDefinitions.length;
+            totalAchievementsEl.textContent = totalAchievements;
+        }
+
+        // Update progress bar
+        const progressBarEl = document.getElementById('achievementProgressBar');
+        const progressPercentageEl = document.getElementById('achievementProgressPercentage');
+
+        if (progressBarEl) {
+            progressBarEl.style.width = `${completionPercentage}%`;
+        }
+        if (progressPercentageEl) {
+            progressPercentageEl.textContent = `${completionPercentage}%`;
         }
     }
 

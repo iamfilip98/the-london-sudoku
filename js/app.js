@@ -722,87 +722,99 @@ class SudokuChampionship {
     }
 
     updateStreakDisplay() {
-        document.getElementById('faidaoCurrentStreak').textContent = this.streaks.faidao?.current || 0;
-        document.getElementById('faidaoBestStreak').textContent = this.streaks.faidao?.best || 0;
-        document.getElementById('filipCurrentStreak').textContent = this.streaks.filip?.current || 0;
-        document.getElementById('filipBestStreak').textContent = this.streaks.filip?.best || 0;
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
+
+        // Get personal streaks from storage or initialize
+        const personalStreaks = this.streaks[currentPlayer] || { current: 0, best: 0 };
+
+        // Update dashboard personal stats
+        const userCurrentStreakEl = document.getElementById('userCurrentStreak');
+        const userBestStreakEl = document.getElementById('userBestStreak');
+        const mobileCurrentStreakEl = document.getElementById('mobileCurrentStreak');
+
+        if (userCurrentStreakEl) {
+            userCurrentStreakEl.textContent = personalStreaks.current || 0;
+        }
+        if (userBestStreakEl) {
+            userBestStreakEl.textContent = personalStreaks.best || 0;
+        }
+        if (mobileCurrentStreakEl) {
+            mobileCurrentStreakEl.textContent = personalStreaks.current || 0;
+        }
+
+        // Update additional personal stats
+        this.updatePersonalStats();
     }
 
-    updateOverallRecord() {
-        let faidaoWins = 0;
-        let filipWins = 0;
+    updatePersonalStats() {
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
 
-        // Only count complete entries for overall record
-        const completeEntries = this.entries.filter(entry => this.isEntryComplete(entry));
+        // Calculate games played (from entries)
+        const playerEntries = this.entries.filter(entry =>
+            (entry.faidao && entry.faidao.player === currentPlayer) ||
+            (entry.filip && entry.filip.player === currentPlayer)
+        );
+        const gamesPlayed = playerEntries.length;
 
-        completeEntries.forEach(entry => {
-            // Safety check for scores property
-            if (!entry.faidao?.scores || !entry.filip?.scores) {
-                return;
-            }
-
-            const faidaoTotal = entry.faidao.scores.total || 0;
-            const filipTotal = entry.filip.scores.total || 0;
-
-            if (faidaoTotal > filipTotal) {
-                faidaoWins++;
-            } else if (filipTotal > faidaoTotal) {
-                filipWins++;
+        // Calculate perfect games (0 errors)
+        let perfectGames = 0;
+        playerEntries.forEach(entry => {
+            const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+            if (playerData?.scores) {
+                ['easy', 'medium', 'hard'].forEach(diff => {
+                    if (playerData.scores[diff]?.errors === 0 && playerData.scores[diff]?.completed) {
+                        perfectGames++;
+                    }
+                });
             }
         });
 
-        document.getElementById('overallRecord').textContent = `${faidaoWins} - ${filipWins}`;
-
-        // Update mobile head-to-head section on dashboard
-        const mobileScoreFaidao = document.getElementById('mobileScoreFaidao');
-        const mobileScoreFilip = document.getElementById('mobileScoreFilip');
-        const mobileOverallRecord = document.getElementById('mobileOverallRecord');
-
-        if (mobileScoreFaidao) mobileScoreFaidao.textContent = faidaoWins;
-        if (mobileScoreFilip) mobileScoreFilip.textContent = filipWins;
-
-        // Determine current streak leader and format display text
-        const faidaoStreak = this.streaks.faidao?.current || 0;
-        const filipStreak = this.streaks.filip?.current || 0;
-        let mobileText = '';
-
-        if (faidaoStreak > 0) {
-            mobileText = `Faidao on a ${faidaoStreak} streak`;
-        } else if (filipStreak > 0) {
-            mobileText = `Filip on a ${filipStreak} streak`;
-        } else {
-            mobileText = `${faidaoWins} - ${filipWins}`;
-        }
-
-        // Update mobile overall record with animation to prevent jarring changes
-        if (mobileOverallRecord) {
-            if (mobileOverallRecord.textContent !== mobileText) {
-                mobileOverallRecord.style.opacity = '0.6';
-                setTimeout(() => {
-                    mobileOverallRecord.textContent = mobileText;
-                    mobileOverallRecord.style.opacity = '1';
-                }, 50);
+        // Calculate total XP (sum of all scores)
+        let totalXP = 0;
+        playerEntries.forEach(entry => {
+            const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+            if (playerData?.scores?.total) {
+                totalXP += playerData.scores.total;
             }
+        });
+
+        // Update dashboard elements
+        const userGamesPlayedEl = document.getElementById('userGamesPlayed');
+        const userPerfectGamesEl = document.getElementById('userPerfectGames');
+        const userTotalXPEl = document.getElementById('userTotalXP');
+        const mobileTotalXPEl = document.getElementById('mobileTotalXP');
+
+        if (userGamesPlayedEl) {
+            userGamesPlayedEl.textContent = gamesPlayed;
+        }
+        if (userPerfectGamesEl) {
+            userPerfectGamesEl.textContent = perfectGames;
+        }
+        if (userTotalXPEl) {
+            userTotalXPEl.textContent = totalXP.toLocaleString();
+        }
+        if (mobileTotalXPEl) {
+            mobileTotalXPEl.textContent = totalXP.toLocaleString();
         }
 
-        // Update mobile head-to-head section on achievements page
-        const achievementsMobileScoreFaidao = document.getElementById('achievementsMobileScoreFaidao');
-        const achievementsMobileScoreFilip = document.getElementById('achievementsMobileScoreFilip');
-        const achievementsMobileOverallRecord = document.getElementById('achievementsMobileOverallRecord');
-
-        if (achievementsMobileScoreFaidao) achievementsMobileScoreFaidao.textContent = faidaoWins;
-        if (achievementsMobileScoreFilip) achievementsMobileScoreFilip.textContent = filipWins;
-
-        // Update achievements mobile overall record with same animation
-        if (achievementsMobileOverallRecord) {
-            if (achievementsMobileOverallRecord.textContent !== mobileText) {
-                achievementsMobileOverallRecord.style.opacity = '0.6';
-                setTimeout(() => {
-                    achievementsMobileOverallRecord.textContent = mobileText;
-                    achievementsMobileOverallRecord.style.opacity = '1';
-                }, 50);
-            }
+        // Global rank placeholder (would need backend ranking system)
+        const userGlobalRankEl = document.getElementById('userGlobalRank');
+        const mobileGlobalRankEl = document.getElementById('mobileGlobalRank');
+        if (userGlobalRankEl) {
+            userGlobalRankEl.textContent = '-'; // TODO: Implement ranking system
         }
+        if (mobileGlobalRankEl) {
+            mobileGlobalRankEl.textContent = '-'; // TODO: Implement ranking system
+        }
+    }
+
+    updateOverallRecord() {
+        // Legacy method - no longer needed for personal stats
+        // Old two-player comparison elements removed from HTML
+        // Personal stats now handled by updatePersonalStats()
+        return;
     }
 
     updateRecentHistory() {
@@ -1362,9 +1374,13 @@ class SudokuChampionship {
 
     async updateTodayProgress() {
         const today = this.getTodayDate();
-        const players = ['faidao', 'filip'];
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
         const difficulties = ['easy', 'medium', 'hard'];
 
+        // If no player logged in, skip update
+        if (!currentPlayer) {
+            return;
+        }
 
         // Check cache first
         const now = Date.now();
@@ -1374,14 +1390,14 @@ class SudokuChampionship {
             (now - this.todayProgressCache.lastUpdate) < this.todayProgressCache.duration) {
             // Use cached data
             const dbProgress = this.todayProgressCache.data;
-            this.renderTodayProgress(dbProgress, players, difficulties, today);
+            this.renderTodayProgress(dbProgress, currentPlayer, difficulties, today);
             return;
         }
 
         // Try to load progress from database first
         let dbProgress = null;
         try {
-            // Force no-cache to ensure real-time battle updates across players
+            // Force no-cache to ensure real-time updates
             const response = await fetch(`/api/games?date=${today}`, {
                 cache: 'no-store'
             });
@@ -1392,58 +1408,57 @@ class SudokuChampionship {
                 this.todayProgressCache.data = dbProgress;
                 this.todayProgressCache.lastUpdate = now;
                 this.todayProgressCache.date = today;
-            } else {
             }
         } catch (error) {
+            console.error('Error loading today progress:', error);
         }
 
         // Always render, even if dbProgress is null (will check localStorage fallback)
-        this.renderTodayProgress(dbProgress, players, difficulties, today);
+        this.renderTodayProgress(dbProgress, currentPlayer, difficulties, today);
     }
 
 
-    renderTodayProgress(dbProgress, players, difficulties, today) {
-        players.forEach(player => {
-            difficulties.forEach(difficulty => {
-                const progressElement = document.getElementById(`${player}-${difficulty}-progress`);
-                if (!progressElement) {
-                    return;
-                }
+    renderTodayProgress(dbProgress, currentPlayer, difficulties, today) {
+        // Render personal progress for each difficulty
+        difficulties.forEach(difficulty => {
+            const progressElement = document.getElementById(`personal-${difficulty}-progress`);
+            if (!progressElement) {
+                return;
+            }
 
-                const statusElement = progressElement.querySelector('.progress-status');
-                if (!statusElement) {
-                    return;
-                }
+            const statusElement = progressElement.querySelector('.progress-status');
+            if (!statusElement) {
+                return;
+            }
 
-                let gameData = null;
+            let gameData = null;
 
-                // Check database first
-                if (dbProgress && dbProgress[player] && dbProgress[player][difficulty]) {
-                    gameData = dbProgress[player][difficulty];
-                    // Cache in memory for fast access
-                    const progressKey = `${player}_${today}_${difficulty}`;
-                    this.setStoredData('todayProgress', progressKey, gameData, false);
-                } else {
-                    // Check in-memory store first, then localStorage
-                    const progressKey = `${player}_${today}_${difficulty}`;
-                    gameData = this.getStoredData('todayProgress', `completed_${progressKey}`, true);
-                }
+            // Check database first
+            if (dbProgress && dbProgress[currentPlayer] && dbProgress[currentPlayer][difficulty]) {
+                gameData = dbProgress[currentPlayer][difficulty];
+                // Cache in memory for fast access
+                const progressKey = `${currentPlayer}_${today}_${difficulty}`;
+                this.setStoredData('todayProgress', progressKey, gameData, false);
+            } else {
+                // Check in-memory store first, then localStorage
+                const progressKey = `${currentPlayer}_${today}_${difficulty}`;
+                gameData = this.getStoredData('todayProgress', `completed_${progressKey}`, true);
+            }
 
-                if (gameData && gameData.time) {
-                    const time = this.formatSecondsToTime(gameData.time);
-                    statusElement.innerHTML = `
-                        <span class="completion-time">✓ ${time}</span>
-                        <span class="completion-score">${Math.round(gameData.score || 0)}pts</span>
-                    `;
-                    progressElement.classList.add('completed');
-                } else {
-                    statusElement.textContent = 'Not started';
-                    progressElement.classList.remove('completed');
-                }
-            });
+            if (gameData && gameData.time) {
+                const time = this.formatSecondsToTime(gameData.time);
+                statusElement.innerHTML = `
+                    <span class="completion-time">✓ ${time}</span>
+                    <span class="completion-score">${Math.round(gameData.score || 0)}pts</span>
+                `;
+                progressElement.classList.add('completed');
+            } else {
+                statusElement.textContent = 'Not started';
+                progressElement.classList.remove('completed');
+            }
         });
 
-        // Update battle results based on today's completed games
+        // Update daily performance stats based on today's completed games
         this.updateTodaysBattleResults();
     }
 
