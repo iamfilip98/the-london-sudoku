@@ -722,87 +722,99 @@ class SudokuChampionship {
     }
 
     updateStreakDisplay() {
-        document.getElementById('faidaoCurrentStreak').textContent = this.streaks.faidao?.current || 0;
-        document.getElementById('faidaoBestStreak').textContent = this.streaks.faidao?.best || 0;
-        document.getElementById('filipCurrentStreak').textContent = this.streaks.filip?.current || 0;
-        document.getElementById('filipBestStreak').textContent = this.streaks.filip?.best || 0;
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
+
+        // Get personal streaks from storage or initialize
+        const personalStreaks = this.streaks[currentPlayer] || { current: 0, best: 0 };
+
+        // Update dashboard personal stats
+        const userCurrentStreakEl = document.getElementById('userCurrentStreak');
+        const userBestStreakEl = document.getElementById('userBestStreak');
+        const mobileCurrentStreakEl = document.getElementById('mobileCurrentStreak');
+
+        if (userCurrentStreakEl) {
+            userCurrentStreakEl.textContent = personalStreaks.current || 0;
+        }
+        if (userBestStreakEl) {
+            userBestStreakEl.textContent = personalStreaks.best || 0;
+        }
+        if (mobileCurrentStreakEl) {
+            mobileCurrentStreakEl.textContent = personalStreaks.current || 0;
+        }
+
+        // Update additional personal stats
+        this.updatePersonalStats();
     }
 
-    updateOverallRecord() {
-        let faidaoWins = 0;
-        let filipWins = 0;
+    updatePersonalStats() {
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
 
-        // Only count complete entries for overall record
-        const completeEntries = this.entries.filter(entry => this.isEntryComplete(entry));
+        // Calculate games played (from entries)
+        const playerEntries = this.entries.filter(entry =>
+            (entry.faidao && entry.faidao.player === currentPlayer) ||
+            (entry.filip && entry.filip.player === currentPlayer)
+        );
+        const gamesPlayed = playerEntries.length;
 
-        completeEntries.forEach(entry => {
-            // Safety check for scores property
-            if (!entry.faidao?.scores || !entry.filip?.scores) {
-                return;
-            }
-
-            const faidaoTotal = entry.faidao.scores.total || 0;
-            const filipTotal = entry.filip.scores.total || 0;
-
-            if (faidaoTotal > filipTotal) {
-                faidaoWins++;
-            } else if (filipTotal > faidaoTotal) {
-                filipWins++;
+        // Calculate perfect games (0 errors)
+        let perfectGames = 0;
+        playerEntries.forEach(entry => {
+            const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+            if (playerData?.scores) {
+                ['easy', 'medium', 'hard'].forEach(diff => {
+                    if (playerData.scores[diff]?.errors === 0 && playerData.scores[diff]?.completed) {
+                        perfectGames++;
+                    }
+                });
             }
         });
 
-        document.getElementById('overallRecord').textContent = `${faidaoWins} - ${filipWins}`;
-
-        // Update mobile head-to-head section on dashboard
-        const mobileScoreFaidao = document.getElementById('mobileScoreFaidao');
-        const mobileScoreFilip = document.getElementById('mobileScoreFilip');
-        const mobileOverallRecord = document.getElementById('mobileOverallRecord');
-
-        if (mobileScoreFaidao) mobileScoreFaidao.textContent = faidaoWins;
-        if (mobileScoreFilip) mobileScoreFilip.textContent = filipWins;
-
-        // Determine current streak leader and format display text
-        const faidaoStreak = this.streaks.faidao?.current || 0;
-        const filipStreak = this.streaks.filip?.current || 0;
-        let mobileText = '';
-
-        if (faidaoStreak > 0) {
-            mobileText = `Faidao on a ${faidaoStreak} streak`;
-        } else if (filipStreak > 0) {
-            mobileText = `Filip on a ${filipStreak} streak`;
-        } else {
-            mobileText = `${faidaoWins} - ${filipWins}`;
-        }
-
-        // Update mobile overall record with animation to prevent jarring changes
-        if (mobileOverallRecord) {
-            if (mobileOverallRecord.textContent !== mobileText) {
-                mobileOverallRecord.style.opacity = '0.6';
-                setTimeout(() => {
-                    mobileOverallRecord.textContent = mobileText;
-                    mobileOverallRecord.style.opacity = '1';
-                }, 50);
+        // Calculate total XP (sum of all scores)
+        let totalXP = 0;
+        playerEntries.forEach(entry => {
+            const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+            if (playerData?.scores?.total) {
+                totalXP += playerData.scores.total;
             }
+        });
+
+        // Update dashboard elements
+        const userGamesPlayedEl = document.getElementById('userGamesPlayed');
+        const userPerfectGamesEl = document.getElementById('userPerfectGames');
+        const userTotalXPEl = document.getElementById('userTotalXP');
+        const mobileTotalXPEl = document.getElementById('mobileTotalXP');
+
+        if (userGamesPlayedEl) {
+            userGamesPlayedEl.textContent = gamesPlayed;
+        }
+        if (userPerfectGamesEl) {
+            userPerfectGamesEl.textContent = perfectGames;
+        }
+        if (userTotalXPEl) {
+            userTotalXPEl.textContent = totalXP.toLocaleString();
+        }
+        if (mobileTotalXPEl) {
+            mobileTotalXPEl.textContent = totalXP.toLocaleString();
         }
 
-        // Update mobile head-to-head section on achievements page
-        const achievementsMobileScoreFaidao = document.getElementById('achievementsMobileScoreFaidao');
-        const achievementsMobileScoreFilip = document.getElementById('achievementsMobileScoreFilip');
-        const achievementsMobileOverallRecord = document.getElementById('achievementsMobileOverallRecord');
-
-        if (achievementsMobileScoreFaidao) achievementsMobileScoreFaidao.textContent = faidaoWins;
-        if (achievementsMobileScoreFilip) achievementsMobileScoreFilip.textContent = filipWins;
-
-        // Update achievements mobile overall record with same animation
-        if (achievementsMobileOverallRecord) {
-            if (achievementsMobileOverallRecord.textContent !== mobileText) {
-                achievementsMobileOverallRecord.style.opacity = '0.6';
-                setTimeout(() => {
-                    achievementsMobileOverallRecord.textContent = mobileText;
-                    achievementsMobileOverallRecord.style.opacity = '1';
-                }, 50);
-            }
+        // Global rank placeholder (would need backend ranking system)
+        const userGlobalRankEl = document.getElementById('userGlobalRank');
+        const mobileGlobalRankEl = document.getElementById('mobileGlobalRank');
+        if (userGlobalRankEl) {
+            userGlobalRankEl.textContent = '-'; // TODO: Implement ranking system
         }
+        if (mobileGlobalRankEl) {
+            mobileGlobalRankEl.textContent = '-'; // TODO: Implement ranking system
+        }
+    }
+
+    updateOverallRecord() {
+        // Legacy method - no longer needed for personal stats
+        // Old two-player comparison elements removed from HTML
+        // Personal stats now handled by updatePersonalStats()
+        return;
     }
 
     updateRecentHistory() {
