@@ -7,6 +7,30 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 5 Month 16: Achievement Expansion Phase 2** (November 10, 2025)
+- 🎯 **37 New Achievements**: Expanded from 196 to 233 total achievements
+- 👥 **Social Achievements** (18 new):
+  - **Friends**: Making Friends (1), Social Butterfly (5), Friend Collector (10), Popular (25), Social Network (50)
+  - **Leagues**: League Player, Bronze/Silver/Gold/Legend Tier (5 achievements)
+  - **Leaderboards**: Daily Top 10, Daily Podium, Daily Champion, Weekly Elite (4 achievements)
+- 💎 **Skill Achievements** (13 new):
+  - **Perfect Games**: Flawless Victory (1), Perfection Seeker (10), Perfectionist (50), Perfect Legend (100)
+  - **Speed Running**: Speed Demon Easy/Medium/Hard (sub-2min, sub-4min, sub-8min)
+  - **No Hints**: Self-Reliant (10), Independent Solver (50)
+  - **Streaks**: Week Warrior (7 days), Monthly Dedication (30), Streak Master (100), Year-Long Dedication (365)
+- 🏆 **Milestone Achievements** (10 new):
+  - **Puzzles Completed**: Century (100), Solver (500), Millennium (1000), Grandmaster (5000)
+  - **Playtime**: 10 Hours In, Dedicated Player (100 hours)
+  - **Achievement Hunting**: Achievement Hunter (50), Collector (100), Master (200), Completionist (ALL)
+- 🔗 **Smart Integration**:
+  - Friends achievements track via `/api/auth?friends=`
+  - League achievements integrate with leagues system
+  - Leaderboard achievements query daily/weekly rankings
+  - Streak achievements pull from streak tracking API
+  - All handlers automatically detect progress
+- 📈 **Progress Tracking**: 233/350 achievements (67% complete)
+- 🎮 **Automatic Detection**: All new achievements auto-check on page load
+
 ### **Phase 4 Month 15: Custom Leagues System** (November 10, 2025)
 - 🏅 **Competitive Leagues**: Official tier-based ranking system
   - **6 Official Leagues**: Bronze (1000 max), Silver (500), Gold (250), Platinum (100), Diamond (50), Legend (25)
@@ -749,12 +773,15 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 - **Background Processing**: Non-blocking puzzle generation and data loading
 - **Real-Time Updates**: Live progress tracking and opponent notifications
 
-### 🏅 **Comprehensive Achievement System (196 Achievements)**
-- **16 Categories**: Streaks, Speed, Perfection, Score, Mathematical, Competitive, Seasonal, Timing, Comebacks, Errors, Patience, Milestones, Meta, Quirky, **Variants**, and **Battle Pass**
+### 🏅 **Comprehensive Achievement System (233 Achievements)**
+- **19 Categories**: Streaks, Speed, Perfection, Score, Mathematical, Competitive, Seasonal, Timing, Comebacks, Errors, Patience, Milestones, Meta, Quirky, **Variants**, **Battle Pass**, **Social**, **Skill**, and **Milestone**
 - **Variant Achievements**: 45 achievements across 9 Sudoku variants (X-Sudoku, Mini, Anti-Knight, Killer, Hyper, Consecutive, Thermo, Jigsaw, Classic milestones)
 - **Battle Pass Integration**: 15 achievements for battle pass progression (tier milestones, XP goals, season completion)
+- **Social Achievements**: 18 achievements for friends, leagues, and leaderboards
+- **Skill & Milestone**: 23 achievements for perfect games, speed running, streaks, and progression
 - **Rarity System**: Common, Rare, Epic, and Legendary achievements with automatic XP rewards
 - **Smart Detection**: Automatic achievement checking with real-time notifications
+- **Progress**: 233/350 achievements (67% complete)
 - **Progress Tracking**: Visual progress indicators and completion statistics
 - **Unique Challenges**: From "Speed Demon" to "Mathematical Genius" to "Sudoku Overlord" to "Variant Collector"
 
@@ -1241,7 +1268,7 @@ The application is deployed on Vercel with:
 - **Mobile Performance**: 60fps animations and smooth scrolling
 
 ### **Feature Coverage**
-- **196 Achievements**: Comprehensive achievement system across 16 categories (including Variants and Battle Pass)
+- **233 Achievements**: Comprehensive achievement system across 19 categories (including Variants, Battle Pass, Social, Skill, and Milestones)
 - **3 Difficulty Levels**: Calibrated puzzle generation with advanced algorithms
 - **9 Sudoku Variants**: Classic, X-Sudoku, Mini 6×6, Anti-Knight, Killer, Hyper, Consecutive, Thermo, Jigsaw
 - **Battle Pass System**: 100-tier seasonal progression with XP rewards and engagement mechanics
