@@ -65,7 +65,43 @@ All references to hardcoded player names removed from:
 - Player display components
 - Mobile views
 
-This transformation makes The London Sudoku a truly global platform where any player can track their personal Sudoku journey without hardcoded player names or competitive comparisons.
+#### 🐛 **Bug Fixes & Data Accuracy** (November 10, 2025)
+- **Daily Performance Calculation Fixed**:
+  - Fixed `updateTodaysBattleResults()` which was summing both players' scores instead of personal stats
+  - Now tracks only 3 games (easy, medium, hard) for current player instead of 6 total
+  - Perfect games counter now works correctly (checks for 0 errors)
+  - Removed legacy "battle winner" logic
+- **History Display Transformation**:
+  - Replaced "Faidao vs Filip" head-to-head battle cards with personal game history
+  - Shows personal stats: Score, Time, Errors (instead of winner/loser comparison)
+  - Added ⭐ star emoji for perfect games (0 errors, all difficulties complete)
+  - Updated empty states: "No games recorded yet" instead of "No battles recorded"
+- **UI Language Cleanup**:
+  - "Play Sudoku to compete!" → "Play Sudoku to track your progress!"
+  - "No complete battles this week/month" → "No complete games this week/month"
+  - All competitive language replaced with personal progression terminology
+
+#### 🏆 **Achievement Language Update** (November 10, 2025)
+- **14 Achievement Descriptions Updated**:
+  - Streak achievements: "Win X consecutive days" → "Complete puzzles X consecutive days"
+  - Milestone achievements: "Complete X days of competition" → "Complete X days of puzzles"
+  - Title update: "Dedicated Competitor" → "Dedicated Solver"
+- **User Experience**:
+  - Achievement descriptions now match personal progression focus
+  - Removes confusing competitive terminology for solo players
+  - Aligns with global platform transformation
+- **Note**: Internal achievement checking logic still uses competitive structures - future work will redesign the achievement system for pure personal stats
+
+#### 🔄 **Implementation Details**
+This transformation was completed in 6 incremental PRs (November 9-10, 2025):
+1. **PR #33**: HTML structure transformation (6 personal stat cards, analytics UI, today's progress)
+2. **PR #34**: Daily performance JavaScript (partial - basic structure)
+3. **PR #35**: Dashboard, streaks, achievements JavaScript transformation
+4. **PR #36**: Analytics charts and stats JavaScript transformation
+5. **PR #37**: Daily performance & history bug fixes (critical calculations fixed)
+6. **PR #38**: Achievement descriptions language cleanup
+
+**Impact**: The London Sudoku is now a truly global platform where any player can track their personal Sudoku journey without hardcoded player names or competitive comparisons.
 
 ---
 
