@@ -2113,12 +2113,18 @@ class AchievementsManager {
 
         // Save immediately to database
         try {
+            // Include rarity for server-side XP calculation
+            const unlockWithRarity = {
+                ...unlock,
+                rarity: achievement.rarity
+            };
+
             await fetch('/api/achievements', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(unlock)
+                body: JSON.stringify(unlockWithRarity)
             });
         } catch (error) {
             console.error('Failed to save achievement:', error);
