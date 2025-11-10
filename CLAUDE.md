@@ -220,17 +220,17 @@ const targetTimes = {
 
 **Current API Endpoints**:
 1. `/api/achievements.js` - Achievement management
-2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db, **migrate-phase1-month5, migrate-phase2-month7, migrate-phase2-month8, mark-founders**, **create-checkout, create-portal, webhook, subscription-status** *[Phase 1-2, Subscription, Friends]*) - **SUBSCRIPTION + FRIENDS MIGRATIONS CONSOLIDATED HERE**
+2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db, **migrate-phase1-month5, migrate-phase2-month7, migrate-phase2-month8, migrate-battle-pass, mark-founders**, **create-checkout, create-portal, webhook, subscription-status** *[Phase 1-2-3, Subscription, Friends, Battle Pass]*) - **SUBSCRIPTION + FRIENDS + BATTLE PASS MIGRATIONS CONSOLIDATED HERE**
 3. `/api/auth.js` - Authentication (bcrypt + Clerk) + **User Profiles** (GET/PUT for bio, avatar, displayName, founder badge) + **Friends System** (?friends=xxx, ?friend-requests=xxx, ?action=send-friend-request) *[Phase 1 Month 4-5, Phase 2 Month 8]*
 4. `/api/cron-verify-puzzles.js` - Scheduled puzzle verification
 5. `/api/entries.js` - Daily battle results
-6. `/api/games.js` - Game state management + **Free Tier Limits** (3 Classic dailies/day) *[Phase 1 Month 5]*
+6. `/api/games.js` - Game state management + **Free Tier Limits** (3 Classic dailies/day) + **Battle Pass XP** (automatic on completion) *[Phase 1 Month 5, Phase 3 Month 12]*
 7. `/api/generate-tomorrow.js` - Scheduled puzzle generation
 8. `/api/health.js` - Health check endpoint
 9. `/api/import.js` - **CONSOLIDATED** anonymous data migration (completion + achievement)
 10. `/api/puzzles.js` - Puzzle fetching (with Redis caching) + **Practice Mode** (?mode=practice&variant=classic|x-sudoku|mini|anti-knight|killer-sudoku|hyper-sudoku|consecutive-sudoku|thermo-sudoku|jigsaw-sudoku) *[Phase 1 Month 4-5, Phase 2 Month 9-14]*
 11. `/api/ratings.js` - Puzzle rating system
-12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) *[Phase 1 Month 4]*
+12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) + **Battle Pass** (?type=battle-pass|battle-pass-leaderboard|battle-pass-tiers, POST type=battle-pass-claim) *[Phase 1 Month 4, Phase 3 Month 12]*
 
 **Consolidation Strategy**:
 - **BEFORE Phase 0**: 14 endpoints (exceeded limit)
@@ -243,6 +243,7 @@ const targetTimes = {
 - **Phase 2 Month 12**: 12 endpoints (✅ **STILL AT LIMIT**)
 - **Phase 2 Month 13**: 12 endpoints (✅ **STILL AT LIMIT**)
 - **Phase 2 Month 14**: 12 endpoints (✅ **STILL AT LIMIT**)
+- **Phase 3 Month 12**: 12 endpoints (✅ **STILL AT LIMIT**)
 - **Consolidation History**:
   - Phase 0: Merged `import-achievement.js` + `import-completion.js` → `import.js?type=completion|achievement`
   - Phase 0: Merged `init-db.js` → `admin.js?action=init-db`
@@ -255,6 +256,7 @@ const targetTimes = {
   - Phase 2 Month 12: Added Consecutive Sudoku variant to `/api/puzzles.js?mode=practice&variant=consecutive-sudoku`
   - Phase 2 Month 13: Added Thermo Sudoku variant to `/api/puzzles.js?mode=practice&variant=thermo-sudoku`
   - Phase 2 Month 14: Added Jigsaw Sudoku variant to `/api/puzzles.js?mode=practice&variant=jigsaw-sudoku`
+  - Phase 3 Month 12: Added Battle Pass System to `/api/stats.js?type=battle-pass|battle-pass-leaderboard|battle-pass-tiers` and `/api/admin.js?action=migrate-battle-pass`
 
 **Subscription Consolidation Details**:
 - Subscription actions added to `/api/admin.js` with conditional authentication

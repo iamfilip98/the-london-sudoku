@@ -7,6 +7,51 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 3 Month 12: Battle Pass System** (November 10, 2025)
+- 🎮 **Battle Pass Seasons**: 90-day seasonal progression system
+  - Season 1: "Launch Season" (December 1, 2025 - March 1, 2026)
+  - 100 tiers of rewards with free and premium tracks
+  - Real-time XP tracking and tier progression
+  - Leaderboard rankings based on tier progress
+- ⭐ **XP Earning System**: Automatic XP on every action
+  - Puzzle completions: Base XP varies by variant and difficulty (50-300 XP)
+  - Perfect game bonus: +25 XP (no errors, no hints)
+  - First puzzle today: +20 XP daily bonus
+  - Streak bonus: +10 XP per consecutive day (up to 30 days)
+  - Achievement unlocks: 10-100 XP based on rarity
+  - Premium users earn +50% XP on all activities
+- 🎁 **Dual-Track Reward System**:
+  - **Free Track**: 5 rewards (tiers 20, 40, 60, 80, 100) - 800 tokens total
+  - **Premium Track**: 50 rewards (every 2 tiers) - 5,000 tokens, 15 badges, 10 themes, 5 avatars, 3 titles
+  - Instant reward claiming with visual feedback
+  - Token economy for future store purchases
+- 📊 **Comprehensive Progress Tracking**:
+  - Real-time tier progress with XP breakdowns
+  - Visual progress bars showing next tier requirements
+  - XP history logging for all earned XP
+  - Battle pass leaderboard with tier rankings
+- 🏪 **User Inventory System**:
+  - Themes: Visual customization options
+  - Badges: Profile achievements and status symbols
+  - Avatars: Custom profile picture frames
+  - Titles: Display names and honors
+  - All items tracked in personal inventory
+- 💰 **Token Economy**:
+  - Earn tokens through battle pass rewards
+  - Track lifetime earned and spent tokens
+  - Transaction history for all token changes
+  - Future: Token store for cosmetics and boosts
+- 🔌 **Seamless Integration**:
+  - XP automatically awarded on puzzle completion
+  - No new API endpoints (consolidated into `/api/stats`)
+  - Database migration: `POST /api/admin?action=migrate-battle-pass`
+  - Still at 12/12 endpoints (Vercel free tier compliant)
+- 📈 **Engagement Mechanics**:
+  - Daily XP bonuses encourage consistent play
+  - Streak bonuses reward dedication
+  - Premium multiplier incentivizes subscription
+  - 100-tier progression provides long-term goals
+
 ### **Phase 2 Month 18: Interactive Variant Tutorials** (November 9, 2025)
 - 🎓 **Comprehensive Tutorial System**: Interactive tutorials for all 9 Sudoku variants
   - Step-by-step guided walkthroughs with visual demonstrations
