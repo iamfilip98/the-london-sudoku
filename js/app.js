@@ -181,7 +181,7 @@ class SudokuChampionship {
         // Initialize battle results
         const winnerElement = document.getElementById('winnerAnnouncement');
         if (winnerElement) {
-            winnerElement.querySelector('.winner-text').textContent = 'Play Sudoku to compete!';
+            winnerElement.querySelector('.winner-text').textContent = 'Play Sudoku to track your progress!';
         }
     }
 
@@ -821,49 +821,66 @@ class SudokuChampionship {
         const historyContainer = document.getElementById('historyCards');
         if (!historyContainer) return;
 
-        const recentEntries = this.entries.slice(0, 5); // Show last 5 entries
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
 
-        if (recentEntries.length === 0) {
-            historyContainer.innerHTML = '<div class="no-history">No battles recorded yet. Start competing!</div>';
+        if (!currentPlayer) {
+            historyContainer.innerHTML = '<div class="no-history">Select a player to view history</div>';
             return;
         }
 
-        historyContainer.innerHTML = recentEntries.map(entry => {
-            // Check if entry has valid structure
-            if (!entry.faidao || !entry.filip || !entry.faidao.scores || !entry.filip.scores) {
+        // Filter entries for current player
+        const playerEntries = this.entries.filter(entry =>
+            (entry.faidao && entry.faidao.player === currentPlayer) ||
+            (entry.filip && entry.filip.player === currentPlayer)
+        ).slice(0, 5); // Show last 5 personal entries
+
+        if (playerEntries.length === 0) {
+            historyContainer.innerHTML = '<div class="no-history">No games recorded yet. Start playing!</div>';
+            return;
+        }
+
+        historyContainer.innerHTML = playerEntries.map(entry => {
+            // Get player data
+            const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+
+            if (!playerData || !playerData.scores) {
                 return '';
             }
 
-            // Check if entry is complete
-            const isComplete = this.isEntryComplete(entry);
+            const totalScore = playerData.scores.total || 0;
+            const totalErrors = (playerData.errors?.easy || 0) +
+                              (playerData.errors?.medium || 0) +
+                              (playerData.errors?.hard || 0);
+            const totalTime = (playerData.times?.easy || 0) +
+                            (playerData.times?.medium || 0) +
+                            (playerData.times?.hard || 0);
 
-            const faidaoTotal = entry.faidao.scores.total || 0;
-            const filipTotal = entry.filip.scores.total || 0;
+            const completedCount = ['easy', 'medium', 'hard'].filter(diff =>
+                playerData.dnf && !playerData.dnf[diff] && playerData.times && playerData.times[diff]
+            ).length;
 
-            const winner = isComplete
-                ? (faidaoTotal > filipTotal ? 'Faidao' :
-                   filipTotal > faidaoTotal ? 'Filip' : 'Tie')
-                : 'Incomplete';
+            const status = completedCount === 3 ? 'Complete' : `${completedCount}/3 Complete`;
+            const isPerfect = totalErrors === 0 && completedCount === 3;
 
             return `
                 <div class="history-card">
                     <div class="history-date">${new Date(entry.date).toLocaleDateString()}</div>
-                    <div class="history-scores">
+                    <div class="history-scores personal-stats">
                         <div class="history-score">
-                            <div class="player-name">Faidao</div>
-                            <div class="score-value">${faidaoTotal.toFixed(0)}</div>
+                            <div class="stat-label">Score</div>
+                            <div class="score-value">${totalScore.toFixed(0)} ${isPerfect ? '⭐' : ''}</div>
                         </div>
-                        <div class="score-vs">VS</div>
                         <div class="history-score">
-                            <div class="player-name">Filip</div>
-                            <div class="score-value">${filipTotal.toFixed(0)}</div>
+                            <div class="stat-label">Time</div>
+                            <div class="score-value">${this.formatSecondsToTime(totalTime)}</div>
+                        </div>
+                        <div class="history-score">
+                            <div class="stat-label">Errors</div>
+                            <div class="score-value">${totalErrors}</div>
                         </div>
                     </div>
-                    <div class="history-winner${winner === 'Filip' ? ' filip-winner' : ''}">${winner}</div>
+                    <div class="history-status">${status}</div>
                     <div class="history-actions">
-                        <button class="history-btn" onclick="sudokuApp.editEntry('${entry.date}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
                         <button class="history-btn" onclick="sudokuApp.deleteEntry('${entry.date}')">
                             <i class="fas fa-trash"></i>
                         </button>
@@ -942,7 +959,7 @@ class SudokuChampionship {
         });
 
         if (monthlyEntries.length === 0) {
-            monthlyContainer.innerHTML = '<p class="no-data">No complete battles this month yet!</p>';
+            monthlyContainer.innerHTML = '<p class="no-data">No complete games this month yet!</p>';
             return;
         }
 
@@ -984,7 +1001,7 @@ class SudokuChampionship {
         });
 
         if (weeklyEntries.length === 0) {
-            weeklyContainer.innerHTML = '<p class="no-data">No complete battles this week yet!</p>';
+            weeklyContainer.innerHTML = '<p class="no-data">No complete games this week yet!</p>';
             return;
         }
 
@@ -1464,62 +1481,59 @@ class SudokuChampionship {
 
     updateTodaysBattleResults() {
         const today = this.getTodayDate();
-        const players = ['faidao', 'filip'];
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+
+        if (!currentPlayer) {
+            // No player selected, show empty state
+            this.updateDailyPerformance({
+                puzzlesCompleted: 0,
+                totalScore: 0,
+                perfectGames: 0
+            });
+            return;
+        }
+
         const difficulties = ['easy', 'medium', 'hard'];
 
-        // Calculate total scores for today and count completed games
-        const todayScores = {
-            faidao: { total: 0 },
-            filip: { total: 0 }
-        };
+        // Calculate personal stats for today
+        let totalScore = 0;
+        let puzzlesCompleted = 0;
+        let perfectGames = 0;
 
-        let completedGames = 0;
-        const totalGamesRequired = players.length * difficulties.length; // 6 games total
+        difficulties.forEach(difficulty => {
+            let gameData = null;
 
-        players.forEach(player => {
-            difficulties.forEach(difficulty => {
-                let gameData = null;
-
-                // Check database cache first (prioritize database data)
-                if (this.todayProgressCache.data &&
-                    this.todayProgressCache.data[player] &&
-                    this.todayProgressCache.data[player][difficulty]) {
-                    gameData = this.todayProgressCache.data[player][difficulty];
-                } else {
-                    // Fallback to sessionStorage (session-only cache, no stale data)
-                    const key = `completed_${player}_${today}_${difficulty}`;
-                    const sessionData = sessionStorage.getItem(key);
-                    if (sessionData) {
-                        gameData = JSON.parse(sessionData);
-                    }
+            // Check database cache first (prioritize database data)
+            if (this.todayProgressCache.data &&
+                this.todayProgressCache.data[currentPlayer] &&
+                this.todayProgressCache.data[currentPlayer][difficulty]) {
+                gameData = this.todayProgressCache.data[currentPlayer][difficulty];
+            } else {
+                // Fallback to sessionStorage (session-only cache, no stale data)
+                const key = `completed_${currentPlayer}_${today}_${difficulty}`;
+                const sessionData = sessionStorage.getItem(key);
+                if (sessionData) {
+                    gameData = JSON.parse(sessionData);
                 }
+            }
 
-                if (gameData && gameData.score) {
-                    todayScores[player].total += Number(gameData.score) || 0;
-                    completedGames++;
+            if (gameData && gameData.score) {
+                totalScore += Number(gameData.score) || 0;
+                puzzlesCompleted++;
+
+                // Check if this was a perfect game (0 errors)
+                if ((gameData.errors || 0) === 0) {
+                    perfectGames++;
                 }
-            });
+            }
         });
 
-        // Only show winner if all 6 games are completed
-        if (completedGames === totalGamesRequired) {
-            // Update the daily performance display
-            this.updateDailyPerformance({
-                puzzlesCompleted: completedGames,
-                totalScore: (todayScores.faidao?.total || 0) + (todayScores.filip?.total || 0),
-                perfectGames: 0 // TODO: Calculate from game data
-            });
-            // Mark that we have a complete battle for today
-            this.lastCompleteBattleDate = today;
-        } else {
-            // Update progress even if not all games are completed
-            const currentCompleted = Object.values(todayScores).reduce((sum, player) => sum + (player.total > 0 ? 1 : 0), 0);
-            this.updateDailyPerformance({
-                puzzlesCompleted: currentCompleted,
-                totalScore: (todayScores.faidao?.total || 0) + (todayScores.filip?.total || 0),
-                perfectGames: 0 // TODO: Calculate from game data
-            });
-        }
+        // Update the daily performance display with personal stats
+        this.updateDailyPerformance({
+            puzzlesCompleted,
+            totalScore,
+            perfectGames
+        });
     }
 
     updateProgressNotifications() {
