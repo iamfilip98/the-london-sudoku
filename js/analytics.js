@@ -73,12 +73,23 @@ class AnalyticsManager {
         const ctx = document.getElementById('scoreChart');
         if (!ctx) return;
 
-        // Get last 30 entries
-        const recentEntries = entries.slice(0, 30).reverse();
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
+
+        // Filter entries for current player
+        const playerEntries = entries.filter(entry =>
+            (entry.faidao && entry.faidao.player === currentPlayer) ||
+            (entry.filip && entry.filip.player === currentPlayer)
+        );
+
+        // Get last 30 personal entries
+        const recentEntries = playerEntries.slice(0, 30).reverse();
 
         const labels = recentEntries.map(entry => new Date(entry.date).toLocaleDateString());
-        const faidaoScores = recentEntries.map(entry => entry.faidao?.scores?.total || 0);
-        const filipScores = recentEntries.map(entry => entry.filip?.scores?.total || 0);
+        const personalScores = recentEntries.map(entry => {
+            const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+            return playerData?.scores?.total || 0;
+        });
 
         if (this.charts.scoreChart) {
             this.charts.scoreChart.destroy();
@@ -90,16 +101,8 @@ class AnalyticsManager {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Faidao',
-                        data: faidaoScores,
-                        borderColor: '#ff6b6b',
-                        backgroundColor: 'rgba(255, 107, 107, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Filip',
-                        data: filipScores,
+                        label: 'Your Score',
+                        data: personalScores,
                         borderColor: '#4ecdc4',
                         backgroundColor: 'rgba(78, 205, 196, 0.1)',
                         tension: 0.4,
@@ -125,21 +128,32 @@ class AnalyticsManager {
         const ctx = document.getElementById('timeChart');
         if (!ctx) return;
 
-        // Calculate average times by difficulty
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
+
+        // Filter entries for current player
+        const playerEntries = entries.filter(entry =>
+            (entry.faidao && entry.faidao.player === currentPlayer) ||
+            (entry.filip && entry.filip.player === currentPlayer)
+        );
+
+        // Calculate average times by difficulty for current player
         const difficulties = ['easy', 'medium', 'hard'];
-        const players = ['faidao', 'filip'];
-
         const avgTimes = {};
-        players.forEach(player => {
-            avgTimes[player] = {};
-            difficulties.forEach(difficulty => {
-                const times = entries
-                    .filter(entry => entry[player]?.dnf?.[difficulty] === false && entry[player]?.times?.[difficulty] !== null)
-                    .map(entry => entry[player].times[difficulty]);
 
-                avgTimes[player][difficulty] = times.length > 0 ?
-                    times.reduce((sum, time) => sum + time, 0) / times.length : 0;
-            });
+        difficulties.forEach(difficulty => {
+            const times = playerEntries
+                .filter(entry => {
+                    const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+                    return playerData?.dnf?.[difficulty] === false && playerData?.times?.[difficulty] !== null;
+                })
+                .map(entry => {
+                    const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+                    return playerData.times[difficulty];
+                });
+
+            avgTimes[difficulty] = times.length > 0 ?
+                times.reduce((sum, time) => sum + time, 0) / times.length : 0;
         });
 
         if (this.charts.timeChart) {
@@ -152,15 +166,8 @@ class AnalyticsManager {
                 labels: ['Easy', 'Medium', 'Hard'],
                 datasets: [
                     {
-                        label: 'Faidao (minutes)',
-                        data: difficulties.map(diff => Math.round(avgTimes.faidao[diff] / 60 * 100) / 100),
-                        backgroundColor: 'rgba(255, 107, 107, 0.8)',
-                        borderColor: '#ff6b6b',
-                        borderWidth: 2
-                    },
-                    {
-                        label: 'Filip (minutes)',
-                        data: difficulties.map(diff => Math.round(avgTimes.filip[diff] / 60 * 100) / 100),
+                        label: 'Your Average (minutes)',
+                        data: difficulties.map(diff => Math.round(avgTimes[diff] / 60 * 100) / 100),
                         backgroundColor: 'rgba(78, 205, 196, 0.8)',
                         borderColor: '#4ecdc4',
                         borderWidth: 2
@@ -185,19 +192,24 @@ class AnalyticsManager {
         const ctx = document.getElementById('errorChart');
         if (!ctx) return;
 
-        // Get last 30 entries for error trends
-        const recentEntries = entries.slice(0, 30).reverse();
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
+
+        // Filter entries for current player
+        const playerEntries = entries.filter(entry =>
+            (entry.faidao && entry.faidao.player === currentPlayer) ||
+            (entry.filip && entry.filip.player === currentPlayer)
+        );
+
+        // Get last 30 personal entries for error trends
+        const recentEntries = playerEntries.slice(0, 30).reverse();
 
         const labels = recentEntries.map(entry => new Date(entry.date).toLocaleDateString());
-        const faidaoErrors = recentEntries.map(entry => {
-            return (entry.faidao?.errors?.easy || 0) +
-                   (entry.faidao?.errors?.medium || 0) +
-                   (entry.faidao?.errors?.hard || 0);
-        });
-        const filipErrors = recentEntries.map(entry => {
-            return (entry.filip?.errors?.easy || 0) +
-                   (entry.filip?.errors?.medium || 0) +
-                   (entry.filip?.errors?.hard || 0);
+        const personalErrors = recentEntries.map(entry => {
+            const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+            return (playerData?.errors?.easy || 0) +
+                   (playerData?.errors?.medium || 0) +
+                   (playerData?.errors?.hard || 0);
         });
 
         if (this.charts.errorChart) {
@@ -210,17 +222,10 @@ class AnalyticsManager {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Faidao Errors',
-                        data: faidaoErrors,
+                        label: 'Your Errors',
+                        data: personalErrors,
                         borderColor: '#fee140',
                         backgroundColor: 'rgba(254, 225, 64, 0.1)',
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Filip Errors',
-                        data: filipErrors,
-                        borderColor: '#f093fb',
-                        backgroundColor: 'rgba(240, 147, 251, 0.1)',
                         tension: 0.4
                     }
                 ]
@@ -254,225 +259,154 @@ class AnalyticsManager {
     }
 
     updateWinRateStats(entries) {
-        const faidaoWinRateEl = document.getElementById('faidaoWinRate');
-        const filipWinRateEl = document.getElementById('filipWinRate');
+        const completionRateEl = document.getElementById('personalCompletionRate');
         const totalGamesEl = document.getElementById('totalGamesCount');
 
-        if (!faidaoWinRateEl || !filipWinRateEl || !totalGamesEl) return;
+        if (!completionRateEl || !totalGamesEl) return;
 
-        if (entries.length === 0) {
-            faidaoWinRateEl.textContent = '--';
-            filipWinRateEl.textContent = '--';
-            totalGamesEl.textContent = '0 games total';
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
+
+        // Filter entries for current player
+        const playerEntries = entries.filter(entry =>
+            (entry.faidao && entry.faidao.player === currentPlayer) ||
+            (entry.filip && entry.filip.player === currentPlayer)
+        );
+
+        if (playerEntries.length === 0) {
+            completionRateEl.textContent = '--';
+            totalGamesEl.textContent = '0 games completed';
             return;
         }
 
-        let faidaoWins = 0;
-        let filipWins = 0;
-        let ties = 0;
+        // Calculate completion rate (all entries are completed by definition)
+        const completionRate = 100;
 
-        entries.forEach(entry => {
-            const faidaoTotal = entry.faidao?.scores?.total || 0;
-            const filipTotal = entry.filip?.scores?.total || 0;
-
-            if (faidaoTotal > filipTotal) {
-                faidaoWins++;
-            } else if (filipTotal > faidaoTotal) {
-                filipWins++;
-            } else {
-                ties++;
-            }
-        });
-
-        const totalGames = entries.length;
-        const faidaoWinRate = Math.round((faidaoWins / totalGames) * 100);
-        const filipWinRate = Math.round((filipWins / totalGames) * 100);
-
-        faidaoWinRateEl.textContent = `${faidaoWinRate}%`;
-        filipWinRateEl.textContent = `${filipWinRate}%`;
-        totalGamesEl.textContent = `${totalGames} games total`;
+        completionRateEl.textContent = `${completionRate}%`;
+        totalGamesEl.textContent = `${playerEntries.length} games completed`;
     }
 
     updatePerformanceStats(entries) {
-        const faidaoScoreEl = document.getElementById('faidaoAvgScore');
-        const filipScoreEl = document.getElementById('filipAvgScore');
-        const scoreDiffEl = document.getElementById('scoreDifference');
+        const avgScoreEl = document.getElementById('personalAvgScore');
 
-        if (!faidaoScoreEl || !filipScoreEl || !scoreDiffEl) return;
+        if (!avgScoreEl) return;
 
-        if (entries.length === 0) {
-            faidaoScoreEl.textContent = '--';
-            filipScoreEl.textContent = '--';
-            scoreDiffEl.textContent = 'All-time average';
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
+
+        // Filter entries for current player
+        const playerEntries = entries.filter(entry =>
+            (entry.faidao && entry.faidao.player === currentPlayer) ||
+            (entry.filip && entry.filip.player === currentPlayer)
+        );
+
+        if (playerEntries.length === 0) {
+            avgScoreEl.textContent = '--';
             return;
         }
 
-        // Calculate average scores
-        const faidaoAvg = Math.round(entries.reduce((sum, entry) =>
-            sum + (entry.faidao?.scores?.total || 0), 0) / entries.length);
-        const filipAvg = Math.round(entries.reduce((sum, entry) =>
-            sum + (entry.filip?.scores?.total || 0), 0) / entries.length);
+        // Calculate average score for current player
+        const totalScore = playerEntries.reduce((sum, entry) => {
+            const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+            return sum + (playerData?.scores?.total || 0);
+        }, 0);
 
-        faidaoScoreEl.textContent = faidaoAvg;
-        filipScoreEl.textContent = filipAvg;
-
-        // Show score difference
-        const diff = Math.abs(faidaoAvg - filipAvg);
-        if (faidaoAvg > filipAvg) {
-            scoreDiffEl.textContent = `Faidao leads by ${diff}`;
-        } else if (filipAvg > faidaoAvg) {
-            scoreDiffEl.textContent = `Filip leads by ${diff}`;
-        } else {
-            scoreDiffEl.textContent = 'Perfectly tied!';
-        }
+        const avgScore = Math.round(totalScore / playerEntries.length);
+        avgScoreEl.textContent = avgScore;
     }
 
     updateRecentFormStats(entries) {
-        const faidaoFormEl = document.getElementById('faidaoRecentForm');
-        const filipFormEl = document.getElementById('filipRecentForm');
-        const formNoteEl = document.getElementById('recentFormNote');
+        const totalXPEl = document.getElementById('personalTotalXP');
 
-        if (!faidaoFormEl || !filipFormEl || !formNoteEl) return;
+        if (!totalXPEl) return;
 
-        if (entries.length === 0) {
-            faidaoFormEl.textContent = '--';
-            filipFormEl.textContent = '--';
-            formNoteEl.textContent = 'No games yet';
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
+
+        // Filter entries for current player
+        const playerEntries = entries.filter(entry =>
+            (entry.faidao && entry.faidao.player === currentPlayer) ||
+            (entry.filip && entry.filip.player === currentPlayer)
+        );
+
+        if (playerEntries.length === 0) {
+            totalXPEl.textContent = '--';
             return;
         }
 
-        // Calculate all-time total points
-        let faidaoTotalPoints = 0;
-        let filipTotalPoints = 0;
+        // Calculate total XP for current player
+        const totalXP = playerEntries.reduce((sum, entry) => {
+            const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
+            return sum + (playerData?.scores?.total || 0);
+        }, 0);
 
-        entries.forEach(entry => {
-            faidaoTotalPoints += entry.faidao?.scores?.total || 0;
-            filipTotalPoints += entry.filip?.scores?.total || 0;
-        });
-
-        faidaoFormEl.textContent = faidaoTotalPoints.toLocaleString();
-        filipFormEl.textContent = filipTotalPoints.toLocaleString();
-
-        // Show difference
-        const diff = Math.abs(faidaoTotalPoints - filipTotalPoints);
-        if (faidaoTotalPoints > filipTotalPoints) {
-            formNoteEl.textContent = `Faidao leads by ${diff.toLocaleString()}`;
-        } else if (filipTotalPoints > faidaoTotalPoints) {
-            formNoteEl.textContent = `Filip leads by ${diff.toLocaleString()}`;
-        } else {
-            formNoteEl.textContent = 'Perfectly tied!';
-        }
+        totalXPEl.textContent = totalXP.toLocaleString();
     }
 
     updateCompetitiveStats(entries) {
-        const faidaoBiggestWinEl = document.getElementById('faidaoBiggestWin');
-        const filipBiggestWinEl = document.getElementById('filipBiggestWin');
-        const biggestWinNoteEl = document.getElementById('biggestWinNote');
+        const bestScoreEl = document.getElementById('personalBestScore');
+        const fastestTimeEl = document.getElementById('personalFastestTime');
+        const perfectGamesEl = document.getElementById('personalPerfectGames');
 
-        const faidaoClosestWinEl = document.getElementById('faidaoClosestWin');
-        const filipClosestWinEl = document.getElementById('filipClosestWin');
-        const closestWinNoteEl = document.getElementById('closestWinNote');
+        if (!bestScoreEl || !fastestTimeEl || !perfectGamesEl) return;
 
-        const faidaoDominantGameEl = document.getElementById('faidaoDominantGame');
-        const filipDominantGameEl = document.getElementById('filipDominantGame');
-        const dominantGameNoteEl = document.getElementById('dominantGameNote');
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
+        if (!currentPlayer) return;
 
-        if (!faidaoBiggestWinEl || !filipBiggestWinEl || !faidaoClosestWinEl ||
-            !filipClosestWinEl || !faidaoDominantGameEl || !filipDominantGameEl) return;
+        // Filter entries for current player
+        const playerEntries = entries.filter(entry =>
+            (entry.faidao && entry.faidao.player === currentPlayer) ||
+            (entry.filip && entry.filip.player === currentPlayer)
+        );
 
-        if (entries.length === 0) {
-            faidaoBiggestWinEl.textContent = '--';
-            filipBiggestWinEl.textContent = '--';
-            faidaoClosestWinEl.textContent = '--';
-            filipClosestWinEl.textContent = '--';
-            faidaoDominantGameEl.textContent = '--';
-            filipDominantGameEl.textContent = '--';
+        if (playerEntries.length === 0) {
+            bestScoreEl.textContent = '--';
+            fastestTimeEl.textContent = '--';
+            perfectGamesEl.textContent = '0';
             return;
         }
 
-        // Calculate biggest wins, closest wins, and most dominant games
-        let faidaoBiggestWin = 0;
-        let filipBiggestWin = 0;
-        let faidaoClosestWin = Infinity;
-        let filipClosestWin = Infinity;
-        let faidaoMostDominant = 0;
-        let filipMostDominant = 0;
+        // Calculate best score (highest total score)
+        let bestScore = 0;
+        let fastestTime = Infinity;
+        let perfectGames = 0;
 
-        entries.forEach(entry => {
-            const faidaoTotal = entry.faidao?.scores?.total || 0;
-            const filipTotal = entry.filip?.scores?.total || 0;
-            const margin = Math.abs(faidaoTotal - filipTotal);
+        playerEntries.forEach(entry => {
+            const playerData = entry.faidao?.player === currentPlayer ? entry.faidao : entry.filip;
 
-            // Track most dominant game (highest score ever)
-            if (faidaoTotal > faidaoMostDominant) {
-                faidaoMostDominant = faidaoTotal;
-            }
-            if (filipTotal > filipMostDominant) {
-                filipMostDominant = filipTotal;
+            if (!playerData) return;
+
+            // Track best score
+            const totalScore = playerData.scores?.total || 0;
+            if (totalScore > bestScore) {
+                bestScore = totalScore;
             }
 
-            // Track biggest and closest wins
-            if (faidaoTotal > filipTotal) {
-                // Faidao won
-                if (margin > faidaoBiggestWin) {
-                    faidaoBiggestWin = margin;
-                }
-                if (margin < faidaoClosestWin) {
-                    faidaoClosestWin = margin;
-                }
-            } else if (filipTotal > faidaoTotal) {
-                // Filip won
-                if (margin > filipBiggestWin) {
-                    filipBiggestWin = margin;
-                }
-                if (margin < filipClosestWin) {
-                    filipClosestWin = margin;
-                }
+            // Track fastest time (across all difficulties)
+            const time = playerData.time || 0;
+            if (time > 0 && time < fastestTime) {
+                fastestTime = time;
+            }
+
+            // Track perfect games (0 errors)
+            const errors = playerData.errors || 0;
+            if (errors === 0) {
+                perfectGames++;
             }
         });
 
-        // Update biggest wins (rounded to whole numbers)
-        faidaoBiggestWinEl.textContent = faidaoBiggestWin > 0 ? Math.round(faidaoBiggestWin) : '--';
-        filipBiggestWinEl.textContent = filipBiggestWin > 0 ? Math.round(filipBiggestWin) : '--';
+        // Update personal stats
+        bestScoreEl.textContent = bestScore > 0 ? Math.round(bestScore) : '--';
 
-        // Update closest wins (rounded to whole numbers)
-        faidaoClosestWinEl.textContent = faidaoClosestWin !== Infinity ? Math.round(faidaoClosestWin) : '--';
-        filipClosestWinEl.textContent = filipClosestWin !== Infinity ? Math.round(filipClosestWin) : '--';
-
-        // Update most dominant games (rounded to whole numbers)
-        faidaoDominantGameEl.textContent = faidaoMostDominant > 0 ? Math.round(faidaoMostDominant) : '--';
-        filipDominantGameEl.textContent = filipMostDominant > 0 ? Math.round(filipMostDominant) : '--';
-
-        // Update footer notes
-        if (biggestWinNoteEl) {
-            const biggestOverall = Math.max(faidaoBiggestWin, filipBiggestWin);
-            if (biggestOverall > 0) {
-                biggestWinNoteEl.textContent = `Largest margin: ${Math.round(biggestOverall)} points`;
-            } else {
-                biggestWinNoteEl.textContent = 'Margin of victory';
-            }
+        if (fastestTime !== Infinity) {
+            const minutes = Math.floor(fastestTime / 60);
+            const seconds = fastestTime % 60;
+            fastestTimeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        } else {
+            fastestTimeEl.textContent = '--';
         }
 
-        if (closestWinNoteEl) {
-            const closestOverall = Math.min(
-                faidaoClosestWin !== Infinity ? faidaoClosestWin : Infinity,
-                filipClosestWin !== Infinity ? filipClosestWin : Infinity
-            );
-            if (closestOverall !== Infinity) {
-                closestWinNoteEl.textContent = `Narrowest margin: ${Math.round(closestOverall)} points`;
-            } else {
-                closestWinNoteEl.textContent = 'Smallest margin';
-            }
-        }
-
-        if (dominantGameNoteEl) {
-            const highestScore = Math.max(faidaoMostDominant, filipMostDominant);
-            if (highestScore > 0) {
-                dominantGameNoteEl.textContent = `Highest score: ${Math.round(highestScore)} points`;
-            } else {
-                dominantGameNoteEl.textContent = 'Highest single day score';
-            }
-        }
+        perfectGamesEl.textContent = perfectGames;
     }
 
     calculateWinStreak(entries, player) {
