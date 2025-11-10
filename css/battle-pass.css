@@ -1,0 +1,754 @@
+/**
+ * BATTLE PASS STYLING
+ *
+ * Complete styling for the battle pass page including:
+ * - Season header
+ * - Progress overview
+ * - Tier track display
+ * - Leaderboard
+ * - Reward modal
+ * - Responsive design
+ *
+ * Version: 1.0
+ * Created: November 2025
+ */
+
+/* ===================================== */
+/* VARIABLES */
+/* ===================================== */
+
+:root {
+    --bp-primary: #6C5CE7;
+    --bp-secondary: #A29BFE;
+    --bp-accent: #FD79A8;
+    --bp-gold: #FDCB6E;
+    --bp-dark: #2D3436;
+    --bp-light: #FFFFFF;
+    --bp-gray: #636E72;
+    --bp-success: #00B894;
+    --bp-premium: linear-gradient(135deg, #FDCB6E 0%, #FF7675 100%);
+    --bp-free: linear-gradient(135deg, #74B9FF 0%, #0984E3 100%);
+}
+
+/* ===================================== */
+/* LOADING & ERROR STATES */
+/* ===================================== */
+
+.loading-container,
+.error-container,
+.no-season-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 2rem;
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(108, 92, 231, 0.2);
+    border-top-color: var(--bp-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.error-container i,
+.no-season-container i {
+    font-size: 4rem;
+    color: var(--bp-gray);
+    margin-bottom: 1rem;
+}
+
+.error-container h2,
+.no-season-container h2 {
+    color: var(--bp-dark);
+    margin-bottom: 0.5rem;
+}
+
+/* ===================================== */
+/* SEASON HEADER */
+/* ===================================== */
+
+.season-header {
+    background: linear-gradient(135deg, var(--bp-primary) 0%, var(--bp-secondary) 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    box-shadow: 0 10px 30px rgba(108, 92, 231, 0.3);
+}
+
+.season-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.season-badge {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+}
+
+.season-details h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.season-meta {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    opacity: 0.9;
+}
+
+.separator {
+    margin: 0 0.5rem;
+}
+
+.premium-status {
+    display: flex;
+    gap: 1rem;
+}
+
+.premium-badge,
+.free-badge {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.premium-badge {
+    background: var(--bp-premium);
+    color: white;
+}
+
+.free-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* ===================================== */
+/* PROGRESS OVERVIEW */
+/* ===================================== */
+
+.progress-overview {
+    margin-bottom: 2rem;
+}
+
+.progress-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.progress-header h2 {
+    margin: 0;
+    color: var(--bp-dark);
+}
+
+.tier-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bp-primary);
+}
+
+.tier-separator {
+    color: var(--bp-gray);
+    margin: 0 0.25rem;
+}
+
+.max-tier {
+    font-size: 1.25rem;
+    color: var(--bp-gray);
+}
+
+.xp-progress {
+    margin-top: 1rem;
+}
+
+.xp-bar-container {
+    height: 20px;
+    background: rgba(108, 92, 231, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.xp-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--bp-primary) 0%, var(--bp-secondary) 100%);
+    transition: width 0.5s ease;
+    border-radius: 10px;
+}
+
+.xp-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--bp-gray);
+}
+
+.xp-to-next {
+    font-weight: 600;
+    color: var(--bp-primary);
+}
+
+/* ===================================== */
+/* STATS GRID */
+/* ===================================== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+}
+
+.stat-card i {
+    font-size: 2rem;
+    color: var(--bp-primary);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--bp-dark);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--bp-gray);
+}
+
+/* ===================================== */
+/* TIER TRACK */
+/* ===================================== */
+
+.tier-track-section {
+    margin-bottom: 2rem;
+}
+
+.track-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.track-header h2 {
+    margin: 0;
+    color: var(--bp-dark);
+}
+
+.track-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.track-tab {
+    padding: 0.75rem 1.25rem;
+    border: 2px solid transparent;
+    background: white;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--bp-gray);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.track-tab:hover {
+    background: rgba(108, 92, 231, 0.1);
+    color: var(--bp-primary);
+}
+
+.track-tab.active {
+    background: var(--bp-primary);
+    color: white;
+    border-color: var(--bp-primary);
+}
+
+.tier-track-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.tier-item {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tier-item.current {
+    border-color: var(--bp-primary);
+    box-shadow: 0 6px 25px rgba(108, 92, 231, 0.3);
+}
+
+.tier-item.unlocked {
+    opacity: 1;
+}
+
+.tier-item:not(.unlocked) {
+    opacity: 0.6;
+}
+
+.tier-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bp-primary);
+    text-align: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(108, 92, 231, 0.2);
+}
+
+.reward-slot {
+    padding: 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    position: relative;
+}
+
+.reward-slot.free {
+    background: var(--bp-free);
+    color: white;
+}
+
+.reward-slot.premium {
+    background: var(--bp-premium);
+    color: white;
+}
+
+.reward-slot.empty {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--bp-gray);
+    justify-content: center;
+}
+
+.reward-slot.locked {
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+
+.reward-slot.claimed {
+    opacity: 0.7;
+    position: relative;
+}
+
+.claimed-check {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+.btn-claim {
+    padding: 0.75rem;
+    background: var(--bp-success);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-claim:hover {
+    background: #00a084;
+    transform: translateY(-2px);
+}
+
+/* ===================================== */
+/* LEADERBOARD */
+/* ===================================== */
+
+.leaderboard-section {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-section h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--bp-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaderboard-table thead tr {
+    background: rgba(108, 92, 231, 0.1);
+}
+
+.leaderboard-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--bp-dark);
+}
+
+.leaderboard-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.leaderboard-table tr.current-user {
+    background: rgba(108, 92, 231, 0.1);
+    font-weight: 600;
+}
+
+.leaderboard-table .rank {
+    font-weight: 700;
+    color: var(--bp-primary);
+}
+
+.premium-icon {
+    color: var(--bp-gold);
+    margin-left: 0.5rem;
+}
+
+.badge-premium,
+.badge-free {
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-premium {
+    background: var(--bp-premium);
+    color: white;
+}
+
+.badge-free {
+    background: var(--bp-free);
+    color: white;
+}
+
+.no-data {
+    text-align: center;
+    padding: 2rem;
+    color: var(--bp-gray);
+}
+
+/* ===================================== */
+/* REWARD MODAL */
+/* ===================================== */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.reward-modal-content {
+    background: white;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: var(--bp-gray);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--bp-dark);
+}
+
+.reward-modal-header {
+    background: linear-gradient(135deg, var(--bp-primary) 0%, var(--bp-secondary) 100%);
+    padding: 2rem;
+    text-align: center;
+    color: white;
+    border-radius: 20px 20px 0 0;
+}
+
+.reward-modal-header i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.reward-modal-header h2 {
+    margin: 0;
+}
+
+.reward-modal-body {
+    padding: 2rem;
+}
+
+.tier-number {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bp-primary);
+    margin-bottom: 1.5rem;
+}
+
+.rewards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.reward-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(108, 92, 231, 0.1);
+    border-radius: 12px;
+}
+
+.reward-item i {
+    font-size: 2rem;
+    color: var(--bp-primary);
+}
+
+.reward-info {
+    flex: 1;
+}
+
+.reward-name {
+    font-weight: 600;
+    color: var(--bp-dark);
+}
+
+.reward-track {
+    font-size: 0.85rem;
+    color: var(--bp-gray);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-primary,
+.btn-secondary {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--bp-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--bp-secondary);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--bp-gray);
+    border: 2px solid var(--bp-gray);
+}
+
+.btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* ===================================== */
+/* TOAST NOTIFICATION */
+/* ===================================== */
+
+.toast-notification {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    animation: toastSlideIn 0.3s ease;
+}
+
+@keyframes toastSlideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.toast-icon {
+    font-size: 1.5rem;
+}
+
+.toast-message {
+    font-weight: 600;
+}
+
+/* ===================================== */
+/* RESPONSIVE DESIGN */
+/* ===================================== */
+
+@media (max-width: 768px) {
+    .season-header {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .season-info {
+        flex-direction: column;
+    }
+
+    .track-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .track-tabs {
+        flex-direction: column;
+    }
+
+    .tier-track-container {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .leaderboard-table {
+        font-size: 0.85rem;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 0.5rem;
+    }
+
+    .toast-notification {
+        bottom: 1rem;
+        right: 1rem;
+        left: 1rem;
+    }
+}

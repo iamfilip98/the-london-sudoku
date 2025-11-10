@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Pass - Sudoku Championship Arena</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/battle-pass.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init('phc_lomaZP46NnayEjo05eWfAgcbY2cubyaF9Eb14Omm2kY', {
+            api_host: 'https://app.posthog.com',
+            autocapture: false,
+            disable_session_recording: true
+        });
+    </script>
+    <script src="/lib/monitoring.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-brand" onclick="window.location.href='index.html'" style="cursor: pointer;">
+                <h1 class="app-title">Sudoku Arena</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="battle-pass.html" class="nav-link active">
+                    <i class="fas fa-trophy"></i>
+                    <span>Battle Pass</span>
+                </a>
+            </div>
+            <div class="user-info">
+                <span id="username-display">Loading...</span>
+                <button onclick="logout()" class="btn-logout">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Loading State -->
+            <div id="loading-container" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Loading Battle Pass...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-container" class="error-container" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>Failed to Load Battle Pass</h2>
+                <p id="error-message"></p>
+                <button onclick="location.reload()" class="btn-primary">Retry</button>
+            </div>
+
+            <!-- No Active Season -->
+            <div id="no-season-container" class="no-season-container" style="display: none;">
+                <i class="fas fa-calendar-times"></i>
+                <h2>No Active Season</h2>
+                <p>There is no active battle pass season at the moment.</p>
+                <p>Check back soon for the next season!</p>
+            </div>
+
+            <!-- Battle Pass Content -->
+            <div id="battle-pass-content" style="display: none;">
+                <!-- Season Header -->
+                <section class="season-header">
+                    <div class="season-info">
+                        <div class="season-badge">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="season-details">
+                            <h1 id="season-name">Loading...</h1>
+                            <div class="season-meta">
+                                <span id="season-duration"></span>
+                                <span class="separator">•</span>
+                                <span id="days-remaining"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="premium-status">
+                        <div id="premium-badge" class="premium-badge" style="display: none;">
+                            <i class="fas fa-crown"></i>
+                            <span>Premium Pass</span>
+                        </div>
+                        <div id="free-badge" class="free-badge">
+                            <i class="fas fa-user"></i>
+                            <span>Free Track</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Progress Overview -->
+                <section class="progress-overview">
+                    <div class="progress-card">
+                        <div class="progress-header">
+                            <h2>Your Progress</h2>
+                            <div class="tier-display">
+                                <span class="current-tier">Tier <span id="current-tier">1</span></span>
+                                <span class="tier-separator">/</span>
+                                <span class="max-tier">100</span>
+                            </div>
+                        </div>
+
+                        <div class="xp-progress">
+                            <div class="xp-bar-container">
+                                <div id="xp-progress-bar" class="xp-progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="xp-info">
+                                <span id="current-xp">0</span> / <span id="next-tier-xp">100</span> XP
+                                <span class="xp-to-next">
+                                    <span id="xp-remaining">100</span> XP to next tier
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-star"></i>
+                            <div class="stat-value" id="total-xp">0</div>
+                            <div class="stat-label">Total XP Earned</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-coins"></i>
+                            <div class="stat-value" id="tokens-earned">0</div>
+                            <div class="stat-label">Tokens Earned</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-gift"></i>
+                            <div class="stat-value" id="rewards-claimed">0</div>
+                            <div class="stat-label">Rewards Claimed</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tier Track -->
+                <section class="tier-track-section">
+                    <div class="track-header">
+                        <h2>Rewards Track</h2>
+                        <div class="track-tabs">
+                            <button class="track-tab active" data-track="all" onclick="switchTrack('all')">
+                                <i class="fas fa-th"></i> All Rewards
+                            </button>
+                            <button class="track-tab" data-track="free" onclick="switchTrack('free')">
+                                <i class="fas fa-unlock"></i> Free Track
+                            </button>
+                            <button class="track-tab" data-track="premium" onclick="switchTrack('premium')">
+                                <i class="fas fa-crown"></i> Premium Track
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="tier-track-container" class="tier-track-container">
+                        <!-- Tiers will be dynamically generated -->
+                    </div>
+                </section>
+
+                <!-- Leaderboard -->
+                <section class="leaderboard-section">
+                    <h2>
+                        <i class="fas fa-trophy"></i>
+                        Battle Pass Leaderboard
+                    </h2>
+                    <div id="leaderboard-container" class="leaderboard-container">
+                        <!-- Leaderboard will be dynamically generated -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Reward Claim Modal -->
+    <div id="reward-modal" class="modal" style="display: none;">
+        <div class="modal-content reward-modal-content">
+            <button class="modal-close" onclick="closeRewardModal()">&times;</button>
+
+            <div class="reward-modal-header">
+                <i class="fas fa-gift"></i>
+                <h2>Claim Reward</h2>
+            </div>
+
+            <div class="reward-modal-body">
+                <div class="tier-number">Tier <span id="modal-tier">1</span></div>
+
+                <div class="rewards-list" id="modal-rewards-list">
+                    <!-- Rewards will be shown here -->
+                </div>
+
+                <div class="modal-actions">
+                    <button onclick="closeRewardModal()" class="btn-secondary">Cancel</button>
+                    <button onclick="confirmClaimReward()" class="btn-primary" id="claim-btn">
+                        <i class="fas fa-check"></i> Claim Rewards
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="toast-notification" style="display: none;">
+        <div class="toast-content">
+            <i class="toast-icon fas fa-check-circle"></i>
+            <div class="toast-message"></div>
+        </div>
+    </div>
+
+    <script src="js/battle-pass.js"></script>
+</body>
+</html>
