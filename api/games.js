@@ -7,6 +7,7 @@ const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
 const { validateSaveGameRequest, validateDate } = require('../lib/validation');
 const { addXP, calculatePuzzleXP, getXPSourceName } = require('../lib/battle-pass-api');
+const { awardLeaguePoints } = require('../lib/leagues-api');
 
 // Helper function to execute SQL queries using template literals
 async function sql(strings, ...values) {
@@ -398,6 +399,24 @@ module.exports = async function handler(req, res) {
             battlePassResult = await addXP(userId, xpBreakdown.total, source, `${gameDate}_${difficulty}`);
 
             console.log(`Battle Pass XP awarded: ${xpBreakdown.total} XP to user ${player} (${userId})`);
+
+            // PHASE 4 MONTH 15: Award league points
+            try {
+              // Calculate league points based on score
+              // Base points: Easy (10), Medium (20), Hard (30)
+              // Modified by score (0-100 range)
+              const basePoints = { easy: 10, medium: 20, hard: 30 }[difficulty] || 20;
+              const scoreMultiplier = (gameData.score || 0) / 100;
+              const leaguePoints = Math.max(1, Math.round(basePoints * scoreMultiplier));
+
+              const leagueResult = await awardLeaguePoints(userId, leaguePoints);
+              if (leagueResult.awarded) {
+                console.log(`League points awarded: ${leaguePoints} pts to user ${player} (${userId})`);
+              }
+            } catch (leagueError) {
+              console.error('Failed to award league points:', leagueError);
+              // Don't fail the game save if league points award fails
+            }
           }
         } catch (xpError) {
           console.error('Failed to award battle pass XP:', xpError);

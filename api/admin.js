@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const { setCorsHeaders } = require('../lib/cors');
 const stripeManager = require('../lib/stripe-manager');
 const { migrateBattlePass } = require('../lib/battle-pass-migration');
+const { migrateLeagues } = require('../lib/leagues-migration');
 
 module.exports = async function handler(req, res) {
   // Handle CORS
@@ -68,6 +69,9 @@ module.exports = async function handler(req, res) {
       case 'migrate-battle-pass':
         await handleMigrateBattlePass(req, res);
         break;
+      case 'migrate-leagues':
+        await handleMigrateLeagues(req, res);
+        break;
       case 'create-checkout':
         await handleCreateCheckout(req, res);
         break;
@@ -83,7 +87,7 @@ module.exports = async function handler(req, res) {
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'migrate-leagues', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
         });
     }
   } catch (error) {
@@ -851,6 +855,56 @@ async function handleMigrateBattlePass(req, res) {
 
   } catch (error) {
     console.error('Battle Pass migration failed:', error);
+    res.status(500).json({
+      error: 'Migration failed',
+      details: error.message
+    });
+  }
+}
+
+// Phase 4 Month 15: Custom Leagues migration
+async function handleMigrateLeagues(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Starting Leagues migration...');
+
+    // Run the migration
+    const result = await migrateLeagues();
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        error: 'Leagues migration failed'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Leagues migration completed successfully',
+      features: [
+        'Official leagues (Bronze → Legend tiers)',
+        'League membership tracking',
+        'Weekly points and ranking system',
+        'Promotion/demotion mechanics',
+        'Custom league creation (Premium feature)',
+        'League activity history'
+      ],
+      officialLeagues: {
+        bronze: { max: 1000, tier: 'Starting league' },
+        silver: { max: 500, tier: 'Rising stars' },
+        gold: { max: 250, tier: 'Elite competition' },
+        platinum: { max: 100, tier: 'Master-level play' },
+        diamond: { max: 50, tier: 'Near-legendary' },
+        legend: { max: 25, tier: 'Ultimate achievement' }
+      }
+    });
+
+  } catch (error) {
+    console.error('Leagues migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
       details: error.message

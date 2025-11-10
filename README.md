@@ -7,6 +7,51 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 4 Month 15: Custom Leagues System** (November 10, 2025)
+- 🏅 **Competitive Leagues**: Official tier-based ranking system
+  - **6 Official Leagues**: Bronze (1000 max), Silver (500), Gold (250), Platinum (100), Diamond (50), Legend (25)
+  - **Tier Progression**: Automatic ranking based on points earned
+  - **Weekly Competition**: Points reset weekly with promotion/demotion mechanics (coming soon)
+  - **League Leaderboards**: Real-time rankings showing top players in each league
+- 🎮 **Custom Leagues** (Premium Feature):
+  - Create private or public leagues for friends and communities
+  - Customizable settings: max members, visibility, description
+  - League creator becomes admin automatically
+  - Track league-specific stats and rankings
+- 💯 **Points System**: Automatic point awarding on puzzle completion
+  - Base points: Easy (10), Medium (20), Hard (30)
+  - Score multiplier: Points scaled by puzzle score (0-100)
+  - Minimum 1 point per puzzle
+  - Weekly tracking for promotion/demotion (coming soon)
+- 📊 **League Stats Tracking**:
+  - User rank within league
+  - Total points accumulated
+  - Weekly points and puzzle count
+  - League membership history (joins, leaves, promotions, demotions)
+- 🎨 **Leagues Frontend**:
+  - Dedicated leagues page (`leagues.html`) with beautiful UI
+  - Official and custom leagues tabs
+  - User status card showing current league and rank
+  - League cards with tier badges and member counts
+  - Rankings modal with top 100 players
+  - Create custom league form (Premium users)
+  - Responsive grid layout with tier-based color coding
+- 🔌 **API Integration**:
+  - No new endpoints (consolidated into `/api/stats`)
+  - Database migration: `POST /api/admin?action=migrate-leagues`
+  - League points automatically awarded in `api/games.js`
+  - Still at 12/12 endpoints (Vercel free tier compliant)
+- 🗄️ **Database Schema**:
+  - `leagues`: Official and custom leagues with tier tracking
+  - `league_members`: User memberships with points and rankings
+  - `league_activity`: Historical log of joins, leaves, promotions, demotions
+  - Optimized indexes for fast leaderboard queries
+- 📈 **Future Enhancements** (Planned):
+  - Weekly promotion/demotion system (move up/down tiers based on performance)
+  - League-specific achievements (reach tier, win season, etc.)
+  - Seasonal league championships
+  - League chat and social features
+
 ### **Phase 3 Month 13-14: Achievement Expansion** (November 10, 2025)
 - 🎯 **60 New Achievements**: Expanded from 136 to 196 total achievements
 - 📊 **Variant Achievements** (45 new):

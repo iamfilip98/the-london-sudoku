@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leagues - Sudoku Championship Arena</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/leagues.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init('phc_lomaZP46NnayEjo05eWfAgcbY2cubyaF9Eb14Omm2kY', {
+            api_host: 'https://app.posthog.com',
+            autocapture: false,
+            disable_session_recording: true
+        });
+    </script>
+    <script src="/lib/monitoring.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-brand" onclick="window.location.href='index.html'" style="cursor: pointer;">
+                <h1 class="app-title">Sudoku Arena</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="battle-pass.html" class="nav-link">
+                    <i class="fas fa-trophy"></i>
+                    <span>Battle Pass</span>
+                </a>
+                <a href="leagues.html" class="nav-link active">
+                    <i class="fas fa-medal"></i>
+                    <span>Leagues</span>
+                </a>
+            </div>
+            <div class="user-info">
+                <span id="username-display">Loading...</span>
+                <button onclick="logout()" class="btn-logout">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Loading State -->
+            <div id="loading-container" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Loading Leagues...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-container" class="error-container" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>Failed to Load Leagues</h2>
+                <p id="error-message"></p>
+                <button onclick="location.reload()" class="btn-primary">Retry</button>
+            </div>
+
+            <!-- Leagues Content -->
+            <div id="leagues-content" style="display: none;">
+                <!-- Page Header -->
+                <section class="page-header">
+                    <div class="header-content">
+                        <h1><i class="fas fa-medal"></i> Competitive Leagues</h1>
+                        <p>Compete with players worldwide. Climb the ranks and prove your skills!</p>
+                    </div>
+                    <div class="header-actions">
+                        <button id="btn-create-league" class="btn-primary" onclick="showCreateLeagueModal()">
+                            <i class="fas fa-plus"></i> Create Custom League
+                        </button>
+                    </div>
+                </section>
+
+                <!-- User Status Card -->
+                <section id="user-status-section" class="user-status-card">
+                    <!-- Will be populated by JS -->
+                </section>
+
+                <!-- Tabs -->
+                <div class="leagues-tabs">
+                    <button class="tab-btn active" onclick="switchTab('official')">
+                        <i class="fas fa-trophy"></i> Official Leagues
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('custom')">
+                        <i class="fas fa-users"></i> Custom Leagues
+                    </button>
+                </div>
+
+                <!-- Official Leagues Tab -->
+                <div id="official-tab" class="tab-content active">
+                    <div id="official-leagues-grid" class="leagues-grid">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Custom Leagues Tab -->
+                <div id="custom-tab" class="tab-content">
+                    <div id="custom-leagues-grid" class="leagues-grid">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <!-- League Rankings Modal -->
+                <div id="rankings-modal" class="modal" style="display: none;">
+                    <div class="modal-content large">
+                        <div class="modal-header">
+                            <h2 id="rankings-modal-title"></h2>
+                            <button class="modal-close" onclick="closeRankingsModal()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="rankings-list" class="rankings-list">
+                                <!-- Will be populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Custom League Modal -->
+                <div id="create-league-modal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Create Custom League</h2>
+                            <button class="modal-close" onclick="closeCreateLeagueModal()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="create-league-form" onsubmit="handleCreateLeague(event)">
+                                <div class="form-group">
+                                    <label for="league-name">League Name *</label>
+                                    <input type="text" id="league-name" name="name" required maxlength="100"
+                                           placeholder="Enter league name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="league-description">Description</label>
+                                    <textarea id="league-description" name="description" rows="3" maxlength="500"
+                                              placeholder="Describe your league (optional)"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="league-max-members">Max Members</label>
+                                    <input type="number" id="league-max-members" name="maxMembers"
+                                           value="100" min="2" max="1000">
+                                </div>
+                                <div class="form-group checkbox">
+                                    <input type="checkbox" id="league-public" name="isPublic" checked>
+                                    <label for="league-public">Public (anyone can join)</label>
+                                </div>
+                                <div class="premium-notice">
+                                    <i class="fas fa-crown"></i>
+                                    <span>Custom leagues are a Premium feature</span>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn-secondary" onclick="closeCreateLeagueModal()">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="btn-primary">
+                                        <i class="fas fa-plus"></i> Create League
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/leagues.js"></script>
+</body>
+</html>
