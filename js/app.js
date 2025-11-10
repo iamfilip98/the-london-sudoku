@@ -1362,9 +1362,13 @@ class SudokuChampionship {
 
     async updateTodayProgress() {
         const today = this.getTodayDate();
-        const players = ['faidao', 'filip'];
+        const currentPlayer = sessionStorage.getItem('currentPlayer');
         const difficulties = ['easy', 'medium', 'hard'];
 
+        // If no player logged in, skip update
+        if (!currentPlayer) {
+            return;
+        }
 
         // Check cache first
         const now = Date.now();
@@ -1374,14 +1378,14 @@ class SudokuChampionship {
             (now - this.todayProgressCache.lastUpdate) < this.todayProgressCache.duration) {
             // Use cached data
             const dbProgress = this.todayProgressCache.data;
-            this.renderTodayProgress(dbProgress, players, difficulties, today);
+            this.renderTodayProgress(dbProgress, currentPlayer, difficulties, today);
             return;
         }
 
         // Try to load progress from database first
         let dbProgress = null;
         try {
-            // Force no-cache to ensure real-time battle updates across players
+            // Force no-cache to ensure real-time updates
             const response = await fetch(`/api/games?date=${today}`, {
                 cache: 'no-store'
             });
@@ -1392,58 +1396,57 @@ class SudokuChampionship {
                 this.todayProgressCache.data = dbProgress;
                 this.todayProgressCache.lastUpdate = now;
                 this.todayProgressCache.date = today;
-            } else {
             }
         } catch (error) {
+            console.error('Error loading today progress:', error);
         }
 
         // Always render, even if dbProgress is null (will check localStorage fallback)
-        this.renderTodayProgress(dbProgress, players, difficulties, today);
+        this.renderTodayProgress(dbProgress, currentPlayer, difficulties, today);
     }
 
 
-    renderTodayProgress(dbProgress, players, difficulties, today) {
-        players.forEach(player => {
-            difficulties.forEach(difficulty => {
-                const progressElement = document.getElementById(`${player}-${difficulty}-progress`);
-                if (!progressElement) {
-                    return;
-                }
+    renderTodayProgress(dbProgress, currentPlayer, difficulties, today) {
+        // Render personal progress for each difficulty
+        difficulties.forEach(difficulty => {
+            const progressElement = document.getElementById(`personal-${difficulty}-progress`);
+            if (!progressElement) {
+                return;
+            }
 
-                const statusElement = progressElement.querySelector('.progress-status');
-                if (!statusElement) {
-                    return;
-                }
+            const statusElement = progressElement.querySelector('.progress-status');
+            if (!statusElement) {
+                return;
+            }
 
-                let gameData = null;
+            let gameData = null;
 
-                // Check database first
-                if (dbProgress && dbProgress[player] && dbProgress[player][difficulty]) {
-                    gameData = dbProgress[player][difficulty];
-                    // Cache in memory for fast access
-                    const progressKey = `${player}_${today}_${difficulty}`;
-                    this.setStoredData('todayProgress', progressKey, gameData, false);
-                } else {
-                    // Check in-memory store first, then localStorage
-                    const progressKey = `${player}_${today}_${difficulty}`;
-                    gameData = this.getStoredData('todayProgress', `completed_${progressKey}`, true);
-                }
+            // Check database first
+            if (dbProgress && dbProgress[currentPlayer] && dbProgress[currentPlayer][difficulty]) {
+                gameData = dbProgress[currentPlayer][difficulty];
+                // Cache in memory for fast access
+                const progressKey = `${currentPlayer}_${today}_${difficulty}`;
+                this.setStoredData('todayProgress', progressKey, gameData, false);
+            } else {
+                // Check in-memory store first, then localStorage
+                const progressKey = `${currentPlayer}_${today}_${difficulty}`;
+                gameData = this.getStoredData('todayProgress', `completed_${progressKey}`, true);
+            }
 
-                if (gameData && gameData.time) {
-                    const time = this.formatSecondsToTime(gameData.time);
-                    statusElement.innerHTML = `
-                        <span class="completion-time">✓ ${time}</span>
-                        <span class="completion-score">${Math.round(gameData.score || 0)}pts</span>
-                    `;
-                    progressElement.classList.add('completed');
-                } else {
-                    statusElement.textContent = 'Not started';
-                    progressElement.classList.remove('completed');
-                }
-            });
+            if (gameData && gameData.time) {
+                const time = this.formatSecondsToTime(gameData.time);
+                statusElement.innerHTML = `
+                    <span class="completion-time">✓ ${time}</span>
+                    <span class="completion-score">${Math.round(gameData.score || 0)}pts</span>
+                `;
+                progressElement.classList.add('completed');
+            } else {
+                statusElement.textContent = 'Not started';
+                progressElement.classList.remove('completed');
+            }
         });
 
-        // Update battle results based on today's completed games
+        // Update daily performance stats based on today's completed games
         this.updateTodaysBattleResults();
     }
 
