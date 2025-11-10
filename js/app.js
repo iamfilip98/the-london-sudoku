@@ -441,40 +441,36 @@ class SudokuChampionship {
     }
 
 
-    updateBattleResults(scores) {
-        const faidaoTotal = scores.faidao.total;
-        const filipTotal = scores.filip.total;
-        const winnerElement = document.getElementById('winnerAnnouncement');
-        const faidaoBar = document.getElementById('faidaoScoreBar');
-        const filipBar = document.getElementById('filipScoreBar');
-        const faidaoText = document.getElementById('faidaoScoreText');
-        const filipText = document.getElementById('filipScoreText');
+    updateDailyPerformance(personalStats) {
+        // Update personal daily performance stats
+        const puzzlesCompletedEl = document.getElementById('dailyPuzzlesCompleted');
+        const totalScoreEl = document.getElementById('dailyTotalScore');
+        const perfectGamesEl = document.getElementById('dailyPerfectGames');
+        const performanceSummaryEl = document.getElementById('performanceSummary');
 
-        // Determine winner
-        let winner = 'tie';
-        let winnerText = "It's a tie!";
-
-        if (faidaoTotal > filipTotal && faidaoTotal > 0) {
-            winner = 'faidao';
-            winnerText = '🏆 Faidao Wins!';
-        } else if (filipTotal > faidaoTotal && filipTotal > 0) {
-            winner = 'filip';
-            winnerText = '🏆 Filip Wins!';
-        } else {
-            winnerText = "It's a tie!";
+        if (puzzlesCompletedEl) {
+            puzzlesCompletedEl.textContent = personalStats.puzzlesCompleted || 0;
         }
 
-        winnerElement.querySelector('.winner-text').textContent = winnerText;
+        if (totalScoreEl) {
+            totalScoreEl.textContent = personalStats.totalScore || 0;
+        }
 
-        // Update score bars
-        const maxScore = Math.max(faidaoTotal, filipTotal, 1);
-        const faidaoWidth = (faidaoTotal / maxScore) * 100;
-        const filipWidth = (filipTotal / maxScore) * 100;
+        if (perfectGamesEl) {
+            perfectGamesEl.textContent = personalStats.perfectGames || 0;
+        }
 
-        faidaoBar.style.width = `${faidaoWidth}%`;
-        filipBar.style.width = `${filipWidth}%`;
-        faidaoText.textContent = faidaoTotal.toFixed(0);
-        filipText.textContent = filipTotal.toFixed(0);
+        // Update performance summary message
+        if (performanceSummaryEl) {
+            const perfText = performanceSummaryEl.querySelector('.performance-text');
+            if (perfText) {
+                if (personalStats.puzzlesCompleted > 0) {
+                    perfText.textContent = `Great work! ${personalStats.puzzlesCompleted} puzzle${personalStats.puzzlesCompleted > 1 ? 's' : ''} completed today!`;
+                } else {
+                    perfText.textContent = 'Complete puzzles to track your daily progress!';
+                }
+            }
+        }
     }
 
     async loadData() {
@@ -1492,37 +1488,22 @@ class SudokuChampionship {
 
         // Only show winner if all 6 games are completed
         if (completedGames === totalGamesRequired) {
-            // Update the battle results display
-            this.updateBattleResults(todayScores);
+            // Update the daily performance display
+            this.updateDailyPerformance({
+                puzzlesCompleted: completedGames,
+                totalScore: (todayScores.faidao?.total || 0) + (todayScores.filip?.total || 0),
+                perfectGames: 0 // TODO: Calculate from game data
+            });
             // Mark that we have a complete battle for today
             this.lastCompleteBattleDate = today;
         } else {
-            // Only update to incomplete state if we haven't marked today's battle as complete
-            if (this.lastCompleteBattleDate !== today) {
-                const winnerElement = document.getElementById('winnerAnnouncement');
-                if (winnerElement) {
-                    winnerElement.querySelector('.winner-text').textContent = 'Play Sudoku to compete!';
-                }
-            }
-
-            // Still update score bars to show progress
-            const faidaoBar = document.getElementById('faidaoScoreBar');
-            const filipBar = document.getElementById('filipScoreBar');
-            const faidaoText = document.getElementById('faidaoScoreText');
-            const filipText = document.getElementById('filipScoreText');
-
-            if (faidaoBar && filipBar && faidaoText && filipText) {
-                const faidaoTotal = Number(todayScores.faidao.total) || 0;
-                const filipTotal = Number(todayScores.filip.total) || 0;
-                const maxScore = Math.max(faidaoTotal, filipTotal, 1);
-                const faidaoWidth = (faidaoTotal / maxScore) * 100;
-                const filipWidth = (filipTotal / maxScore) * 100;
-
-                faidaoBar.style.width = `${faidaoWidth}%`;
-                filipBar.style.width = `${filipWidth}%`;
-                faidaoText.textContent = faidaoTotal.toFixed(0);
-                filipText.textContent = filipTotal.toFixed(0);
-            }
+            // Update progress even if not all games are completed
+            const currentCompleted = Object.values(todayScores).reduce((sum, player) => sum + (player.total > 0 ? 1 : 0), 0);
+            this.updateDailyPerformance({
+                puzzlesCompleted: currentCompleted,
+                totalScore: (todayScores.faidao?.total || 0) + (todayScores.filip?.total || 0),
+                perfectGames: 0 // TODO: Calculate from game data
+            });
         }
     }
 
