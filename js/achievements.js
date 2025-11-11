@@ -2179,6 +2179,463 @@ class AchievementsManager {
                 type: 'milestone',
                 requirement: { type: 'achievements_unlocked', value: 350 },
                 rarity: 'legendary'
+            },
+
+            // EDUCATIONAL ACHIEVEMENTS - Tutorial Completion (8)
+            {
+                id: 'tutorial_lesson_1',
+                title: 'Student',
+                description: 'Complete your first tutorial lesson',
+                icon: 'fas fa-graduation-cap',
+                type: 'educational',
+                requirement: { type: 'lessons_completed', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'tutorial_beginner_complete',
+                title: 'Sudoku Student',
+                description: 'Complete all beginner tutorials (Lessons 1-5)',
+                icon: 'fas fa-book',
+                type: 'educational',
+                requirement: { type: 'lessons_completed', value: 5 },
+                rarity: 'common'
+            },
+            {
+                id: 'tutorial_intermediate_complete',
+                title: 'Sudoku Scholar',
+                description: 'Complete all intermediate tutorials (Lessons 6-10)',
+                icon: 'fas fa-book-open',
+                type: 'educational',
+                requirement: { type: 'lessons_completed', value: 10 },
+                rarity: 'rare'
+            },
+            {
+                id: 'tutorial_advanced_complete',
+                title: 'Sudoku Master',
+                description: 'Complete all advanced tutorials (Lessons 11-15)',
+                icon: 'fas fa-chalkboard-teacher',
+                type: 'educational',
+                requirement: { type: 'lessons_completed', value: 15 },
+                rarity: 'epic'
+            },
+            {
+                id: 'tutorial_all_complete',
+                title: 'Sudoku Professor',
+                description: 'Complete all 20 tutorial lessons',
+                icon: 'fas fa-university',
+                type: 'educational',
+                requirement: { type: 'lessons_completed', value: 20 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'quiz_perfect_score',
+                title: 'Quiz Master',
+                description: 'Get perfect score on any quiz',
+                icon: 'fas fa-check-circle',
+                type: 'educational',
+                requirement: { type: 'quiz_perfect', value: 1 },
+                rarity: 'rare'
+            },
+            {
+                id: 'quiz_perfect_all',
+                title: 'Perfect Scholar',
+                description: 'Get perfect scores on all quizzes',
+                icon: 'fas fa-star',
+                type: 'educational',
+                requirement: { type: 'quiz_perfect_all', value: true },
+                rarity: 'epic'
+            },
+            {
+                id: 'technique_master',
+                title: 'Technique Expert',
+                description: 'Master all solving techniques',
+                icon: 'fas fa-brain',
+                type: 'educational',
+                requirement: { type: 'all_techniques_mastered', value: true },
+                rarity: 'legendary'
+            },
+
+            // COMPETITIVE ACHIEVEMENTS - Head to Head (5)
+            {
+                id: 'win_daily_battle',
+                title: 'Daily Victor',
+                description: 'Win a daily battle against your opponent',
+                icon: 'fas fa-trophy',
+                type: 'competitive',
+                requirement: { type: 'daily_battle_win', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'win_streak_3',
+                title: 'On a Roll',
+                description: 'Win 3 daily battles in a row',
+                icon: 'fas fa-fire',
+                type: 'competitive',
+                requirement: { type: 'win_streak', value: 3 },
+                rarity: 'rare'
+            },
+            {
+                id: 'win_streak_7',
+                title: 'Undefeated Week',
+                description: 'Win 7 daily battles in a row',
+                icon: 'fas fa-medal',
+                type: 'competitive',
+                requirement: { type: 'win_streak', value: 7 },
+                rarity: 'epic'
+            },
+            {
+                id: 'win_streak_30',
+                title: 'Unstoppable',
+                description: 'Win 30 daily battles in a row',
+                icon: 'fas fa-crown',
+                type: 'competitive',
+                requirement: { type: 'win_streak', value: 30 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'total_wins_100',
+                title: 'Century of Victories',
+                description: 'Win 100 total daily battles',
+                icon: 'fas fa-award',
+                type: 'competitive',
+                requirement: { type: 'total_wins', value: 100 },
+                rarity: 'epic'
+            },
+
+            // SOCIAL ACHIEVEMENTS - Sharing (3)
+            {
+                id: 'share_first',
+                title: 'Show Off',
+                description: 'Share your score on social media',
+                icon: 'fas fa-share',
+                type: 'social',
+                requirement: { type: 'shares_count', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'share_10',
+                title: 'Social Sharer',
+                description: 'Share 10 scores on social media',
+                icon: 'fas fa-share-alt',
+                type: 'social',
+                requirement: { type: 'shares_count', value: 10 },
+                rarity: 'rare'
+            },
+            {
+                id: 'custom_league_create',
+                title: 'League Founder',
+                description: 'Create your own custom league',
+                icon: 'fas fa-users-cog',
+                type: 'social',
+                requirement: { type: 'custom_league_created', value: true },
+                rarity: 'rare'
+            },
+
+            // SKILL ACHIEVEMENTS - Consistency (5)
+            {
+                id: 'consistency_easy_10',
+                title: 'Consistent Solver (Easy)',
+                description: 'Complete 10 Easy puzzles in a row without errors',
+                icon: 'fas fa-check-double',
+                type: 'skill',
+                requirement: { type: 'errorless_streak', difficulty: 'easy', value: 10 },
+                rarity: 'rare'
+            },
+            {
+                id: 'consistency_medium_10',
+                title: 'Consistent Solver (Medium)',
+                description: 'Complete 10 Medium puzzles in a row without errors',
+                icon: 'fas fa-check-double',
+                type: 'skill',
+                requirement: { type: 'errorless_streak', difficulty: 'medium', value: 10 },
+                rarity: 'epic'
+            },
+            {
+                id: 'consistency_hard_5',
+                title: 'Consistent Solver (Hard)',
+                description: 'Complete 5 Hard puzzles in a row without errors',
+                icon: 'fas fa-check-double',
+                type: 'skill',
+                requirement: { type: 'errorless_streak', difficulty: 'hard', value: 5 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'high_score_streak',
+                title: 'Score Streak',
+                description: 'Score 90+ points on 10 puzzles in a row',
+                icon: 'fas fa-chart-line',
+                type: 'skill',
+                requirement: { type: 'high_score_streak', value: 10, score: 90 },
+                rarity: 'epic'
+            },
+            {
+                id: 'fast_solver',
+                title: 'Speed Consistent',
+                description: 'Complete 20 puzzles under target time',
+                icon: 'fas fa-tachometer-alt',
+                type: 'skill',
+                requirement: { type: 'under_target_streak', value: 20 },
+                rarity: 'rare'
+            },
+
+            // VARIANT ACHIEVEMENTS - Speed Records per Variant (9)
+            {
+                id: 'xsudoku_speed_master',
+                title: 'X-Sudoku Speed Master',
+                description: 'Complete X-Sudoku Hard in under 8 minutes',
+                icon: 'fas fa-bolt',
+                type: 'variant',
+                requirement: { type: 'variant_speed', variant: 'x-sudoku', difficulty: 'hard', time: 480 },
+                rarity: 'epic'
+            },
+            {
+                id: 'mini_speed_master',
+                title: 'Mini Sudoku Speed Master',
+                description: 'Complete Mini 6x6 Hard in under 2 minutes',
+                icon: 'fas fa-bolt',
+                type: 'variant',
+                requirement: { type: 'variant_speed', variant: 'mini', difficulty: 'hard', time: 120 },
+                rarity: 'epic'
+            },
+            {
+                id: 'antiknight_speed_master',
+                title: 'Anti-Knight Speed Master',
+                description: 'Complete Anti-Knight Hard in under 10 minutes',
+                icon: 'fas fa-bolt',
+                type: 'variant',
+                requirement: { type: 'variant_speed', variant: 'anti-knight', difficulty: 'hard', time: 600 },
+                rarity: 'epic'
+            },
+            {
+                id: 'killer_speed_master',
+                title: 'Killer Sudoku Speed Master',
+                description: 'Complete Killer Sudoku Hard in under 12 minutes',
+                icon: 'fas fa-bolt',
+                type: 'variant',
+                requirement: { type: 'variant_speed', variant: 'killer-sudoku', difficulty: 'hard', time: 720 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'hyper_speed_master',
+                title: 'Hyper Sudoku Speed Master',
+                description: 'Complete Hyper Sudoku Hard in under 8 minutes',
+                icon: 'fas fa-bolt',
+                type: 'variant',
+                requirement: { type: 'variant_speed', variant: 'hyper-sudoku', difficulty: 'hard', time: 480 },
+                rarity: 'epic'
+            },
+            {
+                id: 'consecutive_speed_master',
+                title: 'Consecutive Sudoku Speed Master',
+                description: 'Complete Consecutive Sudoku Hard in under 10 minutes',
+                icon: 'fas fa-bolt',
+                type: 'variant',
+                requirement: { type: 'variant_speed', variant: 'consecutive-sudoku', difficulty: 'hard', time: 600 },
+                rarity: 'epic'
+            },
+            {
+                id: 'thermo_speed_master',
+                title: 'Thermo Sudoku Speed Master',
+                description: 'Complete Thermo Sudoku Hard in under 10 minutes',
+                icon: 'fas fa-bolt',
+                type: 'variant',
+                requirement: { type: 'variant_speed', variant: 'thermo-sudoku', difficulty: 'hard', time: 600 },
+                rarity: 'epic'
+            },
+            {
+                id: 'jigsaw_speed_master',
+                title: 'Jigsaw Sudoku Speed Master',
+                description: 'Complete Jigsaw Sudoku Hard in under 10 minutes',
+                icon: 'fas fa-bolt',
+                type: 'variant',
+                requirement: { type: 'variant_speed', variant: 'jigsaw-sudoku', difficulty: 'hard', time: 600 },
+                rarity: 'epic'
+            },
+            {
+                id: 'all_variants_speed',
+                title: 'Universal Speed Master',
+                description: 'Achieve speed master status in all variants',
+                icon: 'fas fa-crown',
+                type: 'variant',
+                requirement: { type: 'all_variants_speed_master', value: true },
+                rarity: 'legendary'
+            },
+
+            // VARIANT ACHIEVEMENTS - Difficulty Milestones (9)
+            {
+                id: 'xsudoku_hard_master',
+                title: 'X-Sudoku Hard Master',
+                description: 'Complete 25 X-Sudoku Hard puzzles',
+                icon: 'fas fa-times',
+                type: 'variant',
+                requirement: { type: 'variant_difficulty_count', variant: 'x-sudoku', difficulty: 'hard', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'mini_hard_master',
+                title: 'Mini Sudoku Hard Master',
+                description: 'Complete 25 Mini 6x6 Hard puzzles',
+                icon: 'fas fa-th',
+                type: 'variant',
+                requirement: { type: 'variant_difficulty_count', variant: 'mini', difficulty: 'hard', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'antiknight_hard_master',
+                title: 'Anti-Knight Hard Master',
+                description: 'Complete 25 Anti-Knight Hard puzzles',
+                icon: 'fas fa-chess-knight',
+                type: 'variant',
+                requirement: { type: 'variant_difficulty_count', variant: 'anti-knight', difficulty: 'hard', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'killer_hard_master',
+                title: 'Killer Sudoku Hard Master',
+                description: 'Complete 25 Killer Sudoku Hard puzzles',
+                icon: 'fas fa-skull',
+                type: 'variant',
+                requirement: { type: 'variant_difficulty_count', variant: 'killer-sudoku', difficulty: 'hard', value: 25 },
+                rarity: 'epic'
+            },
+            {
+                id: 'hyper_hard_master',
+                title: 'Hyper Sudoku Hard Master',
+                description: 'Complete 25 Hyper Sudoku Hard puzzles',
+                icon: 'fas fa-square',
+                type: 'variant',
+                requirement: { type: 'variant_difficulty_count', variant: 'hyper-sudoku', difficulty: 'hard', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'consecutive_hard_master',
+                title: 'Consecutive Sudoku Hard Master',
+                description: 'Complete 25 Consecutive Sudoku Hard puzzles',
+                icon: 'fas fa-link',
+                type: 'variant',
+                requirement: { type: 'variant_difficulty_count', variant: 'consecutive-sudoku', difficulty: 'hard', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'thermo_hard_master',
+                title: 'Thermo Sudoku Hard Master',
+                description: 'Complete 25 Thermo Sudoku Hard puzzles',
+                icon: 'fas fa-thermometer-half',
+                type: 'variant',
+                requirement: { type: 'variant_difficulty_count', variant: 'thermo-sudoku', difficulty: 'hard', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'jigsaw_hard_master',
+                title: 'Jigsaw Sudoku Hard Master',
+                description: 'Complete 25 Jigsaw Sudoku Hard puzzles',
+                icon: 'fas fa-puzzle-piece',
+                type: 'variant',
+                requirement: { type: 'variant_difficulty_count', variant: 'jigsaw-sudoku', difficulty: 'hard', value: 25 },
+                rarity: 'rare'
+            },
+            {
+                id: 'all_variants_hard_master',
+                title: 'Universal Hard Master',
+                description: 'Achieve hard master status in all variants',
+                icon: 'fas fa-crown',
+                type: 'variant',
+                requirement: { type: 'all_variants_hard_master', value: true },
+                rarity: 'legendary'
+            },
+
+            // MILESTONE ACHIEVEMENTS - Daily Dedication (5)
+            {
+                id: 'daily_dedication_7',
+                title: 'Week Committed',
+                description: 'Complete at least one puzzle every day for 7 days',
+                icon: 'fas fa-calendar-check',
+                type: 'milestone',
+                requirement: { type: 'daily_dedication', value: 7 },
+                rarity: 'common'
+            },
+            {
+                id: 'daily_dedication_30',
+                title: 'Month Committed',
+                description: 'Complete at least one puzzle every day for 30 days',
+                icon: 'fas fa-calendar-alt',
+                type: 'milestone',
+                requirement: { type: 'daily_dedication', value: 30 },
+                rarity: 'rare'
+            },
+            {
+                id: 'daily_dedication_100',
+                title: 'Dedicated Solver',
+                description: 'Complete at least one puzzle every day for 100 days',
+                icon: 'fas fa-calendar',
+                type: 'milestone',
+                requirement: { type: 'daily_dedication', value: 100 },
+                rarity: 'epic'
+            },
+            {
+                id: 'daily_dedication_365',
+                title: 'Year of Puzzles',
+                description: 'Complete at least one puzzle every day for 365 days',
+                icon: 'fas fa-trophy',
+                type: 'milestone',
+                requirement: { type: 'daily_dedication', value: 365 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'three_a_day',
+                title: 'Triple Threat',
+                description: 'Complete all 3 daily puzzles (Easy, Medium, Hard) in one day',
+                icon: 'fas fa-th-large',
+                type: 'milestone',
+                requirement: { type: 'three_dailies_one_day', value: true },
+                rarity: 'rare'
+            },
+
+            // SKILL ACHIEVEMENTS - Score Milestones (5)
+            {
+                id: 'score_95_easy',
+                title: 'Easy Perfection',
+                description: 'Score 95+ points on an Easy puzzle',
+                icon: 'fas fa-star',
+                type: 'skill',
+                requirement: { type: 'score_milestone', difficulty: 'easy', score: 95 },
+                rarity: 'rare'
+            },
+            {
+                id: 'score_95_medium',
+                title: 'Medium Perfection',
+                description: 'Score 95+ points on a Medium puzzle',
+                icon: 'fas fa-star',
+                type: 'skill',
+                requirement: { type: 'score_milestone', difficulty: 'medium', score: 95 },
+                rarity: 'epic'
+            },
+            {
+                id: 'score_95_hard',
+                title: 'Hard Perfection',
+                description: 'Score 95+ points on a Hard puzzle',
+                icon: 'fas fa-star',
+                type: 'skill',
+                requirement: { type: 'score_milestone', difficulty: 'hard', score: 95 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'average_score_80',
+                title: 'Consistently Good',
+                description: 'Maintain an average score of 80+ across 50 puzzles',
+                icon: 'fas fa-chart-line',
+                type: 'skill',
+                requirement: { type: 'average_score', value: 80, count: 50 },
+                rarity: 'rare'
+            },
+            {
+                id: 'average_score_90',
+                title: 'Consistently Excellent',
+                description: 'Maintain an average score of 90+ across 50 puzzles',
+                icon: 'fas fa-medal',
+                type: 'skill',
+                requirement: { type: 'average_score', value: 90, count: 50 },
+                rarity: 'legendary'
             }
         ];
 
