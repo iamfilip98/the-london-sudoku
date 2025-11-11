@@ -11,6 +11,7 @@ const { setCorsHeaders } = require('../lib/cors');
 const { getCached, CACHE_DURATIONS } = require('../lib/cache');
 const battlePass = require('../lib/battle-pass-api');
 const leagues = require('../lib/leagues-api');
+const { getCurrentSeasonInfo, getUserSeasonHistory, getSeasonLeaderboard } = require('../lib/league-seasons');
 
 // Helper function to execute SQL queries
 async function sql(strings, ...values) {
@@ -343,6 +344,57 @@ module.exports = async function handler(req, res) {
             return res.status(500).json({ error: result.error });
           }
           return res.status(200).json(result);
+        }
+
+        // PHASE 6 MONTH 19: Current Season Info
+        if (type === 'leagues-current-season') {
+          const { userId } = req.query;
+          if (!userId) {
+            return res.status(400).json({ error: 'userId is required' });
+          }
+          try {
+            const result = await getCurrentSeasonInfo(parseInt(userId));
+            if (!result) {
+              return res.status(404).json({ error: 'No active season found' });
+            }
+            return res.status(200).json({ success: true, data: result });
+          } catch (error) {
+            console.error('Failed to get current season:', error);
+            return res.status(500).json({ error: 'Failed to get season info' });
+          }
+        }
+
+        // PHASE 6 MONTH 19: Season History
+        if (type === 'leagues-season-history') {
+          const { userId, limit } = req.query;
+          if (!userId) {
+            return res.status(400).json({ error: 'userId is required' });
+          }
+          try {
+            const result = await getUserSeasonHistory(parseInt(userId), parseInt(limit) || 10);
+            return res.status(200).json({ success: true, data: result });
+          } catch (error) {
+            console.error('Failed to get season history:', error);
+            return res.status(500).json({ error: 'Failed to get season history' });
+          }
+        }
+
+        // PHASE 6 MONTH 19: Season Leaderboard
+        if (type === 'leagues-season-leaderboard') {
+          const { seasonId, limit } = req.query;
+          if (!seasonId) {
+            return res.status(400).json({ error: 'seasonId is required' });
+          }
+          try {
+            const result = await getSeasonLeaderboard(parseInt(seasonId), parseInt(limit) || 100);
+            if (!result) {
+              return res.status(404).json({ error: 'Season not found' });
+            }
+            return res.status(200).json({ success: true, data: result });
+          } catch (error) {
+            console.error('Failed to get season leaderboard:', error);
+            return res.status(500).json({ error: 'Failed to get leaderboard' });
+          }
         }
 
         // Return empty for other types for now

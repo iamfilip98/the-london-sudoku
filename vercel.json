@@ -67,5 +67,11 @@
       "source": "/(.*)",
       "destination": "/$1"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron-process-seasons",
+      "schedule": "59 23 * * 0"
+    }
   ]
 }
