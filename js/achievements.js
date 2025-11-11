@@ -2636,6 +2636,650 @@ class AchievementsManager {
                 type: 'skill',
                 requirement: { type: 'average_score', value: 90, count: 50 },
                 rarity: 'legendary'
+            },
+
+            // ============================================
+            // TIME-BASED CHALLENGES (12)
+            // ============================================
+            {
+                id: 'early_bird',
+                title: 'Early Bird',
+                description: 'Complete 10 puzzles between 5 AM - 9 AM',
+                icon: 'fas fa-sunrise',
+                type: 'challenge',
+                requirement: { type: 'time_of_day', timeRange: [5, 9], count: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'morning_solver',
+                title: 'Morning Solver',
+                description: 'Complete 50 puzzles in the morning (5 AM - 12 PM)',
+                icon: 'fas fa-coffee',
+                type: 'challenge',
+                requirement: { type: 'time_of_day', timeRange: [5, 12], count: 50 },
+                rarity: 'rare'
+            },
+            {
+                id: 'afternoon_enthusiast',
+                title: 'Afternoon Enthusiast',
+                description: 'Complete 50 puzzles in the afternoon (12 PM - 5 PM)',
+                icon: 'fas fa-sun',
+                type: 'challenge',
+                requirement: { type: 'time_of_day', timeRange: [12, 17], count: 50 },
+                rarity: 'rare'
+            },
+            {
+                id: 'evening_player',
+                title: 'Evening Player',
+                description: 'Complete 50 puzzles in the evening (5 PM - 10 PM)',
+                icon: 'fas fa-cloud-moon',
+                type: 'challenge',
+                requirement: { type: 'time_of_day', timeRange: [17, 22], count: 50 },
+                rarity: 'rare'
+            },
+            {
+                id: 'night_owl',
+                title: 'Night Owl',
+                description: 'Complete 25 puzzles between 10 PM - 5 AM',
+                icon: 'fas fa-moon',
+                type: 'challenge',
+                requirement: { type: 'time_of_day', timeRange: [22, 5], count: 25 },
+                rarity: 'epic'
+            },
+            {
+                id: 'weekday_warrior',
+                title: 'Weekday Warrior',
+                description: 'Complete 100 puzzles on weekdays (Mon-Fri)',
+                icon: 'fas fa-briefcase',
+                type: 'challenge',
+                requirement: { type: 'day_type', dayType: 'weekday', count: 100 },
+                rarity: 'rare'
+            },
+            {
+                id: 'weekend_champion',
+                title: 'Weekend Champion',
+                description: 'Complete 50 puzzles on weekends (Sat-Sun)',
+                icon: 'fas fa-calendar-week',
+                type: 'challenge',
+                requirement: { type: 'day_type', dayType: 'weekend', count: 50 },
+                rarity: 'rare'
+            },
+            {
+                id: 'lunch_break_solver',
+                title: 'Lunch Break Solver',
+                description: 'Complete 20 puzzles between 12 PM - 2 PM',
+                icon: 'fas fa-utensils',
+                type: 'challenge',
+                requirement: { type: 'time_of_day', timeRange: [12, 14], count: 20 },
+                rarity: 'common'
+            },
+            {
+                id: 'midnight_solver',
+                title: 'Midnight Solver',
+                description: 'Complete 10 puzzles between 11 PM - 1 AM',
+                icon: 'fas fa-star',
+                type: 'challenge',
+                requirement: { type: 'time_of_day', timeRange: [23, 1], count: 10 },
+                rarity: 'epic'
+            },
+            {
+                id: 'around_the_clock',
+                title: 'Around the Clock',
+                description: 'Complete at least one puzzle in each 6-hour time block',
+                icon: 'fas fa-clock',
+                type: 'challenge',
+                requirement: { type: 'all_time_blocks', blocks: 4 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'daily_routine',
+                title: 'Daily Routine',
+                description: 'Complete puzzles at the same hour of day for 7 consecutive days',
+                icon: 'fas fa-user-clock',
+                type: 'challenge',
+                requirement: { type: 'same_hour_streak', days: 7 },
+                rarity: 'epic'
+            },
+            {
+                id: 'time_traveler',
+                title: 'Time Traveler',
+                description: 'Complete puzzles in all 24 hours of the day',
+                icon: 'fas fa-globe',
+                type: 'challenge',
+                requirement: { type: 'all_hours', hours: 24 },
+                rarity: 'legendary'
+            },
+
+            // ============================================
+            // COMBO ACHIEVEMENTS (10)
+            // ============================================
+            {
+                id: 'perfect_speedrun_easy',
+                title: 'Flawless Sprint',
+                description: 'Complete an Easy puzzle with 100 score in under 2 minutes',
+                icon: 'fas fa-running',
+                type: 'combo',
+                requirement: { type: 'perfect_and_fast', difficulty: 'easy', time: 120, score: 100 },
+                rarity: 'rare'
+            },
+            {
+                id: 'perfect_speedrun_medium',
+                title: 'Flawless Marathon',
+                description: 'Complete a Medium puzzle with 100 score in under 4 minutes',
+                icon: 'fas fa-bolt',
+                type: 'combo',
+                requirement: { type: 'perfect_and_fast', difficulty: 'medium', time: 240, score: 100 },
+                rarity: 'epic'
+            },
+            {
+                id: 'perfect_speedrun_hard',
+                title: 'Flawless Ultra',
+                description: 'Complete a Hard puzzle with 100 score in under 8 minutes',
+                icon: 'fas fa-fire',
+                type: 'combo',
+                requirement: { type: 'perfect_and_fast', difficulty: 'hard', time: 480, score: 100 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'hard_no_hints_perfect',
+                title: 'Pure Mastery',
+                description: 'Complete a Hard puzzle with 100 score using no hints',
+                icon: 'fas fa-crown',
+                type: 'combo',
+                requirement: { type: 'hard_perfect_no_hints', difficulty: 'hard', hints: 0, score: 100 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'triple_perfect',
+                title: 'Hat Trick',
+                description: 'Complete 3 perfect puzzles (100 score) in one day',
+                icon: 'fas fa-hat-wizard',
+                type: 'combo',
+                requirement: { type: 'perfect_count_one_day', count: 3, score: 100 },
+                rarity: 'epic'
+            },
+            {
+                id: 'difficulty_progression',
+                title: 'Progressive Mastery',
+                description: 'Complete Easy, Medium, and Hard puzzles consecutively on the same day',
+                icon: 'fas fa-layer-group',
+                type: 'combo',
+                requirement: { type: 'sequential_difficulties', sequence: ['easy', 'medium', 'hard'] },
+                rarity: 'rare'
+            },
+            {
+                id: 'variant_perfect_streak',
+                title: 'Variant Perfectionist',
+                description: 'Complete 5 perfect puzzles across different variants',
+                icon: 'fas fa-gem',
+                type: 'combo',
+                requirement: { type: 'perfect_across_variants', count: 5, score: 100 },
+                rarity: 'epic'
+            },
+            {
+                id: 'speed_consistency',
+                title: 'Speed Consistency',
+                description: 'Complete 10 puzzles under target time consecutively',
+                icon: 'fas fa-tachometer-alt',
+                type: 'combo',
+                requirement: { type: 'consecutive_fast', count: 10 },
+                rarity: 'epic'
+            },
+            {
+                id: 'no_mistakes_week',
+                title: 'Flawless Week',
+                description: 'Complete 7 consecutive days without a single mistake',
+                icon: 'fas fa-shield-alt',
+                type: 'combo',
+                requirement: { type: 'mistake_free_streak', days: 7 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'ultimate_combo',
+                title: 'Ultimate Combo',
+                description: 'Complete a Hard puzzle: 100 score, under 7 minutes, no hints, no mistakes',
+                icon: 'fas fa-trophy',
+                type: 'combo',
+                requirement: { type: 'ultimate_combo', difficulty: 'hard', time: 420, score: 100, hints: 0, mistakes: 0 },
+                rarity: 'legendary'
+            },
+
+            // ============================================
+            // TECHNIQUE MASTERY (8)
+            // ============================================
+            {
+                id: 'naked_single_master',
+                title: 'Naked Single Master',
+                description: 'Successfully identify 100 naked singles',
+                icon: 'fas fa-eye',
+                type: 'technique',
+                requirement: { type: 'technique_usage', technique: 'naked_single', count: 100 },
+                rarity: 'common'
+            },
+            {
+                id: 'hidden_single_master',
+                title: 'Hidden Single Master',
+                description: 'Successfully identify 100 hidden singles',
+                icon: 'fas fa-search',
+                type: 'technique',
+                requirement: { type: 'technique_usage', technique: 'hidden_single', count: 100 },
+                rarity: 'rare'
+            },
+            {
+                id: 'pointing_pair_master',
+                title: 'Pointing Pair Master',
+                description: 'Successfully identify 50 pointing pairs',
+                icon: 'fas fa-arrows-alt-h',
+                type: 'technique',
+                requirement: { type: 'technique_usage', technique: 'pointing_pair', count: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'naked_pair_master',
+                title: 'Naked Pair Master',
+                description: 'Successfully identify 50 naked pairs',
+                icon: 'fas fa-users',
+                type: 'technique',
+                requirement: { type: 'technique_usage', technique: 'naked_pair', count: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'hidden_pair_master',
+                title: 'Hidden Pair Master',
+                description: 'Successfully identify 30 hidden pairs',
+                icon: 'fas fa-user-secret',
+                type: 'technique',
+                requirement: { type: 'technique_usage', technique: 'hidden_pair', count: 30 },
+                rarity: 'epic'
+            },
+            {
+                id: 'x_wing_master',
+                title: 'X-Wing Master',
+                description: 'Successfully identify 20 X-Wing patterns',
+                icon: 'fas fa-times',
+                type: 'technique',
+                requirement: { type: 'technique_usage', technique: 'x_wing', count: 20 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'swordfish_master',
+                title: 'Swordfish Master',
+                description: 'Successfully identify 10 Swordfish patterns',
+                icon: 'fas fa-fish',
+                type: 'technique',
+                requirement: { type: 'technique_usage', technique: 'swordfish', count: 10 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'technique_encyclopedia',
+                title: 'Technique Encyclopedia',
+                description: 'Master all Sudoku solving techniques',
+                icon: 'fas fa-book',
+                type: 'technique',
+                requirement: { type: 'all_techniques_mastered', techniques: 7 },
+                rarity: 'legendary'
+            },
+
+            // ============================================
+            // SCORE CHALLENGES (8)
+            // ============================================
+            {
+                id: 'perfect_score_100',
+                title: 'Century Club',
+                description: 'Achieve a perfect score of 100 on any puzzle',
+                icon: 'fas fa-hundred-points',
+                type: 'score',
+                requirement: { type: 'exact_score', score: 100, count: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'score_range_90_95',
+                title: 'Excellence Range',
+                description: 'Complete 20 puzzles with scores between 90-95',
+                icon: 'fas fa-chart-area',
+                type: 'score',
+                requirement: { type: 'score_range', min: 90, max: 95, count: 20 },
+                rarity: 'rare'
+            },
+            {
+                id: 'never_below_80',
+                title: 'Consistency Champion',
+                description: 'Complete 50 puzzles without ever scoring below 80',
+                icon: 'fas fa-level-up-alt',
+                type: 'score',
+                requirement: { type: 'minimum_score_streak', minScore: 80, count: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'score_improvement',
+                title: 'Rapid Improvement',
+                description: 'Improve your average score by 20 points within 30 days',
+                icon: 'fas fa-chart-line',
+                type: 'score',
+                requirement: { type: 'score_improvement', improvement: 20, days: 30 },
+                rarity: 'epic'
+            },
+            {
+                id: 'perfect_hat_trick',
+                title: 'Perfect Hat Trick',
+                description: 'Score exactly 100 on Easy, Medium, and Hard in one day',
+                icon: 'fas fa-star',
+                type: 'score',
+                requirement: { type: 'perfect_all_difficulties_one_day', score: 100 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'score_climber',
+                title: 'Score Climber',
+                description: 'Achieve increasing scores on 5 consecutive puzzles',
+                icon: 'fas fa-mountain',
+                type: 'score',
+                requirement: { type: 'increasing_score_streak', count: 5 },
+                rarity: 'rare'
+            },
+            {
+                id: 'all_90_plus',
+                title: 'Elite Consistency',
+                description: 'Complete 100 puzzles all scoring 90+',
+                icon: 'fas fa-medal',
+                type: 'score',
+                requirement: { type: 'minimum_score_count', minScore: 90, count: 100 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'score_perfectionist',
+                title: 'Score Perfectionist',
+                description: 'Achieve 50 perfect scores (100) across all difficulties',
+                icon: 'fas fa-crown',
+                type: 'score',
+                requirement: { type: 'perfect_score_count', score: 100, count: 50 },
+                rarity: 'legendary'
+            },
+
+            // ============================================
+            // MONTHLY MILESTONES (6)
+            // ============================================
+            {
+                id: 'monthly_champion',
+                title: 'Monthly Champion',
+                description: 'Complete 100 puzzles in a single calendar month',
+                icon: 'fas fa-calendar-alt',
+                type: 'milestone',
+                requirement: { type: 'puzzles_in_month', count: 100 },
+                rarity: 'epic'
+            },
+            {
+                id: 'monthly_dedication',
+                title: 'Monthly Dedication',
+                description: 'Play every single day in a calendar month',
+                icon: 'fas fa-calendar-check',
+                type: 'milestone',
+                requirement: { type: 'every_day_in_month', days: 30 },
+                rarity: 'rare'
+            },
+            {
+                id: 'january_master',
+                title: 'January Master',
+                description: 'Complete 50+ puzzles in January',
+                icon: 'fas fa-snowflake',
+                type: 'milestone',
+                requirement: { type: 'puzzles_in_specific_month', month: 1, count: 50 },
+                rarity: 'rare'
+            },
+            {
+                id: 'summer_solver',
+                title: 'Summer Solver',
+                description: 'Complete 150+ puzzles during summer months (Jun-Aug)',
+                icon: 'fas fa-umbrella-beach',
+                type: 'milestone',
+                requirement: { type: 'puzzles_in_season', season: 'summer', count: 150 },
+                rarity: 'epic'
+            },
+            {
+                id: 'year_round_player',
+                title: 'Year-Round Player',
+                description: 'Complete puzzles in all 12 months of a year',
+                icon: 'fas fa-calendar',
+                type: 'milestone',
+                requirement: { type: 'all_months_in_year', months: 12 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'new_year_starter',
+                title: 'New Year Starter',
+                description: 'Complete 10 puzzles on January 1st',
+                icon: 'fas fa-champagne-glasses',
+                type: 'milestone',
+                requirement: { type: 'puzzles_on_specific_date', month: 1, day: 1, count: 10 },
+                rarity: 'epic'
+            },
+
+            // ============================================
+            // CROSS-VARIANT ACHIEVEMENTS (8)
+            // ============================================
+            {
+                id: 'multi_variant_day',
+                title: 'Variety Player',
+                description: 'Complete 3 different variants in one day',
+                icon: 'fas fa-dice',
+                type: 'variant',
+                requirement: { type: 'variants_in_one_day', count: 3 },
+                rarity: 'common'
+            },
+            {
+                id: 'all_variants_week',
+                title: 'Weekly Variety Master',
+                description: 'Complete all 9 variants within 7 days',
+                icon: 'fas fa-tasks',
+                type: 'variant',
+                requirement: { type: 'all_variants_in_timeframe', days: 7, variants: 9 },
+                rarity: 'epic'
+            },
+            {
+                id: 'variant_marathon',
+                title: 'Variant Marathon',
+                description: 'Complete 5 different variants in one session',
+                icon: 'fas fa-running',
+                type: 'variant',
+                requirement: { type: 'variants_in_one_session', count: 5 },
+                rarity: 'rare'
+            },
+            {
+                id: 'classic_and_variant_daily',
+                title: 'Balanced Player',
+                description: 'Complete both Classic daily and a variant puzzle for 7 days',
+                icon: 'fas fa-balance-scale',
+                type: 'variant',
+                requirement: { type: 'classic_and_variant_streak', days: 7 },
+                rarity: 'rare'
+            },
+            {
+                id: 'variant_explorer',
+                title: 'Variant Explorer',
+                description: 'Complete at least 10 puzzles in each variant type',
+                icon: 'fas fa-compass',
+                type: 'variant',
+                requirement: { type: 'min_puzzles_all_variants', count: 10, variants: 9 },
+                rarity: 'epic'
+            },
+            {
+                id: 'variant_specialist',
+                title: 'Variant Specialist',
+                description: 'Complete 100 puzzles in a single variant',
+                icon: 'fas fa-star',
+                type: 'variant',
+                requirement: { type: 'variant_count', count: 100 },
+                rarity: 'rare'
+            },
+            {
+                id: 'all_variants_perfect',
+                title: 'Universal Perfectionist',
+                description: 'Achieve at least one perfect score in each variant',
+                icon: 'fas fa-crown',
+                type: 'variant',
+                requirement: { type: 'perfect_in_all_variants', score: 100, variants: 9 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'variant_grand_master',
+                title: 'Variant Grand Master',
+                description: 'Complete 500+ puzzles across all variants combined',
+                icon: 'fas fa-chess-king',
+                type: 'variant',
+                requirement: { type: 'total_variant_puzzles', count: 500 },
+                rarity: 'legendary'
+            },
+
+            // ============================================
+            // SPECIAL CHALLENGES (6)
+            // ============================================
+            {
+                id: 'first_puzzle_perfect',
+                title: 'Beginner\'s Luck',
+                description: 'Score 100 on your very first puzzle',
+                icon: 'fas fa-clover',
+                type: 'special',
+                requirement: { type: 'first_puzzle_perfect', score: 100 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'comeback_victory',
+                title: 'Comeback Victory',
+                description: 'Complete a puzzle with 90+ score after scoring below 50',
+                icon: 'fas fa-undo',
+                type: 'special',
+                requirement: { type: 'comeback', previousScore: 50, newScore: 90 },
+                rarity: 'epic'
+            },
+            {
+                id: 'puzzle_number_100',
+                title: 'Century Celebration',
+                description: 'Complete your 100th puzzle with a perfect score',
+                icon: 'fas fa-birthday-cake',
+                type: 'special',
+                requirement: { type: 'milestone_puzzle_perfect', puzzleNumber: 100, score: 100 },
+                rarity: 'epic'
+            },
+            {
+                id: 'lucky_number_7',
+                title: 'Lucky Number 7',
+                description: 'Complete 7 puzzles on the 7th day of the 7th month',
+                icon: 'fas fa-dice-seven',
+                type: 'special',
+                requirement: { type: 'specific_date_count', month: 7, day: 7, count: 7 },
+                rarity: 'rare'
+            },
+            {
+                id: 'birthday_solver',
+                title: 'Birthday Solver',
+                description: 'Complete 10 puzzles on your birthday (set in profile)',
+                icon: 'fas fa-gift',
+                type: 'special',
+                requirement: { type: 'birthday_puzzles', count: 10 },
+                rarity: 'rare'
+            },
+            {
+                id: 'founding_member',
+                title: 'Founding Member',
+                description: 'Play during the first month of launch',
+                icon: 'fas fa-flag',
+                type: 'special',
+                requirement: { type: 'founding_member', launchDate: '2025-11-01' },
+                rarity: 'legendary'
+            },
+
+            // ============================================
+            // MASTERY COMBINATIONS (10)
+            // ============================================
+            {
+                id: 'social_master',
+                title: 'Social Master',
+                description: 'Unlock 20 social achievements',
+                icon: 'fas fa-users',
+                type: 'mastery',
+                requirement: { type: 'category_achievements', category: 'social', count: 20 },
+                rarity: 'epic'
+            },
+            {
+                id: 'skill_master',
+                title: 'Skill Master',
+                description: 'Unlock 25 skill achievements',
+                icon: 'fas fa-brain',
+                type: 'mastery',
+                requirement: { type: 'category_achievements', category: 'skill', count: 25 },
+                rarity: 'epic'
+            },
+            {
+                id: 'variant_master',
+                title: 'Variant Master',
+                description: 'Unlock 50 variant achievements',
+                icon: 'fas fa-shapes',
+                type: 'mastery',
+                requirement: { type: 'category_achievements', category: 'variant', count: 50 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'milestone_master',
+                title: 'Milestone Master',
+                description: 'Unlock 30 milestone achievements',
+                icon: 'fas fa-flag-checkered',
+                type: 'mastery',
+                requirement: { type: 'category_achievements', category: 'milestone', count: 30 },
+                rarity: 'epic'
+            },
+            {
+                id: 'combo_master',
+                title: 'Combo Master',
+                description: 'Unlock all 10 combo achievements',
+                icon: 'fas fa-link',
+                type: 'mastery',
+                requirement: { type: 'category_achievements', category: 'combo', count: 10 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'technique_master_complete',
+                title: 'Technique Master Complete',
+                description: 'Unlock all 8 technique achievements',
+                icon: 'fas fa-graduation-cap',
+                type: 'mastery',
+                requirement: { type: 'category_achievements', category: 'technique', count: 8 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'challenge_master',
+                title: 'Challenge Master',
+                description: 'Unlock all 12 time-based challenge achievements',
+                icon: 'fas fa-stopwatch',
+                type: 'mastery',
+                requirement: { type: 'category_achievements', category: 'challenge', count: 12 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'legendary_collector',
+                title: 'Legendary Collector',
+                description: 'Unlock 20 legendary rarity achievements',
+                icon: 'fas fa-dragon',
+                type: 'mastery',
+                requirement: { type: 'rarity_achievements', rarity: 'legendary', count: 20 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'achievement_god',
+                title: 'Achievement God',
+                description: 'Unlock 300 achievements',
+                icon: 'fas fa-infinity',
+                type: 'mastery',
+                requirement: { type: 'total_achievements', count: 300 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'ultimate_completionist',
+                title: 'Ultimate Completionist',
+                description: 'Unlock ALL 350 achievements',
+                icon: 'fas fa-trophy',
+                type: 'mastery',
+                requirement: { type: 'total_achievements', count: 350 },
+                rarity: 'legendary'
             }
         ];
 
