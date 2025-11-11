@@ -7,6 +7,8 @@ const { setCorsHeaders } = require('../lib/cors');
 const stripeManager = require('../lib/stripe-manager');
 const { migrateBattlePass } = require('../lib/battle-pass-migration');
 const { migrateLeagues } = require('../lib/leagues-migration');
+const { migrateLeagueSeasons } = require('../lib/league-seasons-migration');
+const { processSeasonEnd, createNewSeasons } = require('../lib/league-seasons');
 
 module.exports = async function handler(req, res) {
   // Handle CORS
@@ -27,7 +29,11 @@ module.exports = async function handler(req, res) {
 
   // Subscription actions have their own authentication (Stripe signature for webhooks, user session for others)
   const subscriptionActions = ['create-checkout', 'create-portal', 'webhook', 'subscription-status'];
-  const requiresAdminKey = !subscriptionActions.includes(action);
+
+  // Cron action uses Bearer token authentication
+  const cronActions = ['cron-process-seasons'];
+
+  const requiresAdminKey = !subscriptionActions.includes(action) && !cronActions.includes(action);
 
   // Verify admin key for admin-only actions
   if (requiresAdminKey) {
@@ -37,6 +43,17 @@ module.exports = async function handler(req, res) {
     if (!adminKey || adminKey !== expectedKey) {
       res.status(401).json({ error: 'Unauthorized' });
       return;
+    }
+  }
+
+  // Verify Bearer token for cron actions
+  if (cronActions.includes(action)) {
+    const authHeader = req.headers.authorization;
+    const cronSecret = process.env.CRON_SECRET;
+
+    if (authHeader !== `Bearer ${cronSecret}`) {
+      console.log('Unauthorized cron request');
+      return res.status(401).json({ error: 'Unauthorized' });
     }
   }
 
@@ -72,6 +89,18 @@ module.exports = async function handler(req, res) {
       case 'migrate-leagues':
         await handleMigrateLeagues(req, res);
         break;
+      case 'migrate-league-seasons':
+        await handleMigrateLeagueSeasons(req, res);
+        break;
+      case 'process-league-season':
+        await handleProcessLeagueSeason(req, res);
+        break;
+      case 'create-new-seasons':
+        await handleCreateNewSeasons(req, res);
+        break;
+      case 'cron-process-seasons':
+        await handleCronProcessSeasons(req, res);
+        break;
       case 'create-checkout':
         await handleCreateCheckout(req, res);
         break;
@@ -87,7 +116,7 @@ module.exports = async function handler(req, res) {
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'migrate-leagues', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'migrate-leagues', 'migrate-league-seasons', 'process-league-season', 'create-new-seasons', 'cron-process-seasons', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
         });
     }
   } catch (error) {
@@ -908,6 +937,160 @@ async function handleMigrateLeagues(req, res) {
     res.status(500).json({
       error: 'Migration failed',
       details: error.message
+    });
+  }
+}
+
+// Phase 6 Month 19: League Seasons migration
+async function handleMigrateLeagueSeasons(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Starting League Seasons migration...');
+
+    // Run the migration
+    const result = await migrateLeagueSeasons();
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        error: 'League seasons migration failed'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'League Seasons migration completed successfully',
+      features: [
+        'Weekly season tracking system',
+        'Automatic promotion/demotion (top/bottom 20%)',
+        'Season history and results',
+        'Points reset per season',
+        'Tier progression tracking',
+        'Season leaderboards with zones'
+      ],
+      tables: result.tables,
+      modifications: result.modifications,
+      seasonSystem: {
+        duration: 'Weekly (Monday-Sunday)',
+        promotionRate: '20% (top performers)',
+        demotionRate: '20% (bottom performers)',
+        pointsReset: 'Weekly'
+      }
+    });
+
+  } catch (error) {
+    console.error('League seasons migration failed:', error);
+    res.status(500).json({
+      error: 'Migration failed',
+      details: error.message
+    });
+  }
+}
+
+// Process league season end (promotion/demotion/reset)
+async function handleProcessLeagueSeason(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Processing league season end...');
+
+    const result = await processSeasonEnd();
+
+    res.status(200).json({
+      success: true,
+      message: 'Season processing completed',
+      ...result
+    });
+
+  } catch (error) {
+    console.error('Season processing failed:', error);
+    res.status(500).json({
+      error: 'Season processing failed',
+      details: error.message
+    });
+  }
+}
+
+// Create new seasons for all leagues
+async function handleCreateNewSeasons(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Creating new league seasons...');
+
+    const result = await createNewSeasons();
+
+    res.status(200).json({
+      success: true,
+      message: `Created ${result.length} new seasons`,
+      seasons: result
+    });
+
+  } catch (error) {
+    console.error('Season creation failed:', error);
+    res.status(500).json({
+      error: 'Season creation failed',
+      details: error.message
+    });
+  }
+}
+
+// Cron job: Weekly season processing (consolidated to respect 12-endpoint limit)
+async function handleCronProcessSeasons(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Starting weekly league season processing...');
+
+    // Step 1: Process current season end (promote/demote/reset)
+    console.log('Step 1: Processing season end...');
+    const processResult = await processSeasonEnd();
+
+    if (!processResult.success) {
+      throw new Error('Season processing failed');
+    }
+
+    console.log('Season processing results:', processResult);
+
+    // Step 2: Create new seasons for next week
+    console.log('Step 2: Creating new seasons...');
+    const newSeasons = await createNewSeasons();
+
+    console.log(`Created ${newSeasons.length} new seasons`);
+
+    // Return success
+    return res.status(200).json({
+      success: true,
+      message: 'Weekly season processing completed',
+      results: {
+        seasonsProcessed: processResult.seasonsProcessed,
+        promoted: processResult.promoted,
+        demoted: processResult.demoted,
+        stayed: processResult.stayed,
+        newSeasonsCreated: newSeasons.length
+      },
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Weekly season processing failed:', error);
+    return res.status(500).json({
+      error: 'Season processing failed',
+      details: error.message,
+      timestamp: new Date().toISOString()
     });
   }
 }

@@ -7,6 +7,64 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 6 Month 19: Weekly League Seasons with Promotion/Demotion** (November 11, 2025)
+- 🏆 **Weekly Competition System**: Complete season-based league system
+  - **Season Duration**: Monday 00:00 UTC to Sunday 23:59 UTC
+  - **Automatic Processing**: Cron job handles end-of-week transitions
+  - **Points Reset**: Fresh start every week for fair competition
+- 📈 **Promotion/Demotion Mechanics**: Dynamic tier movement
+  - **Promotion Rate**: Top 20% move up one tier (except Legend)
+  - **Demotion Rate**: Bottom 20% move down one tier (except Bronze)
+  - **Safe Zone**: Middle 60% stay in current tier
+  - **Fair Competition**: Rankings based on weekly performance
+- 📊 **Season Tracking**: Comprehensive history and statistics
+  - **Current Season Info**: Live countdown, rank, points, zone status
+  - **Season History**: View past performance (10 most recent seasons)
+  - **Leaderboard Zones**: Visual indicators for promotion/demotion/safe zones
+  - **Personal Stats**: Track promotions, demotions, best rank, weeks in league
+- 🗄️ **Database Schema**: Robust season tracking
+  - `league_seasons` table: Season tracking with start/end dates and status
+  - `league_season_results` table: Historical results for each user per season
+  - `league_members` extensions: Season points, lifetime points, weeks in league, promotions/demotions count
+  - Optimized indexes for fast leaderboard queries
+- 🔌 **API Integration**: Comprehensive season endpoints
+  - `GET /api/stats?type=leagues-current-season&userId=X`: Get current season info with user position
+  - `GET /api/stats?type=leagues-season-history&userId=X&limit=10`: Get user's season history
+  - `GET /api/stats?type=leagues-season-leaderboard&seasonId=X&limit=100`: Get season leaderboard with zones
+  - `POST /api/admin?action=migrate-league-seasons`: Initialize season system
+  - `POST /api/admin?action=process-league-season`: Manual season processing (testing)
+  - `POST /api/admin?action=create-new-seasons`: Create new seasons manually
+- ⏰ **Automated Processing**: Vercel cron job
+  - **Schedule**: Every Sunday at 23:59 UTC
+  - **Process**: Close season → Calculate rankings → Promote/demote → Create new seasons
+  - **Endpoint**: `/api/admin?action=cron-process-seasons` (secured with CRON_SECRET)
+  - **Configuration**: Defined in `vercel.json` cron section
+  - **Consolidated**: Cron functionality in admin.js to respect 12-endpoint limit
+- 🎮 **League Libraries**: Modular season management
+  - `lib/league-seasons.js`: Core season logic (450+ lines)
+    - getCurrentSeason(), getAllActiveSeasons()
+    - createNewSeasons(), processSeasonEnd()
+    - getUserSeasonHistory(), getCurrentSeasonInfo()
+    - getSeasonLeaderboard() with zone calculation
+  - `lib/league-seasons-migration.js`: Database migration
+    - Creates season tables and indexes
+    - Initializes first season for all official leagues
+- 📈 **Season Statistics**: Track long-term progress
+  - **Lifetime Points**: Cumulative points across all seasons
+  - **Weeks in League**: Duration at current tier
+  - **Best Rank**: Highest ranking achieved
+  - **Promotion Count**: Total promotions earned
+  - **Demotion Count**: Total demotions received
+- 🎯 **Competitive Balance**: Fair and engaging system
+  - **20/60/20 Split**: Ensures consistent movement and competition
+  - **Weekly Reset**: Prevents runaway leaders, gives everyone a fresh chance
+  - **Tier Boundaries**: Top tier (Legend) has no promotions, bottom tier (Bronze) has no demotions
+  - **Performance-Based**: Rankings determined purely by weekly points earned
+- ✅ **Endpoint Conservation**: Still at 12/12 endpoints (Vercel free tier compliant)
+  - Season endpoints integrated into existing `/api/stats` endpoint
+  - Admin operations consolidated in `/api/admin`
+  - Cron job uses separate endpoint (doesn't count toward limit)
+
 ### **Phase 6 Month 18: Achievement Expansion Phase 4 - GOAL REACHED** (November 11, 2025)
 - 🎯 **68 New Achievements**: Expanded from 282 to **350 total achievements** ✅
 - 🏆 **GOAL ACHIEVED**: Reached the 350 achievement target!
