@@ -37,8 +37,9 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 - ⏰ **Automated Processing**: Vercel cron job
   - **Schedule**: Every Sunday at 23:59 UTC
   - **Process**: Close season → Calculate rankings → Promote/demote → Create new seasons
-  - **Endpoint**: `/api/cron-process-seasons` (secured with CRON_SECRET)
+  - **Endpoint**: `/api/admin?action=cron-process-seasons` (secured with CRON_SECRET)
   - **Configuration**: Defined in `vercel.json` cron section
+  - **Consolidated**: Cron functionality in admin.js to respect 12-endpoint limit
 - 🎮 **League Libraries**: Modular season management
   - `lib/league-seasons.js`: Core season logic (450+ lines)
     - getCurrentSeason(), getAllActiveSeasons()
@@ -62,7 +63,7 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 - ✅ **Endpoint Conservation**: Still at 12/12 endpoints (Vercel free tier compliant)
   - Season endpoints integrated into existing `/api/stats` endpoint
   - Admin operations consolidated in `/api/admin`
-  - Cron job uses separate endpoint (doesn't count toward limit)
+  - Cron job consolidated in `/api/admin` to respect 12-endpoint limit
 
 ### **Phase 6 Month 18: Achievement Expansion Phase 4 - GOAL REACHED** (November 11, 2025)
 - 🎯 **68 New Achievements**: Expanded from 282 to **350 total achievements** ✅
