@@ -1826,6 +1826,359 @@ class AchievementsManager {
                 requirement: { type: 'bp_season_complete', season: 1, value: 100 },
                 rarity: 'legendary',
                 oneTime: true
+            },
+
+            // SOCIAL ACHIEVEMENTS - Friends (5)
+            {
+                id: 'friend_add_1',
+                title: 'Making Friends',
+                description: 'Add your first friend',
+                icon: 'fas fa-user-plus',
+                type: 'social',
+                requirement: { type: 'friends_count', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'friend_add_5',
+                title: 'Social Butterfly',
+                description: 'Add 5 friends',
+                icon: 'fas fa-users',
+                type: 'social',
+                requirement: { type: 'friends_count', value: 5 },
+                rarity: 'common'
+            },
+            {
+                id: 'friend_add_10',
+                title: 'Friend Collector',
+                description: 'Add 10 friends',
+                icon: 'fas fa-user-friends',
+                type: 'social',
+                requirement: { type: 'friends_count', value: 10 },
+                rarity: 'rare'
+            },
+            {
+                id: 'friend_add_25',
+                title: 'Popular',
+                description: 'Add 25 friends',
+                icon: 'fas fa-star',
+                type: 'social',
+                requirement: { type: 'friends_count', value: 25 },
+                rarity: 'epic'
+            },
+            {
+                id: 'friend_add_50',
+                title: 'Social Network',
+                description: 'Add 50 friends',
+                icon: 'fas fa-network-wired',
+                type: 'social',
+                requirement: { type: 'friends_count', value: 50 },
+                rarity: 'legendary'
+            },
+
+            // SOCIAL ACHIEVEMENTS - Leagues (5)
+            {
+                id: 'league_join',
+                title: 'League Player',
+                description: 'Join your first league',
+                icon: 'fas fa-medal',
+                type: 'social',
+                requirement: { type: 'league_joined', value: true },
+                rarity: 'common'
+            },
+            {
+                id: 'league_bronze',
+                title: 'Bronze Tier',
+                description: 'Reach Bronze tier in official league',
+                icon: 'fas fa-medal',
+                type: 'social',
+                requirement: { type: 'league_tier', tier: 'bronze' },
+                rarity: 'common'
+            },
+            {
+                id: 'league_silver',
+                title: 'Silver Tier',
+                description: 'Reach Silver tier in official league',
+                icon: 'fas fa-medal',
+                type: 'social',
+                requirement: { type: 'league_tier', tier: 'silver' },
+                rarity: 'rare'
+            },
+            {
+                id: 'league_gold',
+                title: 'Gold Tier',
+                description: 'Reach Gold tier in official league',
+                icon: 'fas fa-medal',
+                type: 'social',
+                requirement: { type: 'league_tier', tier: 'gold' },
+                rarity: 'epic'
+            },
+            {
+                id: 'league_legend',
+                title: 'Legend Tier',
+                description: 'Reach Legend tier in official league',
+                icon: 'fas fa-crown',
+                type: 'social',
+                requirement: { type: 'league_tier', tier: 'legend' },
+                rarity: 'legendary'
+            },
+
+            // SOCIAL ACHIEVEMENTS - Leaderboards (4)
+            {
+                id: 'leaderboard_daily_top10',
+                title: 'Daily Top 10',
+                description: 'Rank in top 10 on any daily leaderboard',
+                icon: 'fas fa-chart-line',
+                type: 'social',
+                requirement: { type: 'leaderboard_rank', period: 'daily', rank: 10 },
+                rarity: 'rare'
+            },
+            {
+                id: 'leaderboard_daily_top3',
+                title: 'Daily Podium',
+                description: 'Rank in top 3 on a daily leaderboard',
+                icon: 'fas fa-trophy',
+                type: 'social',
+                requirement: { type: 'leaderboard_rank', period: 'daily', rank: 3 },
+                rarity: 'epic'
+            },
+            {
+                id: 'leaderboard_daily_first',
+                title: 'Daily Champion',
+                description: 'Rank #1 on a daily leaderboard',
+                icon: 'fas fa-crown',
+                type: 'social',
+                requirement: { type: 'leaderboard_rank', period: 'daily', rank: 1 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'leaderboard_weekly_top3',
+                title: 'Weekly Elite',
+                description: 'Rank in top 3 on a weekly leaderboard',
+                icon: 'fas fa-calendar-week',
+                type: 'social',
+                requirement: { type: 'leaderboard_rank', period: 'weekly', rank: 3 },
+                rarity: 'epic'
+            },
+
+            // SKILL ACHIEVEMENTS - Perfect Games (4)
+            {
+                id: 'perfect_game_1',
+                title: 'Flawless Victory',
+                description: 'Complete a perfect game (no errors, no hints)',
+                icon: 'fas fa-gem',
+                type: 'skill',
+                requirement: { type: 'perfect_games_count', value: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'perfect_game_10',
+                title: 'Perfection Seeker',
+                description: 'Complete 10 perfect games',
+                icon: 'fas fa-certificate',
+                type: 'skill',
+                requirement: { type: 'perfect_games_count', value: 10 },
+                rarity: 'rare'
+            },
+            {
+                id: 'perfect_game_50',
+                title: 'Perfectionist',
+                description: 'Complete 50 perfect games',
+                icon: 'fas fa-star',
+                type: 'skill',
+                requirement: { type: 'perfect_games_count', value: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'perfect_game_100',
+                title: 'Perfect Legend',
+                description: 'Complete 100 perfect games',
+                icon: 'fas fa-crown',
+                type: 'skill',
+                requirement: { type: 'perfect_games_count', value: 100 },
+                rarity: 'legendary'
+            },
+
+            // SKILL ACHIEVEMENTS - Speed Running (3)
+            {
+                id: 'speed_easy_2min',
+                title: 'Speed Demon (Easy)',
+                description: 'Complete Easy puzzle in under 2 minutes',
+                icon: 'fas fa-bolt',
+                type: 'skill',
+                requirement: { type: 'speed_record', difficulty: 'easy', time: 120 },
+                rarity: 'rare'
+            },
+            {
+                id: 'speed_medium_4min',
+                title: 'Speed Demon (Medium)',
+                description: 'Complete Medium puzzle in under 4 minutes',
+                icon: 'fas fa-bolt',
+                type: 'skill',
+                requirement: { type: 'speed_record', difficulty: 'medium', time: 240 },
+                rarity: 'epic'
+            },
+            {
+                id: 'speed_hard_8min',
+                title: 'Speed Demon (Hard)',
+                description: 'Complete Hard puzzle in under 8 minutes',
+                icon: 'fas fa-bolt',
+                type: 'skill',
+                requirement: { type: 'speed_record', difficulty: 'hard', time: 480 },
+                rarity: 'legendary'
+            },
+
+            // SKILL ACHIEVEMENTS - No Hints (2)
+            {
+                id: 'no_hints_10',
+                title: 'Self-Reliant',
+                description: 'Complete 10 puzzles without using hints',
+                icon: 'fas fa-brain',
+                type: 'skill',
+                requirement: { type: 'no_hints_count', value: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'no_hints_50',
+                title: 'Independent Solver',
+                description: 'Complete 50 puzzles without using hints',
+                icon: 'fas fa-trophy',
+                type: 'skill',
+                requirement: { type: 'no_hints_count', value: 50 },
+                rarity: 'rare'
+            },
+
+            // SKILL ACHIEVEMENTS - Streaks (4)
+            {
+                id: 'streak_7',
+                title: 'Week Warrior',
+                description: 'Play puzzles for 7 consecutive days',
+                icon: 'fas fa-fire',
+                type: 'skill',
+                requirement: { type: 'streak_count', value: 7 },
+                rarity: 'common'
+            },
+            {
+                id: 'streak_30',
+                title: 'Monthly Dedication',
+                description: 'Play puzzles for 30 consecutive days',
+                icon: 'fas fa-calendar-alt',
+                type: 'skill',
+                requirement: { type: 'streak_count', value: 30 },
+                rarity: 'rare'
+            },
+            {
+                id: 'streak_100',
+                title: 'Streak Master',
+                description: 'Play puzzles for 100 consecutive days',
+                icon: 'fas fa-medal',
+                type: 'skill',
+                requirement: { type: 'streak_count', value: 100 },
+                rarity: 'epic'
+            },
+            {
+                id: 'streak_365',
+                title: 'Year-Long Dedication',
+                description: 'Play puzzles for 365 consecutive days',
+                icon: 'fas fa-crown',
+                type: 'skill',
+                requirement: { type: 'streak_count', value: 365 },
+                rarity: 'legendary'
+            },
+
+            // MILESTONE ACHIEVEMENTS - Puzzles (4)
+            {
+                id: 'puzzles_100',
+                title: 'Century',
+                description: 'Complete 100 total puzzles',
+                icon: 'fas fa-trophy',
+                type: 'milestone',
+                requirement: { type: 'total_puzzles', value: 100 },
+                rarity: 'common'
+            },
+            {
+                id: 'puzzles_500',
+                title: 'Solver',
+                description: 'Complete 500 total puzzles',
+                icon: 'fas fa-award',
+                type: 'milestone',
+                requirement: { type: 'total_puzzles', value: 500 },
+                rarity: 'rare'
+            },
+            {
+                id: 'puzzles_1000',
+                title: 'Millennium',
+                description: 'Complete 1,000 total puzzles',
+                icon: 'fas fa-medal',
+                type: 'milestone',
+                requirement: { type: 'total_puzzles', value: 1000 },
+                rarity: 'epic'
+            },
+            {
+                id: 'puzzles_5000',
+                title: 'Grandmaster',
+                description: 'Complete 5,000 total puzzles',
+                icon: 'fas fa-crown',
+                type: 'milestone',
+                requirement: { type: 'total_puzzles', value: 5000 },
+                rarity: 'legendary'
+            },
+
+            // MILESTONE ACHIEVEMENTS - Playtime (2)
+            {
+                id: 'hours_10',
+                title: '10 Hours In',
+                description: 'Spend 10 hours playing',
+                icon: 'fas fa-clock',
+                type: 'milestone',
+                requirement: { type: 'total_hours', value: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'hours_100',
+                title: 'Dedicated Player',
+                description: 'Spend 100 hours playing',
+                icon: 'fas fa-hourglass',
+                type: 'milestone',
+                requirement: { type: 'total_hours', value: 100 },
+                rarity: 'epic'
+            },
+
+            // MILESTONE ACHIEVEMENTS - Achievement Hunting (4)
+            {
+                id: 'achievements_50',
+                title: 'Achievement Hunter',
+                description: 'Unlock 50 achievements',
+                icon: 'fas fa-trophy',
+                type: 'milestone',
+                requirement: { type: 'achievements_unlocked', value: 50 },
+                rarity: 'common'
+            },
+            {
+                id: 'achievements_100',
+                title: 'Achievement Collector',
+                description: 'Unlock 100 achievements',
+                icon: 'fas fa-award',
+                type: 'milestone',
+                requirement: { type: 'achievements_unlocked', value: 100 },
+                rarity: 'rare'
+            },
+            {
+                id: 'achievements_200',
+                title: 'Achievement Master',
+                description: 'Unlock 200 achievements',
+                icon: 'fas fa-medal',
+                type: 'milestone',
+                requirement: { type: 'achievements_unlocked', value: 200 },
+                rarity: 'epic'
+            },
+            {
+                id: 'achievements_all',
+                title: 'Completionist',
+                description: 'Unlock ALL achievements',
+                icon: 'fas fa-crown',
+                type: 'milestone',
+                requirement: { type: 'achievements_unlocked', value: 350 },
+                rarity: 'legendary'
             }
         ];
 
@@ -2162,6 +2515,42 @@ class AchievementsManager {
 
             case 'bp_season_complete':
                 return this.checkBPSeasonComplete(req);
+
+            // PHASE 5 MONTH 16: Social achievements
+            case 'friends_count':
+                return this.checkFriendsCount(req);
+
+            case 'league_joined':
+                return this.checkLeagueJoined(req);
+
+            case 'league_tier':
+                return this.checkLeagueTier(req);
+
+            case 'leaderboard_rank':
+                return this.checkLeaderboardRank(req);
+
+            // PHASE 5 MONTH 16: Skill achievements
+            case 'perfect_games_count':
+                return this.checkPerfectGamesCount(req);
+
+            case 'speed_record':
+                return this.checkSpeedRecord(req);
+
+            case 'no_hints_count':
+                return this.checkNoHintsCount(req);
+
+            case 'streak_count':
+                return this.checkStreakCount(req);
+
+            // PHASE 5 MONTH 16: Milestone achievements
+            case 'total_puzzles':
+                return this.checkTotalPuzzles(req);
+
+            case 'total_hours':
+                return this.checkTotalHours(req);
+
+            case 'achievements_unlocked':
+                return this.checkAchievementsUnlocked(req);
 
             default:
                 return [];
@@ -3486,6 +3875,218 @@ class AchievementsManager {
             return bpData;
         } catch (error) {
             console.error('Failed to fetch battle pass data:', error);
+            return null;
+        }
+    }
+
+    // PHASE 5 MONTH 16: Social achievement handlers
+    async checkFriendsCount(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const friendsResponse = await fetch(`/api/auth?friends=${player}`);
+            if (!friendsResponse.ok) continue;
+
+            const friendsData = await friendsResponse.json();
+            const friendCount = friendsData.friends?.length || 0;
+
+            if (friendCount >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkLeagueJoined(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const leagueResponse = await fetch(`/api/stats?type=leagues-user-status&userId=${userId}`);
+            if (!leagueResponse.ok) continue;
+
+            const leagueData = await leagueResponse.json();
+            if (leagueData.inLeague) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkLeagueTier(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const leagueResponse = await fetch(`/api/stats?type=leagues-user-status&userId=${userId}`);
+            if (!leagueResponse.ok) continue;
+
+            const leagueData = await leagueResponse.json();
+            if (leagueData.inLeague && leagueData.leagueTier === req.tier) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkLeaderboardRank(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const leaderboardResponse = await fetch(`/api/stats?type=leaderboards&period=${req.period}&limit=100`);
+            if (!leaderboardResponse.ok) continue;
+
+            const leaderboardData = await leaderboardResponse.json();
+            const playerRank = leaderboardData.findIndex(entry => entry.player === player) + 1;
+
+            if (playerRank > 0 && playerRank <= req.rank) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    // PHASE 5 MONTH 16: Skill achievement handlers
+    async checkPerfectGamesCount(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const games = await this.fetchPlayerGames(player);
+            const perfectGames = games.filter(game =>
+                game.errors === 0 &&
+                (game.hints === 0 || !game.hints) &&
+                (game.hintLevel1Count === 0 || !game.hintLevel1Count) &&
+                (game.hintLevel2Count === 0 || !game.hintLevel2Count) &&
+                (game.hintLevel3Count === 0 || !game.hintLevel3Count)
+            );
+
+            if (perfectGames.length >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkSpeedRecord(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const games = await this.fetchPlayerGames(player);
+            const fastGames = games.filter(game =>
+                game.difficulty === req.difficulty &&
+                game.time <= req.time
+            );
+
+            if (fastGames.length > 0) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkNoHintsCount(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const games = await this.fetchPlayerGames(player);
+            const noHintGames = games.filter(game =>
+                (game.hints === 0 || !game.hints) &&
+                (game.hintLevel1Count === 0 || !game.hintLevel1Count) &&
+                (game.hintLevel2Count === 0 || !game.hintLevel2Count) &&
+                (game.hintLevel3Count === 0 || !game.hintLevel3Count)
+            );
+
+            if (noHintGames.length >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkStreakCount(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const streaksResponse = await fetch(`/api/stats?type=streaks`);
+            if (!streaksResponse.ok) continue;
+
+            const streaksData = await streaksResponse.json();
+            const playerStreak = streaksData[player];
+
+            if (playerStreak && (playerStreak.current >= req.value || playerStreak.best >= req.value)) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    // PHASE 5 MONTH 16: Milestone achievement handlers
+    async checkTotalPuzzles(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const games = await this.fetchPlayerGames(player);
+            if (games.length >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkTotalHours(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const games = await this.fetchPlayerGames(player);
+            const totalSeconds = games.reduce((sum, game) => sum + (game.time || 0), 0);
+            const totalHours = totalSeconds / 3600;
+
+            if (totalHours >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkAchievementsUnlocked(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const achievements = await sudokuApp.loadAchievements(player);
+            if (achievements && achievements.length >= req.value) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async getUserId(player) {
+        try {
+            const authResponse = await fetch(`/api/auth?username=${player}`);
+            if (!authResponse.ok) return null;
+
+            const authData = await authResponse.json();
+            return authData.profile?.id || null;
+        } catch (error) {
+            console.error('Failed to fetch user ID:', error);
             return null;
         }
     }
