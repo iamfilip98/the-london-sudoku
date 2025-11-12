@@ -261,11 +261,16 @@
     align-items: center;
     gap: var(--space-1);
     transition: var(--transition-fast);
+    /* Touch-friendly targets */
+    padding: var(--space-2) var(--space-3);
+    min-height: 44px;
+    border-radius: var(--radius-md);
 }
 
 .view-link:hover {
     color: var(--accent-purple);
     gap: var(--space-2);
+    background: rgba(96, 165, 250, 0.1);
 }
 
 /* Battle Pass Preview */
@@ -361,8 +366,8 @@
 }
 
 .achievement-icon {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -626,8 +631,8 @@
     }
 
     .achievements-summary .stat-icon {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         font-size: var(--text-lg);
     }
 
@@ -697,8 +702,8 @@
 }
 
 .daily-goals .goal-icon {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -953,8 +958,8 @@
 
     .daily-goals .goal-icon,
     .today-performance .performance-icon {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         font-size: var(--text-base);
     }
 
@@ -964,6 +969,62 @@
 
     .analytics-grid .stat-value.large {
         font-size: var(--text-3xl);
+    }
+}
+
+/* Mobile Responsive - Small Screens */
+@media (max-width: 480px) {
+    .dashboard-header {
+        padding: var(--space-4);
+    }
+
+    .page-title {
+        font-size: var(--text-xl);
+    }
+
+    .quick-stats-section {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+    }
+
+    .stat-card {
+        padding: var(--space-3);
+    }
+
+    .daily-goals .goals-grid {
+        gap: var(--space-2);
+    }
+
+    .daily-goals .goal-card {
+        padding: var(--space-3);
+    }
+
+    .today-performance .performance-grid {
+        gap: var(--space-2);
+    }
+
+    .today-performance .performance-card {
+        padding: var(--space-3);
+    }
+
+    .recent-games .games-list {
+        padding: var(--space-3);
+        min-height: 150px;
+    }
+
+    .recent-games .game-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2);
+    }
+
+    .recent-games .game-stats {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .analytics-grid .stat-value.large {
+        font-size: var(--text-2xl);
     }
 }
 
