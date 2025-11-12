@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson Viewer - The London Sudoku</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/enhanced-design-system.css">
+    <link rel="stylesheet" href="css/dashboard-modern.css">
+    <link rel="stylesheet" href="css/lessons.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="lesson-viewer-page">
+
+    <!-- Navigation -->
+    <nav class="main-nav lesson-nav">
+        <div class="nav-container">
+            <a href="lessons.html" class="nav-back">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Lessons</span>
+            </a>
+
+            <div class="nav-lesson-title" id="navLessonTitle">
+                Loading...
+            </div>
+
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="lesson-viewer-main">
+        <div class="lesson-viewer-container">
+
+            <!-- Lesson Header -->
+            <header class="lesson-viewer-header" id="lessonHeader">
+                <!-- Dynamically populated by lesson engine -->
+            </header>
+
+            <!-- Progress Bar -->
+            <div class="lesson-progress-bar" id="lessonProgressBar">
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: 0%;"></div>
+                </div>
+                <span class="progress-text">Step 0 of 0</span>
+            </div>
+
+            <!-- Lesson Content -->
+            <div class="lesson-content-wrapper">
+                <div class="lesson-content" id="lessonContainer">
+                    <!-- Step content dynamically loaded here -->
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading lesson...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="lesson-navigation">
+                <button class="btn-secondary" id="prevStepBtn">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="btn-primary" id="nextStepBtn">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Achievement Notification Container -->
+    <div id="achievementNotifications"></div>
+
+    <!-- Scripts -->
+    <script src="js/lesson-engine.js"></script>
+</body>
+</html>

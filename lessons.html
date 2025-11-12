@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Lessons - The London Sudoku</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/enhanced-design-system.css">
+    <link rel="stylesheet" href="css/dashboard-modern.css">
+    <link rel="stylesheet" href="css/lessons.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="lessons-page">
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-th"></i>
+                <span>The London Sudoku</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="lessons.html" class="nav-link active">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Lessons</span>
+                </a>
+                <a href="index.html#achievements" class="nav-link">
+                    <i class="fas fa-trophy"></i>
+                    <span>Achievements</span>
+                </a>
+            </div>
+
+            <div class="nav-user">
+                <div class="user-avatar" id="navUserAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span class="user-name" id="navUserName">Player</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="lessons-main">
+        <div class="lessons-container">
+
+            <!-- Page Header -->
+            <header class="lessons-header">
+                <div class="header-content">
+                    <h1 class="page-title">
+                        <i class="fas fa-graduation-cap"></i>
+                        Tutorial Lessons
+                    </h1>
+                    <p class="page-subtitle">
+                        Master Sudoku with 20 interactive lessons - from basics to advanced techniques
+                    </p>
+                </div>
+
+                <!-- Progress Summary -->
+                <div class="progress-summary">
+                    <div class="summary-stat">
+                        <span class="stat-value" id="completedLessons">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="summary-stat">
+                        <span class="stat-value" id="totalXP">0</span>
+                        <span class="stat-label">XP Earned</span>
+                    </div>
+                    <div class="summary-stat">
+                        <span class="stat-value" id="completionPercent">0%</span>
+                        <span class="stat-label">Progress</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Course Tabs -->
+            <div class="course-tabs">
+                <button class="tab-btn active" data-course="all" onclick="filterByCourse('all')">
+                    <i class="fas fa-list"></i>
+                    All Lessons
+                </button>
+                <button class="tab-btn" data-course="beginner" onclick="filterByCourse('beginner')">
+                    <i class="fas fa-seedling"></i>
+                    Beginner (6)
+                </button>
+                <button class="tab-btn" data-course="intermediate" onclick="filterByCourse('intermediate')">
+                    <i class="fas fa-chart-line"></i>
+                    Intermediate (8)
+                </button>
+                <button class="tab-btn" data-course="variants" onclick="filterByCourse('variants')">
+                    <i class="fas fa-shapes"></i>
+                    Variants (6)
+                </button>
+            </div>
+
+            <!-- Lesson Grid -->
+            <div class="lessons-grid" id="lessonsGrid">
+                <!-- Lessons will be dynamically loaded here -->
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading lessons...</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="lessons-footer">
+        <p>&copy; 2025 The London Sudoku. All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/lesson-list.js"></script>
+    <script>
+        // Initialize user display
+        function initUserDisplay() {
+            const playerName = sessionStorage.getItem('playerName') || 'Player';
+            const navUserName = document.getElementById('navUserName');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+
+            if (navUserName) {
+                navUserName.textContent = playerName;
+            }
+
+            if (navUserAvatar) {
+                navUserAvatar.innerHTML = `<span>${playerName.charAt(0).toUpperCase()}</span>`;
+            }
+        }
+
+        // Filter lessons by course
+        function filterByCourse(course) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                if (tab.dataset.course === course) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            const lessonCards = document.querySelectorAll('.lesson-card');
+            lessonCards.forEach(card => {
+                if (course === 'all' || card.dataset.course === course) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initUserDisplay);
+    </script>
+</body>
+</html>
