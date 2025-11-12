@@ -3280,6 +3280,385 @@ class AchievementsManager {
                 type: 'mastery',
                 requirement: { type: 'total_achievements', count: 350 },
                 rarity: 'legendary'
+            },
+
+            // ============================================
+            // PHASE 6 MONTH 20: LEAGUE-SPECIFIC ACHIEVEMENTS (40 NEW)
+            // League progression, seasons, promotions, demotions
+            // ============================================
+
+            // League Tier Achievements (6) - Reach each competitive tier
+            {
+                id: 'bronze_league_member',
+                title: 'Bronze Beginner',
+                description: 'Join the Bronze League',
+                icon: 'fas fa-medal',
+                type: 'league',
+                requirement: { type: 'league_tier', tier: 'bronze' },
+                rarity: 'common'
+            },
+            {
+                id: 'silver_league_member',
+                title: 'Silver Competitor',
+                description: 'Reach the Silver League',
+                icon: 'fas fa-medal',
+                type: 'league',
+                requirement: { type: 'league_tier', tier: 'silver' },
+                rarity: 'common'
+            },
+            {
+                id: 'gold_league_member',
+                title: 'Gold Achiever',
+                description: 'Reach the Gold League',
+                icon: 'fas fa-medal',
+                type: 'league',
+                requirement: { type: 'league_tier', tier: 'gold' },
+                rarity: 'rare'
+            },
+            {
+                id: 'platinum_league_member',
+                title: 'Platinum Elite',
+                description: 'Reach the Platinum League',
+                icon: 'fas fa-trophy',
+                type: 'league',
+                requirement: { type: 'league_tier', tier: 'platinum' },
+                rarity: 'rare'
+            },
+            {
+                id: 'diamond_league_member',
+                title: 'Diamond Master',
+                description: 'Reach the Diamond League',
+                icon: 'fas fa-gem',
+                type: 'league',
+                requirement: { type: 'league_tier', tier: 'diamond' },
+                rarity: 'epic'
+            },
+            {
+                id: 'legend_league_member',
+                title: 'Legendary Champion',
+                description: 'Reach the prestigious Legend League',
+                icon: 'fas fa-crown',
+                type: 'league',
+                requirement: { type: 'league_tier', tier: 'legend' },
+                rarity: 'legendary'
+            },
+
+            // Season Performance Achievements (8) - Finishing positions
+            {
+                id: 'season_winner',
+                title: 'Season Champion',
+                description: 'Finish 1st in a league season',
+                icon: 'fas fa-trophy',
+                type: 'league',
+                requirement: { type: 'season_rank', rank: 1 },
+                rarity: 'epic'
+            },
+            {
+                id: 'season_runner_up',
+                title: 'Runner Up',
+                description: 'Finish 2nd in a league season',
+                icon: 'fas fa-award',
+                type: 'league',
+                requirement: { type: 'season_rank', rank: 2 },
+                rarity: 'rare'
+            },
+            {
+                id: 'season_top_3',
+                title: 'Podium Finisher',
+                description: 'Finish in the top 3 of a league season',
+                icon: 'fas fa-medal',
+                type: 'league',
+                requirement: { type: 'season_top_percent', percent: 3 },
+                rarity: 'rare'
+            },
+            {
+                id: 'season_top_10',
+                title: 'Top Tier',
+                description: 'Finish in the top 10% of a league season',
+                icon: 'fas fa-star',
+                type: 'league',
+                requirement: { type: 'season_top_percent', percent: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'perfect_season',
+                title: 'Perfect Season',
+                description: 'Win a season with maximum possible points',
+                icon: 'fas fa-crown',
+                type: 'league',
+                requirement: { type: 'season_perfect', value: true },
+                rarity: 'legendary'
+            },
+            {
+                id: 'season_grinder',
+                title: 'Season Grinder',
+                description: 'Score 1000+ points in a single season',
+                icon: 'fas fa-fire',
+                type: 'league',
+                requirement: { type: 'season_points', points: 1000 },
+                rarity: 'rare'
+            },
+            {
+                id: 'season_domination',
+                title: 'Total Domination',
+                description: 'Win a season by 500+ point margin',
+                icon: 'fas fa-bolt',
+                type: 'league',
+                requirement: { type: 'season_margin', margin: 500 },
+                rarity: 'epic'
+            },
+            {
+                id: 'consistent_finisher',
+                title: 'Consistent Performer',
+                description: 'Finish in the top 20% for 5 consecutive seasons',
+                icon: 'fas fa-chart-line',
+                type: 'league',
+                requirement: { type: 'consecutive_top_finishes', count: 5 },
+                rarity: 'epic'
+            },
+
+            // Promotion Achievements (6) - Moving up the ranks
+            {
+                id: 'first_promotion',
+                title: 'Moving Up',
+                description: 'Get promoted to a higher league for the first time',
+                icon: 'fas fa-arrow-up',
+                type: 'league',
+                requirement: { type: 'promotions_count', count: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'five_promotions',
+                title: 'Rising Star',
+                description: 'Get promoted 5 times',
+                icon: 'fas fa-rocket',
+                type: 'league',
+                requirement: { type: 'promotions_count', count: 5 },
+                rarity: 'rare'
+            },
+            {
+                id: 'ten_promotions',
+                title: 'Promotion Expert',
+                description: 'Get promoted 10 times',
+                icon: 'fas fa-angle-double-up',
+                type: 'league',
+                requirement: { type: 'promotions_count', count: 10 },
+                rarity: 'epic'
+            },
+            {
+                id: 'consecutive_promotions',
+                title: 'Unstoppable Climb',
+                description: 'Get promoted 3 seasons in a row',
+                icon: 'fas fa-mountain',
+                type: 'league',
+                requirement: { type: 'consecutive_promotions', count: 3 },
+                rarity: 'epic'
+            },
+            {
+                id: 'bronze_to_legend',
+                title: 'Rags to Riches',
+                description: 'Climb from Bronze League all the way to Legend League',
+                icon: 'fas fa-crown',
+                type: 'league',
+                requirement: { type: 'climb_bronze_to_legend', value: true },
+                rarity: 'legendary'
+            },
+            {
+                id: 'rapid_ascent',
+                title: 'Rapid Ascent',
+                description: 'Get promoted 3 times in 5 weeks',
+                icon: 'fas fa-rocket',
+                type: 'league',
+                requirement: { type: 'rapid_promotions', promotions: 3, weeks: 5 },
+                rarity: 'epic'
+            },
+
+            // Demotion Achievements (4) - The reality of competition
+            {
+                id: 'first_demotion',
+                title: 'Humbling Experience',
+                description: 'Get demoted to a lower league for the first time',
+                icon: 'fas fa-arrow-down',
+                type: 'league',
+                requirement: { type: 'demotions_count', count: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'demotion_survivor',
+                title: 'Back from the Brink',
+                description: 'Get promoted immediately after being demoted',
+                icon: 'fas fa-undo',
+                type: 'league',
+                requirement: { type: 'bounce_back', value: true },
+                rarity: 'rare'
+            },
+            {
+                id: 'relegation_fighter',
+                title: 'Relegation Fighter',
+                description: 'Avoid demotion 5 times while in the bottom 30%',
+                icon: 'fas fa-shield-alt',
+                type: 'league',
+                requirement: { type: 'demotion_escapes', count: 5 },
+                rarity: 'rare'
+            },
+            {
+                id: 'phoenix_rising',
+                title: 'Phoenix Rising',
+                description: 'Get promoted twice after being demoted twice',
+                icon: 'fas fa-phoenix-squadron',
+                type: 'league',
+                requirement: { type: 'phoenix_pattern', value: true },
+                rarity: 'epic'
+            },
+
+            // League Consistency Achievements (6) - Staying power
+            {
+                id: 'league_regular',
+                title: 'League Regular',
+                description: 'Complete 5 seasons in any league',
+                icon: 'fas fa-calendar-check',
+                type: 'league',
+                requirement: { type: 'seasons_completed', count: 5 },
+                rarity: 'common'
+            },
+            {
+                id: 'league_veteran',
+                title: 'League Veteran',
+                description: 'Complete 20 seasons in any league',
+                icon: 'fas fa-user-shield',
+                type: 'league',
+                requirement: { type: 'seasons_completed', count: 20 },
+                rarity: 'rare'
+            },
+            {
+                id: 'league_legend_status',
+                title: 'League Legend',
+                description: 'Complete 50 seasons in any league',
+                icon: 'fas fa-crown',
+                type: 'league',
+                requirement: { type: 'seasons_completed', count: 50 },
+                rarity: 'epic'
+            },
+            {
+                id: 'tier_loyalty',
+                title: 'Tier Loyalty',
+                description: 'Stay in the same tier for 10 consecutive seasons',
+                icon: 'fas fa-anchor',
+                type: 'league',
+                requirement: { type: 'same_tier_streak', count: 10 },
+                rarity: 'rare'
+            },
+            {
+                id: 'safe_zone_specialist',
+                title: 'Safe Zone Specialist',
+                description: 'Finish in the safe zone (no promotion/demotion) 10 times',
+                icon: 'fas fa-balance-scale',
+                type: 'league',
+                requirement: { type: 'safe_zone_finishes', count: 10 },
+                rarity: 'common'
+            },
+            {
+                id: 'never_demoted',
+                title: 'Unbreakable',
+                description: 'Complete 15 seasons without ever being demoted',
+                icon: 'fas fa-shield',
+                type: 'league',
+                requirement: { type: 'no_demotions_streak', count: 15 },
+                rarity: 'epic'
+            },
+
+            // Season Milestones (5) - Participation and dedication
+            {
+                id: 'season_debut',
+                title: 'Season Debut',
+                description: 'Participate in your first league season',
+                icon: 'fas fa-flag',
+                type: 'league',
+                requirement: { type: 'seasons_participated', count: 1 },
+                rarity: 'common'
+            },
+            {
+                id: 'season_marathon',
+                title: 'Season Marathon',
+                description: 'Participate in 10 consecutive seasons',
+                icon: 'fas fa-running',
+                type: 'league',
+                requirement: { type: 'consecutive_seasons', count: 10 },
+                rarity: 'rare'
+            },
+            {
+                id: 'year_round_competitor',
+                title: 'Year-Round Competitor',
+                description: 'Participate in 52 seasons (one full year)',
+                icon: 'fas fa-calendar-alt',
+                type: 'league',
+                requirement: { type: 'seasons_participated', count: 52 },
+                rarity: 'epic'
+            },
+            {
+                id: 'points_accumulator',
+                title: 'Points Accumulator',
+                description: 'Earn 10,000 total league points across all seasons',
+                icon: 'fas fa-coins',
+                type: 'league',
+                requirement: { type: 'lifetime_league_points', points: 10000 },
+                rarity: 'rare'
+            },
+            {
+                id: 'points_millionaire',
+                title: 'Points Millionaire',
+                description: 'Earn 100,000 total league points across all seasons',
+                icon: 'fas fa-money-bill-wave',
+                type: 'league',
+                requirement: { type: 'lifetime_league_points', points: 100000 },
+                rarity: 'legendary'
+            },
+
+            // League Mastery (5) - Ultimate league achievements
+            {
+                id: 'legend_winner',
+                title: 'Legend Among Legends',
+                description: 'Win a season while in Legend League',
+                icon: 'fas fa-crown',
+                type: 'league',
+                requirement: { type: 'win_in_tier', tier: 'legend' },
+                rarity: 'legendary'
+            },
+            {
+                id: 'all_tiers_visited',
+                title: 'League Explorer',
+                description: 'Play in all 6 league tiers at some point',
+                icon: 'fas fa-map-marked-alt',
+                type: 'league',
+                requirement: { type: 'visited_all_tiers', value: true },
+                rarity: 'rare'
+            },
+            {
+                id: 'multi_tier_winner',
+                title: 'Multi-Tier Champion',
+                description: 'Win a season in 3 different tiers',
+                icon: 'fas fa-trophy',
+                type: 'league',
+                requirement: { type: 'wins_in_different_tiers', count: 3 },
+                rarity: 'epic'
+            },
+            {
+                id: 'league_dominator',
+                title: 'League Dominator',
+                description: 'Win 10 seasons in any combination of tiers',
+                icon: 'fas fa-chess-king',
+                type: 'league',
+                requirement: { type: 'total_season_wins', count: 10 },
+                rarity: 'legendary'
+            },
+            {
+                id: 'ultimate_league_master',
+                title: 'Ultimate League Master',
+                description: 'Win 5 seasons in Legend League',
+                icon: 'fas fa-crown',
+                type: 'league',
+                requirement: { type: 'legend_wins', count: 5 },
+                rarity: 'legendary'
             }
         ];
 
@@ -3652,6 +4031,85 @@ class AchievementsManager {
 
             case 'achievements_unlocked':
                 return this.checkAchievementsUnlocked(req);
+
+            // PHASE 6 MONTH 20: League season achievements
+            case 'season_rank':
+                return this.checkSeasonRank(req);
+
+            case 'season_top_percent':
+                return this.checkSeasonTopPercent(req);
+
+            case 'season_perfect':
+                return this.checkSeasonPerfect(req);
+
+            case 'season_points':
+                return this.checkSeasonPoints(req);
+
+            case 'season_margin':
+                return this.checkSeasonMargin(req);
+
+            case 'consecutive_top_finishes':
+                return this.checkConsecutiveTopFinishes(req);
+
+            case 'promotions_count':
+                return this.checkPromotionsCount(req);
+
+            case 'consecutive_promotions':
+                return this.checkConsecutivePromotions(req);
+
+            case 'climb_bronze_to_legend':
+                return this.checkClimbBronzeToLegend(req);
+
+            case 'rapid_promotions':
+                return this.checkRapidPromotions(req);
+
+            case 'demotions_count':
+                return this.checkDemotionsCount(req);
+
+            case 'bounce_back':
+                return this.checkBounceBack(req);
+
+            case 'demotion_escapes':
+                return this.checkDemotionEscapes(req);
+
+            case 'phoenix_pattern':
+                return this.checkPhoenixPattern(req);
+
+            case 'seasons_completed':
+                return this.checkSeasonsCompleted(req);
+
+            case 'same_tier_streak':
+                return this.checkSameTierStreak(req);
+
+            case 'safe_zone_finishes':
+                return this.checkSafeZoneFinishes(req);
+
+            case 'no_demotions_streak':
+                return this.checkNoDemotionsStreak(req);
+
+            case 'seasons_participated':
+                return this.checkSeasonsParticipated(req);
+
+            case 'consecutive_seasons':
+                return this.checkConsecutiveSeasons(req);
+
+            case 'lifetime_league_points':
+                return this.checkLifetimeLeaguePoints(req);
+
+            case 'win_in_tier':
+                return this.checkWinInTier(req);
+
+            case 'visited_all_tiers':
+                return this.checkVisitedAllTiers(req);
+
+            case 'wins_in_different_tiers':
+                return this.checkWinsInDifferentTiers(req);
+
+            case 'total_season_wins':
+                return this.checkTotalSeasonWins(req);
+
+            case 'legend_wins':
+                return this.checkLegendWins(req);
 
             default:
                 return [];
@@ -5173,6 +5631,336 @@ class AchievementsManager {
             const achievements = await sudokuApp.loadAchievements(player);
             if (achievements && achievements.length >= req.value) {
                 players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    // PHASE 6 MONTH 20: League season achievement handlers
+    // These will be fully implemented once season data is integrated
+    async checkSeasonRank(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=10`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                const hasRank = historyData.data.some(season => season.final_rank === req.rank);
+                if (hasRank) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
+    }
+
+    async checkSeasonTopPercent(req) {
+        // TODO: Implement when season results tracking is fully integrated
+        // Check if player finished in top X% of a season
+        return [];
+    }
+
+    async checkSeasonPerfect(req) {
+        // TODO: Implement when season tracking is fully integrated
+        // Check if player won season with maximum possible points
+        return [];
+    }
+
+    async checkSeasonPoints(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=50`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                const hasHighPoints = historyData.data.some(season => season.final_points >= req.points);
+                if (hasHighPoints) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
+    }
+
+    async checkSeasonMargin(req) {
+        // TODO: Implement when season leaderboard tracking is fully integrated
+        // Check if player won by X point margin
+        return [];
+    }
+
+    async checkConsecutiveTopFinishes(req) {
+        // TODO: Implement when season results tracking is fully integrated
+        // Check consecutive top 20% finishes
+        return [];
+    }
+
+    async checkPromotionsCount(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const leagueResponse = await fetch(`/api/stats?type=leagues-user-status&userId=${userId}`);
+            if (!leagueResponse.ok) continue;
+
+            const leagueData = await leagueResponse.json();
+            if (leagueData.inLeague && leagueData.promotionsCount >= req.count) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkConsecutivePromotions(req) {
+        // TODO: Implement when consecutive promotion tracking is added
+        // Check X promotions in a row
+        return [];
+    }
+
+    async checkClimbBronzeToLegend(req) {
+        // TODO: Implement when tier history tracking is added
+        // Check if player climbed from bronze to legend
+        return [];
+    }
+
+    async checkRapidPromotions(req) {
+        // TODO: Implement when weekly promotion tracking is added
+        // Check X promotions in Y weeks
+        return [];
+    }
+
+    async checkDemotionsCount(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const leagueResponse = await fetch(`/api/stats?type=leagues-user-status&userId=${userId}`);
+            if (!leagueResponse.ok) continue;
+
+            const leagueData = await leagueResponse.json();
+            if (leagueData.inLeague && leagueData.demotionsCount >= req.count) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkBounceBack(req) {
+        // TODO: Implement when consecutive season outcome tracking is added
+        // Check promoted immediately after demotion
+        return [];
+    }
+
+    async checkDemotionEscapes(req) {
+        // TODO: Implement when demotion zone tracking is added
+        // Check avoided demotion X times while in bottom 30%
+        return [];
+    }
+
+    async checkPhoenixPattern(req) {
+        // TODO: Implement when season outcome pattern tracking is added
+        // Check demoted 2x then promoted 2x pattern
+        return [];
+    }
+
+    async checkSeasonsCompleted(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data) && historyData.data.length >= req.count) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkSameTierStreak(req) {
+        // TODO: Implement when consecutive same-tier tracking is added
+        // Check stayed in same tier X consecutive seasons
+        return [];
+    }
+
+    async checkSafeZoneFinishes(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                const safeZoneCount = historyData.data.filter(season => season.outcome === 'stayed').length;
+                if (safeZoneCount >= req.count) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
+    }
+
+    async checkNoDemotionsStreak(req) {
+        // TODO: Implement when consecutive no-demotion tracking is added
+        // Check X seasons without demotion
+        return [];
+    }
+
+    async checkSeasonsParticipated(req) {
+        // Uses same logic as checkSeasonsCompleted
+        return this.checkSeasonsCompleted(req);
+    }
+
+    async checkConsecutiveSeasons(req) {
+        // TODO: Implement when consecutive participation tracking is added
+        // Check participated in X consecutive seasons
+        return [];
+    }
+
+    async checkLifetimeLeaguePoints(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const leagueResponse = await fetch(`/api/stats?type=leagues-user-status&userId=${userId}`);
+            if (!leagueResponse.ok) continue;
+
+            const leagueData = await leagueResponse.json();
+            if (leagueData.inLeague && leagueData.lifetimePoints >= req.points) {
+                players.push(player);
+            }
+        }
+
+        return players;
+    }
+
+    async checkWinInTier(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                const wonInTier = historyData.data.some(season =>
+                    season.final_rank === 1 && season.league_tier === req.tier
+                );
+                if (wonInTier) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
+    }
+
+    async checkVisitedAllTiers(req) {
+        // TODO: Implement when tier history tracking is added
+        // Check if player has been in all 6 tiers
+        return [];
+    }
+
+    async checkWinsInDifferentTiers(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                const wonTiers = new Set();
+                historyData.data.forEach(season => {
+                    if (season.final_rank === 1) {
+                        wonTiers.add(season.league_tier);
+                    }
+                });
+                if (wonTiers.size >= req.count) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
+    }
+
+    async checkTotalSeasonWins(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                const totalWins = historyData.data.filter(season => season.final_rank === 1).length;
+                if (totalWins >= req.count) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
+    }
+
+    async checkLegendWins(req) {
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                const legendWins = historyData.data.filter(season =>
+                    season.final_rank === 1 && season.league_tier === 'legend'
+                ).length;
+                if (legendWins >= req.count) {
+                    players.push(player);
+                }
             }
         }
 
