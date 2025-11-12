@@ -320,6 +320,22 @@ module.exports = async function handler(req, res) {
           return res.status(200).json(result);
         }
 
+        // PHASE 6 MONTH 23: Demotion Escapes
+        if (type === 'demotion-escapes') {
+          const { userId } = req.query;
+          if (!userId) {
+            return res.status(400).json({ error: 'userId is required' });
+          }
+          try {
+            const { getUserDemotionEscapes } = require('../lib/league-zone-snapshots');
+            const escapeCount = await getUserDemotionEscapes(parseInt(userId));
+            return res.status(200).json({ success: true, escapeCount: escapeCount });
+          } catch (error) {
+            console.error('Failed to get demotion escapes:', error);
+            return res.status(500).json({ error: 'Failed to get demotion escapes' });
+          }
+        }
+
         // PHASE 4 MONTH 15: User League Status
         if (type === 'leagues-user-status') {
           const { userId } = req.query;
