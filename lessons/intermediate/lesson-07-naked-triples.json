@@ -1,0 +1,229 @@
+{
+  "id": "lesson-07-naked-triples",
+  "number": 7,
+  "title": "Naked Triples",
+  "course": "intermediate",
+  "duration": 1500,
+  "premium": false,
+  "xp_reward": 100,
+  "prerequisites": ["lesson-01-sudoku-basics", "lesson-02-naked-singles", "lesson-03-hidden-singles", "lesson-04-scanning-techniques", "lesson-05-naked-pairs"],
+  "description": "Expand pattern recognition to three cells with three candidates for powerful eliminations",
+
+  "steps": [
+    {
+      "id": "intro",
+      "type": "introduction",
+      "title": "Beyond Pairs",
+      "content": "Welcome to Lesson 7 and the **Intermediate Course**! You've mastered pairs. Now learn **Naked Triples** - a natural extension of the naked pairs technique.\n\n**What You'll Learn:**\n- What naked triples are and how they work\n- How to spot triples in rows, columns, and boxes\n- Distribution patterns (2-2-3, 2-3-3, 3-3-3)\n- How to use triples for powerful eliminations\n\n**Why It's Important:**\nNaked triples unlock harder puzzles that pairs alone cannot solve. This technique extends your pattern recognition from 2 cells to 3 cells, significantly expanding your solving capability.\n\n**Real Impact:**\nPuzzles that seemed impossible with singles and pairs become solvable once you master triples!\n\n**Time Estimate:** 25 minutes",
+      "duration": 60,
+      "media": {
+        "type": "image",
+        "url": "/assets/lessons/naked-triples-intro.png",
+        "alt": "Three cells forming a naked triple"
+      }
+    },
+
+    {
+      "id": "what-are-naked-triples",
+      "type": "explanation",
+      "title": "What Are Naked Triples?",
+      "content": "A **naked triple** occurs when three cells in the same unit can only contain the same three candidates (distributed among them).\n\n## The Logic\n\n**Key Insight:**\nIf three cells in a unit can ONLY contain digits from {2, 5, 8}:\n- These three cells will contain 2, 5, and 8 (one digit per cell)\n- We don't know which cell gets which digit\n- But we DO know: no other cell in that unit can be 2, 5, or 8\n- Therefore, eliminate 2, 5, and 8 from all other cells!\n\n## Example\n\n**Look at Row 4:**\n- R4C2 has candidates: {2, 5}\n- R4C5 has candidates: {5, 8}\n- R4C8 has candidates: {2, 8}\n- R4C3 has candidates: {2, 4, 5, 8}\n\n**Analysis:**\nR4C2, R4C5, and R4C8 collectively contain ONLY {2, 5, 8}.\n\n**These three cells form a naked triple {2, 5, 8}.**\n\n**Elimination:**\n- R4C3 had {2, 4, 5, 8} → Remove 2, 5, 8 → {4} ✅ Naked single!\n\n## Distribution Patterns\n\nNaked triples don't require each cell to have all 3 candidates. Valid patterns:\n\n**Pattern 1: 2-2-2**\n```\nCell A: {2, 5}\nCell B: {5, 8}\nCell C: {2, 8}\nTriple: {2, 5, 8} ✅\n```\n\n**Pattern 2: 2-2-3**\n```\nCell A: {2, 5}\nCell B: {5, 8}\nCell C: {2, 5, 8}\nTriple: {2, 5, 8} ✅\n```\n\n**Pattern 3: 2-3-3**\n```\nCell A: {2, 5}\nCell B: {2, 5, 8}\nCell C: {5, 8, 2}\nTriple: {2, 5, 8} ✅\n```\n\n**Pattern 4: 3-3-3**\n```\nCell A: {2, 5, 8}\nCell B: {2, 5, 8}\nCell C: {2, 5, 8}\nTriple: {2, 5, 8} ✅\n```\n\n**What matters**: The UNION of all candidates in the three cells must be exactly 3 digits.",
+      "duration": 240,
+      "diagrams": [
+        {
+          "type": "naked-triple-demo",
+          "highlights": {
+            "triple_cells": [[3, 1], [3, 4], [3, 7]],
+            "triple_candidates": [2, 5, 8],
+            "affected_cells": [[3, 2]],
+            "eliminations": {
+              "R4C3": [2, 5, 8]
+            }
+          },
+          "caption": "Naked triple {2,5,8} in Row 4 eliminates those digits from other Row 4 cells"
+        }
+      ],
+      "key_points": [
+        "Naked triple: three cells with three collective candidates",
+        "Distribution can be 2-2-2, 2-2-3, 2-3-3, or 3-3-3",
+        "Eliminate all three digits from OTHER cells in the unit",
+        "Natural extension of naked pairs technique",
+        "Union of candidates must equal exactly 3 digits"
+      ]
+    },
+
+    {
+      "id": "finding-naked-triples",
+      "type": "explanation",
+      "title": "How to Find Naked Triples",
+      "content": "Finding naked triples requires systematic candidate analysis. Here's the efficient method:\n\n## Step 1: Look for Candidate Groups\n\nScan a unit (row, column, or box) for cells with 2-3 candidates each.\n\n**Focus on:**\n- Cells with exactly 2 candidates\n- Cells with exactly 3 candidates\n- Ignore cells with 4+ candidates (unlikely to be part of triple)\n\n## Step 2: Check for Matching Sets\n\nLook for three cells whose collective candidates form a set of exactly 3 digits.\n\n**Example:**\n```\nRow 5 candidates:\nR5C2: {3, 7}\nR5C4: {3, 9}\nR5C7: {7, 9}\nR5C9: {3, 7, 9, 5}\n```\n\n**Check cells R5C2, R5C4, R5C7:**\n- Union: {3, 7} ∪ {3, 9} ∪ {7, 9} = {3, 7, 9}\n- Count: 3 digits ✅\n- **This is a naked triple!**\n\n## Step 3: Apply Elimination\n\nRemove all three digits from OTHER cells in the unit:\n- R5C9 had {3, 7, 9, 5} → Remove 3, 7, 9 → {5} ✅\n\n## Systematic Scanning\n\n### **Priority 1: Boxes**\n- 3×3 area easier to visualize\n- Scan all 9 cells at once\n- Look for 2-3 candidate cells\n- Check combinations of 3 cells\n\n### **Priority 2: Rows**\n- Scan horizontally\n- Focus on rows with many 2-3 candidate cells\n- Check column and box constraints after finding triple\n\n### **Priority 3: Columns**\n- Same as rows, but vertical\n\n## Pro Tips\n\n✅ **Start with 2-Candidate Cells**\nIf you see three cells each with 2 candidates, check if they form a triple (2-2-2 pattern).\n\n✅ **Look for Partial Overlaps**\nCells like {2,5}, {5,8}, {2,8} overlap perfectly → likely triple.\n\n✅ **Use Pencilmarks**\nWithout clean pencilmarks, triples are nearly impossible to spot.\n\n✅ **Check After Pairs**\nAfter finding a naked pair, scan the same unit for triples - elimination might have revealed one.\n\n✅ **Think Combinatorially**\nWith N cells in a unit having 2-3 candidates, you have C(N,3) possible triples to check. Focus on promising combinations.\n\n## Common Patterns\n\n**Pattern: Sequential Overlap**\n```\n{2,5} → {5,8} → {2,8}\n```\nEach pair shares one digit with another. Classic triple pattern!\n\n**Pattern: One Complete Cell**\n```\n{2,5} → {2,8} → {2,5,8}\n```\nThird cell contains all three digits. Valid triple!\n\n**Pattern: All Identical**\n```\n{3,7,9} → {3,7,9} → {3,7,9}\n```\nAll three cells have same candidates. Rare but valid!\n\n## Common Mistakes\n\n❌ **Counting 4 Digits as Triple**\nIf union = {2, 5, 8, 9}, that's NOT a triple (it's 4 digits).\n\n❌ **Forgetting Distribution**\n{2}, {5,8}, {2,5,8} is valid (union = {2,5,8}).\n\n❌ **Eliminating from Triple Cells**\nDon't remove digits from the triple cells themselves! Only from OTHER cells.\n\n❌ **Missing Box Constraints**\nAfter finding a triple in a row, remember it also affects cells in intersecting boxes.",
+      "duration": 300,
+      "key_points": [
+        "Look for cells with 2-3 candidates in same unit",
+        "Check if three cells collectively have exactly 3 unique digits",
+        "Distribution patterns: 2-2-2, 2-2-3, 2-3-3, 3-3-3",
+        "Eliminate all three digits from OTHER cells in unit",
+        "Boxes are easiest to scan (3×3 visualization)"
+      ]
+    },
+
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice Finding Naked Triples",
+      "content": "Time to practice! These puzzles require finding and using naked triples.\n\n**Instructions:**\n1. Fill in pencilmarks (candidates) for empty cells\n2. Scan units for cells with 2-3 candidates\n3. Check if any three cells collectively have exactly 3 digits\n4. Eliminate those digits from other cells\n5. Look for revealed singles\n\n**Strategy:**\n- Start with boxes (easiest)\n- Focus on units with many 2-3 candidate cells\n- Check 2-2-2 patterns first (easiest to spot)\n- Don't forget to rescan after each triple\n\n**Goal:** Complete at least 3 of 4 puzzles",
+      "duration": 600,
+      "puzzles": [
+        {
+          "id": "practice-naked-triples-01",
+          "title": "Practice Puzzle 1: Box Triple (2-2-2)",
+          "difficulty": "medium",
+          "hints": [
+            "Focus on Box 1 (top-left). Fill in candidates for all empty cells.",
+            "Look for cells with exactly 2 candidates each in Box 1",
+            "You should find three cells with {2,5}, {5,8}, {2,8} - classic triple!",
+            "Eliminate 2, 5, and 8 from all other Box 1 cells",
+            "This should reveal at least one naked single"
+          ],
+          "explanation": "This puzzle demonstrates the **2-2-2 pattern** - the easiest naked triple to spot. Three cells each have exactly 2 candidates that overlap perfectly."
+        },
+        {
+          "id": "practice-naked-triples-02",
+          "title": "Practice Puzzle 2: Row Triple (2-2-3)",
+          "difficulty": "medium",
+          "hints": [
+            "Scan Row 5 and fill in all candidates",
+            "Look for a mix: two cells with 2 candidates, one with 3",
+            "The triple should be {3, 7, 9} distributed as 2-2-3",
+            "One cell will have all three: {3,7,9}",
+            "Eliminate from other Row 5 cells"
+          ],
+          "explanation": "This puzzle features the **2-2-3 pattern** where one cell contains all three digits while the others have subsets."
+        },
+        {
+          "id": "practice-naked-triples-03",
+          "title": "Practice Puzzle 3: Multiple Triples",
+          "difficulty": "hard",
+          "hints": [
+            "This puzzle has naked triples in MULTIPLE units",
+            "Start with boxes - scan Box 2, Box 5, Box 8",
+            "After finding first triple and eliminating, rescan",
+            "Elimination often reveals more triples",
+            "You'll need to find at least 2 triples to solve"
+          ],
+          "explanation": "This **advanced puzzle** has multiple naked triples. You must find one, apply elimination, then scan again for more."
+        },
+        {
+          "id": "practice-naked-triples-04",
+          "title": "Practice Puzzle 4: Triple + Pairs Combined",
+          "difficulty": "hard",
+          "hints": [
+            "Use ALL your techniques: singles, pairs, AND triples",
+            "Start with naked singles and pairs",
+            "After applying pairs, candidates will reduce",
+            "The reduced candidates will reveal a hidden triple",
+            "This demonstrates how techniques work together"
+          ],
+          "explanation": "This **master puzzle** requires combining naked singles, naked pairs, AND naked triples. Real puzzles use all techniques together!"
+        }
+      ],
+      "success_criteria": {
+        "min_puzzles": 3,
+        "allow_hints": true,
+        "max_errors": 15
+      },
+      "success_message": "Excellent! You've mastered naked triples. This intermediate technique significantly expands your solving capability!",
+      "failure_message": "Naked triples can be challenging. Make sure to fill in clean pencilmarks and systematically check combinations of 3 cells. Review and try again!"
+    },
+
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Test Your Understanding",
+      "content": "Let's verify your understanding of naked triples.\n\n**Passing Score:** 2 out of 3 correct",
+      "duration": 120,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "What defines a naked triple?",
+          "type": "multiple-choice",
+          "options": [
+            "Three cells that each have exactly 3 candidates",
+            "Three cells in the same unit whose collective candidates are exactly 3 unique digits",
+            "Three cells with the same three candidates",
+            "Any three empty cells in a row, column, or box"
+          ],
+          "correct": 1,
+          "explanation": "A naked triple is three cells in the same unit whose COLLECTIVE (union) candidates form exactly 3 unique digits. Distribution doesn't matter - could be 2-2-2, 2-2-3, 2-3-3, or 3-3-3."
+        },
+        {
+          "id": "q2",
+          "question": "Which of these is a VALID naked triple?",
+          "type": "multiple-choice",
+          "options": [
+            "Cell A: {2,5,8}, Cell B: {3,7}, Cell C: {2,8}",
+            "Cell A: {2,5}, Cell B: {5,8}, Cell C: {2,8}",
+            "Cell A: {2,5,8,9}, Cell B: {2,5}, Cell C: {8,9}",
+            "Cell A: {2}, Cell B: {5}, Cell C: {8}"
+          ],
+          "correct": 1,
+          "explanation": "Option B is valid: Union of {2,5}, {5,8}, {2,8} = {2,5,8} = exactly 3 digits. Option A has 5 digits total. Option C has 4 digits. Option D is three naked singles, not a triple."
+        },
+        {
+          "id": "q3",
+          "question": "When you find a naked triple {3,7,9} in Row 2, what should you do?",
+          "type": "multiple-choice",
+          "options": [
+            "Remove 3, 7, and 9 from ALL cells in the entire grid",
+            "Remove 3, 7, and 9 from the three triple cells",
+            "Remove 3, 7, and 9 from all OTHER Row 2 cells (not in the triple)",
+            "Place 3, 7, and 9 immediately in the triple cells"
+          ],
+          "correct": 2,
+          "explanation": "Remove the triple digits (3,7,9) from all OTHER cells in the SAME UNIT (Row 2), not from the triple cells themselves, and only in that unit."
+        }
+      ],
+      "passing_score": 2
+    },
+
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Lesson Complete!",
+      "content": "Congratulations! You've mastered **Naked Triples** - your first intermediate solving technique!\n\n## What You've Learned:\n\n✅ **Definition**: Three cells with three collective candidates\n✅ **Distribution Patterns**: 2-2-2, 2-2-3, 2-3-3, 3-3-3\n✅ **Finding Method**: Scan for 2-3 candidate cells, check unions\n✅ **Elimination**: Remove from OTHER cells in the unit\n✅ **Natural Extension**: Builds on naked pairs concept\n\n## From Pairs to Triples\n\n**Naked Pairs** (Lesson 5):\n- 2 cells, 2 candidates\n- Easier to spot\n- Common in medium puzzles\n\n**Naked Triples** (Lesson 7):\n- 3 cells, 3 candidates  \n- Requires more analysis\n- Essential for hard puzzles\n\n**The Pattern Continues:**\nThere are also naked quads (4 cells, 4 candidates), but they're much rarer. Triples are the sweet spot - common enough to be useful, powerful enough to unlock stuck puzzles.\n\n## Solving Workflow Update\n\n**Your Complete Toolkit:**\n1. Naked singles (most common)\n2. Hidden singles (digit tracking)\n3. Scanning techniques (fast visual)\n4. Naked pairs (2 cells)\n5. **Naked triples (3 cells)** ✨ NEW!\n\n**Updated Workflow:**\n1. Scan for singles (naked and hidden)\n2. Cross-hatch and sweep\n3. Look for naked pairs\n4. **Look for naked triples** ✨\n5. Repeat until solved\n\n## Next Steps:\n\nIn **Lesson 8: Hidden Triples**, you'll learn the complementary technique.\n\nWhile **naked triples** are visible (cells with limited candidates), **hidden triples** are found by digit tracking - three digits confined to three cells (even if those cells have other candidates).\n\n## Your Progress:\n\n🎯 **XP Earned**: +100 XP (525 total)\n🏆 **Achievement Unlocked**: \"Triple Threat\"\n📚 **Completion**: 7 of 20 lessons (35%)\n⚡ **New Skill**: Naked Triples\n🎓 **Course**: Intermediate (1 of 8)\n\n**Great progress!** You're now solving intermediate puzzles!",
+      "duration": 60,
+      "key_takeaways": [
+        "Naked triples: 3 cells with 3 collective candidates",
+        "Distribution patterns: 2-2-2, 2-2-3, 2-3-3, or 3-3-3",
+        "Union of candidates must equal exactly 3 digits",
+        "Eliminate from OTHER cells in the same unit",
+        "Natural extension of naked pairs technique",
+        "Essential for solving hard puzzles"
+      ],
+      "next_lesson": {
+        "id": "lesson-08-hidden-triples",
+        "title": "Hidden Triples",
+        "teaser": "Learn to find three digits confined to three cells using digit-tracking methods"
+      },
+      "rewards": {
+        "xp": 100,
+        "achievement": {
+          "id": "lesson_07_complete",
+          "name": "Triple Threat",
+          "icon": "gem"
+        }
+      }
+    }
+  ],
+
+  "metadata": {
+    "author": "The London Sudoku Team",
+    "version": "1.0",
+    "last_updated": "2025-11-12",
+    "difficulty_rating": 4,
+    "estimated_completion": "25 minutes",
+    "prerequisites_required": true,
+    "practice_puzzles_count": 4,
+    "quiz_questions_count": 3
+  }
+}

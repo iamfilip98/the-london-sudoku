@@ -230,11 +230,12 @@ const targetTimes = {
 9. `/api/import.js` - **CONSOLIDATED** anonymous data migration (completion + achievement)
 10. `/api/puzzles.js` - Puzzle fetching (with Redis caching) + **Practice Mode** (?mode=practice&variant=classic|x-sudoku|mini|anti-knight|killer-sudoku|hyper-sudoku|consecutive-sudoku|thermo-sudoku|jigsaw-sudoku) *[Phase 1 Month 4-5, Phase 2 Month 9-14]*
 11. `/api/ratings.js` - Puzzle rating system
-12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) + **Battle Pass** (?type=battle-pass|battle-pass-leaderboard|battle-pass-tiers, POST type=battle-pass-claim) *[Phase 1 Month 4, Phase 3 Month 12]*
+12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) + **Battle Pass** (?type=battle-pass|battle-pass-leaderboard|battle-pass-tiers, POST type=battle-pass-claim) + **Lessons System** (?type=lessons|lesson-progress, POST type=lesson-progress|lesson-complete) *[Phase 1 Month 4, Phase 2, Phase 3 Month 12]*
 
 **Consolidation Strategy**:
 - **BEFORE Phase 0**: 14 endpoints (exceeded limit)
 - **AFTER Phase 0**: 12 endpoints (at limit)
+- **Phase 2 (Nov 2025)**: 12 endpoints (✅ **STILL AT LIMIT** - lessons consolidated into stats.js)
 - **Phase 2 Month 7**: 12 endpoints (✅ **STILL AT LIMIT**)
 - **Phase 2 Month 8**: 12 endpoints (✅ **STILL AT LIMIT**)
 - **Phase 2 Month 9**: 12 endpoints (✅ **STILL AT LIMIT**)
@@ -247,6 +248,7 @@ const targetTimes = {
 - **Consolidation History**:
   - Phase 0: Merged `import-achievement.js` + `import-completion.js` → `import.js?type=completion|achievement`
   - Phase 0: Merged `init-db.js` → `admin.js?action=init-db`
+  - Phase 2 (Nov 2025): Merged `lessons.js` → `stats.js?type=lessons|lesson-progress` (POST type=lesson-progress|lesson-complete)
   - Phase 2 Month 7: Merged `subscription.js` → `admin.js?action=create-checkout|create-portal|webhook|subscription-status`
   - Phase 2 Month 8: Added friends system to `/api/auth.js?friends=xxx&action=send-friend-request`
   - Phase 2 Month 8: Added migration to `/api/admin.js?action=migrate-phase2-month8`

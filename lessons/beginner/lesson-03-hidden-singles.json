@@ -1,0 +1,302 @@
+{
+  "id": "lesson-03-hidden-singles",
+  "number": 3,
+  "title": "Hidden Singles",
+  "course": "beginner",
+  "duration": 900,
+  "premium": false,
+  "xp_reward": 50,
+  "prerequisites": ["lesson-01-sudoku-basics", "lesson-02-naked-singles"],
+  "description": "Learn to find digits that can only go in one cell within a unit",
+
+  "steps": [
+    {
+      "id": "intro",
+      "type": "introduction",
+      "title": "A Different Perspective",
+      "content": "Welcome to Lesson 3! You've learned **naked singles** (finding what digit goes in a cell). Now you'll learn **hidden singles** - a complementary technique that asks a different question.\n\n**Two Ways of Thinking:**\n- **Naked Singles**: *\"What can go in THIS cell?\"*\n- **Hidden Singles**: *\"Where can THIS digit go?\"*\n\n**What You'll Learn:**\n- How hidden singles differ from naked singles\n- How to scan rows, columns, and boxes for missing digits\n- Why some singles are \"hidden\" and need this technique\n- How to combine both techniques for maximum efficiency\n\n**Why It's Important:**\nMany puzzles have cells where multiple digits seem possible (no naked single), but when you ask \"where can digit X go?\", you discover it can only go in ONE cell. This technique unlocks cells that naked single analysis misses!\n\n**Time Estimate:** 15 minutes",
+      "duration": 60,
+      "media": {
+        "type": "image",
+        "url": "/assets/lessons/hidden-single-intro.png",
+        "alt": "A digit that can only go in one cell within a box"
+      }
+    },
+
+    {
+      "id": "what-is-hidden-single",
+      "type": "explanation",
+      "title": "What is a Hidden Single?",
+      "content": "A **hidden single** occurs when a digit can only go in **one cell** within a row, column, or box - even though that cell might have multiple candidates.\n\n## The Key Difference\n\n**Naked Single:**\n- Focus: One cell\n- Question: \"What digit goes here?\"\n- Answer: \"Only one digit is possible\"\n\n**Hidden Single:**\n- Focus: One digit within a unit (row/column/box)\n- Question: \"Where can digit X go in this unit?\"\n- Answer: \"Only one cell is possible\"\n\n## Why \"Hidden\"?\n\nThe single is \"hidden\" because:\n1. The cell might have multiple candidates (2, 4, 7)\n2. You can't spot it by looking at the cell alone\n3. You only discover it by tracking where a **specific digit** can go\n4. Once found, that digit eliminates the other candidates\n\n## Example\n\nLook at Row 5:\n- Cells filled: 1, 2, 4, 5, 6, 7, 9\n- Missing digit: **3 and 8**\n- Three empty cells remain: R5C3, R5C5, R5C8\n\n**Where can 3 go?**\n- R5C3: No (Column 3 already has 3)\n- R5C5: No (Box 5 already has 3)\n- R5C8: **YES!** (only option)\n\n**R5C8 must be 3** - this is a hidden single!\n\nNote: R5C8 might also be a candidate for 8, but because 3 can ONLY go in R5C8 within Row 5, we know R5C8 = 3.",
+      "duration": 180,
+      "diagrams": [
+        {
+          "type": "hidden-single-demo",
+          "grid": "53..7....6..195....98....6..8...6...34..8.3..17...2...6..6....28....419..5....8..79",
+          "highlights": {
+            "row": 4,
+            "missing_digit": 3,
+            "invalid_cells": [[4, 2], [4, 4]],
+            "valid_cell": [[4, 7]],
+            "blocking_units": {
+              "column3": [[0, 2], [1, 2], [2, 2]],
+              "box5": [[3, 3], [3, 4], [3, 5]]
+            }
+          },
+          "caption": "In Row 5, the digit 3 can only go in R5C8 - all other empty cells are blocked"
+        }
+      ],
+      "animations": [
+        {
+          "type": "hidden-single-discovery",
+          "steps": [
+            {
+              "action": "select-unit",
+              "unit_type": "row",
+              "unit_index": 4,
+              "message": "Let's analyze Row 5 for hidden singles"
+            },
+            {
+              "action": "show-missing",
+              "missing_digits": [3, 8],
+              "message": "Row 5 is missing: 3 and 8"
+            },
+            {
+              "action": "track-digit",
+              "digit": 3,
+              "message": "Let's find where 3 can go in Row 5"
+            },
+            {
+              "action": "eliminate-cell",
+              "cell": [4, 2],
+              "reason": "Column 3 already has 3",
+              "message": "R5C3 cannot be 3"
+            },
+            {
+              "action": "eliminate-cell",
+              "cell": [4, 4],
+              "reason": "Box 5 already has 3",
+              "message": "R5C5 cannot be 3"
+            },
+            {
+              "action": "place-digit",
+              "cell": [4, 7],
+              "digit": 3,
+              "message": "R5C8 is the only place for 3 - hidden single found!"
+            }
+          ]
+        }
+      ],
+      "key_points": [
+        "Hidden singles: digit can only go in ONE cell within a unit",
+        "Different question: 'Where can X go?' not 'What goes here?'",
+        "Cell might have multiple candidates, but digit placement reveals the answer",
+        "Found by tracking where each missing digit can go"
+      ]
+    },
+
+    {
+      "id": "scanning-strategy",
+      "type": "explanation",
+      "title": "How to Find Hidden Singles",
+      "content": "Finding hidden singles requires a systematic scanning approach. Here's the most efficient method:\n\n## **Step-by-Step Process**\n\n### **1. Choose a Unit to Scan**\nPick a row, column, or box. Start with units that have:\n- Many filled cells (6-8 is ideal)\n- Few remaining digits to track\n\n### **2. Identify Missing Digits**\nQuickly determine which digits (1-9) are missing from your chosen unit.\n\n**Example:** Row 7 has 1,2,3,5,6,8,9 → Missing: 4, 7\n\n### **3. Track Each Missing Digit**\nFor each missing digit, ask: \"Which empty cells can hold this digit?\"\n\nCheck each empty cell:\n- Does its **column** already have this digit? ❌\n- Does its **box** already have this digit? ❌\n- If both are clear → ✅ Possible placement\n\n### **4. Count Possible Placements**\n- **If only 1 cell is possible** → Hidden single found! ✅\n- **If 2+ cells are possible** → Not a hidden single (yet)\n- **If 0 cells are possible** → Error in puzzle (shouldn't happen)\n\n## **Efficient Scanning Order**\n\nTo find hidden singles faster:\n\n**Priority 1: Boxes** (most common)\n- Boxes are 3×3, easier to visualize\n- Hidden singles in boxes are most frequent\n- Start with boxes that have 6+ cells filled\n\n**Priority 2: Rows**\n- Scan horizontally\n- Check column constraints for each digit\n\n**Priority 3: Columns**\n- Scan vertically\n- Check row constraints for each digit\n\n## **Pro Tips**\n\n✅ **Focus on Nearly-Complete Units**\nA box with 8 cells filled only needs to track 1 digit → instant hidden single!\n\n✅ **Track High-Value Digits First**\nDigits like 1, 2, 8, 9 often have fewer placement options\n\n✅ **Combine with Naked Singles**\nAfter placing a hidden single:\n- It eliminates that digit from its row/column/box\n- This might create naked singles\n- Always check for both techniques!\n\n✅ **Use Pencilmarks (Candidates)**\nFor complex puzzles, write small candidate numbers in cells to track possibilities visually.\n\n## **Common Mistakes to Avoid**\n\n❌ **Forgetting to Check All Constraints**\nAlways check BOTH column AND box (or row AND box)\n\n❌ **Stopping After One Pass**\nPlacing a hidden single creates new opportunities - keep scanning!\n\n❌ **Ignoring Boxes**\nBoxes are the most common location for hidden singles",
+      "duration": 180,
+      "diagrams": [
+        {
+          "type": "scanning-order",
+          "grid": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "highlights": {
+            "box_priority": [
+              {"box": 0, "filled": 6, "priority": "high"},
+              {"box": 4, "filled": 2, "priority": "low"},
+              {"box": 8, "filled": 7, "priority": "high"}
+            ]
+          },
+          "caption": "Focus on boxes with 6+ filled cells for quick hidden single discoveries"
+        }
+      ],
+      "key_points": [
+        "Choose units with many filled cells (6-8 ideal)",
+        "Identify missing digits, then track where each can go",
+        "If a digit has only ONE possible cell → hidden single",
+        "Boxes are the most common source of hidden singles",
+        "Always combine with naked single checking"
+      ]
+    },
+
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice Finding Hidden Singles",
+      "content": "Time to practice! These puzzles are designed to help you master hidden singles.\n\n**Instructions:**\n1. Scan boxes, rows, and columns systematically\n2. For each unit, identify missing digits\n3. Track where each digit can go\n4. If only one cell is possible → place the digit!\n\n**Strategy:**\n- Start with boxes that have 6+ cells filled\n- Check both column AND box constraints (or row AND box)\n- After each placement, immediately scan for new opportunities\n- Use hints if you need guidance\n\n**Goal:** Complete at least 3 of 4 puzzles",
+      "duration": 360,
+      "puzzles": [
+        {
+          "id": "practice-hidden-singles-01",
+          "title": "Practice Puzzle 1: Box Hidden Singles",
+          "difficulty": "easy",
+          "grid": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "solution": "483921657967345821251876493381429765729635148546718239162594378438267519795183264",
+          "givens": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "target_cells": [[0, 0], [0, 1], [0, 5], [1, 1], [1, 2], [2, 0]],
+          "hints": [
+            "Focus on Box 1 (top-left 3×3). Which digits are missing?",
+            "Box 1 has: 3, 9 (missing: 1, 2, 4, 5, 6, 7, 8)",
+            "Where can 4 go in Box 1? Check columns to eliminate options",
+            "Column 1 already has 4, and Column 3 already has 4. So 4 must go in R1C2! (hidden single)",
+            "Continue this process for other missing digits in Box 1"
+          ],
+          "explanation": "This puzzle focuses on **box hidden singles**. Boxes are the most common location for hidden singles because they're smaller (3×3) and easier to analyze than full rows or columns."
+        },
+        {
+          "id": "practice-hidden-singles-02",
+          "title": "Practice Puzzle 2: Row Hidden Singles",
+          "difficulty": "easy",
+          "grid": "2...8.3...6..7..84.3.5..2.9.1..6.5.48...8...73...2..468..1...3.....8..1.7...3..",
+          "solution": "215486379968237154437591628392146857456879231781325496824613795639758412571924683",
+          "givens": "2...8.3...6..7..84.3.5..2.9.1..6.5.48...8...73...2..468..1...3.....8..1.7...3..",
+          "target_cells": [[0, 1], [0, 3], [1, 2], [1, 3], [2, 3]],
+          "hints": [
+            "Focus on Row 1. Which digits are missing?",
+            "Row 1 has: 2, 8, 3 (missing: 1, 4, 5, 6, 7, 9)",
+            "Where can 1 go in Row 1? Check columns and boxes",
+            "Column 2 already has 1 (in Row 5), so R1C2 cannot be 1",
+            "Continue tracking where 1 can go - you'll find it has only ONE option!"
+          ],
+          "explanation": "This puzzle teaches **row hidden singles**. When scanning rows, you need to check both column constraints AND box constraints for each missing digit."
+        },
+        {
+          "id": "practice-hidden-singles-03",
+          "title": "Practice Puzzle 3: Mixed Hidden Singles",
+          "difficulty": "medium",
+          "grid": "..2.3...8.....8....63.2...9..5...2....1...4..3.6...7...1.7.......4...5..2...36.",
+          "solution": "192435768457968231863127549685749123721583694934612875316274958874391652529856317",
+          "givens": "..2.3...8.....8....63.2...9..5...2....1...4..3.6...7...1.7.......4...5..2...36.",
+          "target_cells": [[0, 0], [0, 1], [0, 5], [1, 1], [1, 2], [1, 3], [2, 3]],
+          "hints": [
+            "This puzzle has hidden singles in boxes, rows, AND columns",
+            "Start with Box 1 - it has several missing digits",
+            "Track each missing digit systematically",
+            "Don't forget to check naked singles too - sometimes they appear after placing hidden singles!",
+            "Work through boxes first, then move to rows and columns"
+          ],
+          "explanation": "This puzzle contains **mixed hidden singles** across different unit types. You'll need to scan boxes, rows, and columns to find all the hidden singles. This is realistic practice for actual solving!"
+        },
+        {
+          "id": "practice-hidden-singles-04",
+          "title": "Practice Puzzle 4: Advanced Hidden Singles",
+          "difficulty": "medium",
+          "grid": "....5..1.4.8..7...3.7..2..8...4.....32..8....1..3.....7..2.....6.1..9..8..6....",
+          "solution": "268954713419837526375162948753491862632748195891523674147289356564318729289675831",
+          "givens": "....5..1.4.8..7...3.7..2..8...4.....32..8....1..3.....7..2.....6.1..9..8..6....",
+          "target_cells": [[0, 0], [0, 1], [0, 2], [0, 5], [1, 2], [1, 4], [2, 3]],
+          "hints": [
+            "This is a more challenging puzzle with fewer clues",
+            "Start by scanning ALL boxes and noting which are closest to complete",
+            "Box 2 (top-middle) has good potential - analyze it carefully",
+            "Remember: placing one hidden single often reveals more!",
+            "Be systematic - don't skip any missing digits when scanning",
+            "If you get stuck, try switching to naked singles, then come back"
+          ],
+          "explanation": "This **advanced puzzle** requires careful systematic scanning. You'll need to find multiple hidden singles, and some will only become visible after placing earlier discoveries. This teaches you to iterate: find hidden single → place it → scan again → repeat."
+        }
+      ],
+      "success_criteria": {
+        "min_puzzles": 3,
+        "allow_hints": true,
+        "max_errors": 10
+      },
+      "success_message": "Excellent work! You've mastered hidden singles. Combined with naked singles, you now have two powerful techniques that can solve many medium-difficulty puzzles!",
+      "failure_message": "Hidden singles can be tricky at first. Take your time, scan systematically, and don't forget to check ALL constraints. Review the hints and try again!"
+    },
+
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Test Your Understanding",
+      "content": "Let's verify your understanding of hidden singles. Answer these questions to complete the lesson.\n\n**Passing Score:** 2 out of 3 correct",
+      "duration": 120,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "What is the key difference between naked singles and hidden singles?",
+          "type": "multiple-choice",
+          "options": [
+            "Naked singles are easier to find",
+            "Naked singles ask 'What goes here?' while hidden singles ask 'Where can this digit go?'",
+            "Hidden singles only appear in hard puzzles",
+            "There is no difference - they are the same technique"
+          ],
+          "correct": 1,
+          "explanation": "The fundamental difference is the question being asked. Naked singles focus on finding what digit can go in a specific cell. Hidden singles focus on finding where a specific digit can go within a unit (row/column/box)."
+        },
+        {
+          "id": "q2",
+          "question": "Why is a 'hidden single' called 'hidden'?",
+          "type": "multiple-choice",
+          "options": [
+            "Because it's difficult to spot visually",
+            "Because the cell might have multiple candidates, but tracking a specific digit reveals only ONE possible placement",
+            "Because it only appears in advanced puzzles",
+            "Because you need pencilmarks to find it"
+          ],
+          "correct": 1,
+          "explanation": "A hidden single is 'hidden' because the target cell might appear to have multiple candidates (e.g., {2, 4, 7}). However, when you track where a specific digit can go in that unit, you discover only ONE cell is possible - revealing the hidden single!"
+        },
+        {
+          "id": "q3",
+          "question": "When scanning for hidden singles, which unit type is typically the BEST place to start?",
+          "type": "multiple-choice",
+          "options": [
+            "Rows",
+            "Columns",
+            "Boxes (3×3 regions)",
+            "It doesn't matter - all are equally good"
+          ],
+          "correct": 2,
+          "explanation": "Boxes are typically the best place to start because: (1) They're smaller (3×3 vs 1×9), making them easier to visualize, (2) Hidden singles occur most frequently in boxes, and (3) Box analysis is faster since you're checking fewer cells."
+        }
+      ],
+      "passing_score": 2
+    },
+
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Lesson Complete!",
+      "content": "Congratulations! You've mastered **Hidden Singles** - a powerful complementary technique to naked singles.\n\n## What You've Learned:\n\n✅ **Definition**: Hidden single = digit with only ONE possible cell in a unit\n✅ **Different Perspective**: \"Where can X go?\" vs \"What goes here?\"\n✅ **Systematic Scanning**: Choose unit → identify missing digits → track placements\n✅ **Priority Order**: Boxes first, then rows, then columns\n✅ **Combined Power**: Use with naked singles for maximum efficiency\n\n## The Two Essential Techniques\n\nYou now have both fundamental solving techniques:\n\n**Naked Singles** (Lesson 2):\n- Cell-focused: \"What digit goes in this cell?\"\n- Found by eliminating options in the cell\n- Often visible immediately\n\n**Hidden Singles** (Lesson 3):\n- Digit-focused: \"Where can this digit go?\"\n- Found by tracking digit placement in units\n- Revealed through systematic scanning\n\n**Together, these two techniques can solve MANY medium-difficulty puzzles!**\n\n## Pro Solving Strategy\n\n1. **Scan for naked singles** (quick wins)\n2. **Scan for hidden singles in boxes** (systematic)\n3. **Place discoveries** (one at a time)\n4. **Repeat** - each placement creates new opportunities!\n\nThis iterative approach is used by competitive solvers worldwide.\n\n## Next Steps:\n\nIn **Lesson 4: Scanning Techniques**, you'll learn advanced visual scanning methods that help you find both naked and hidden singles much faster.\n\nYou'll master:\n- Cross-hatching (rapid box scanning)\n- Row/column sweeping\n- Visual pattern recognition\n- Speed-solving techniques\n\n## Your Progress:\n\n🎯 **XP Earned**: +50 XP (125 total)\n🏆 **Achievement Unlocked**: \"Hidden Single Expert\"\n📚 **Completion**: 3 of 20 lessons (15%)\n⚡ **New Skill**: Hidden Single Technique\n💪 **Combined Power**: Naked + Hidden Singles\n\n**Excellent progress!** You're building a solid foundation in Sudoku solving.",
+      "duration": 60,
+      "key_takeaways": [
+        "Hidden singles: digit can only go in ONE cell within a unit",
+        "Different approach: focus on where digits can go, not what goes in cells",
+        "Boxes are the best place to start scanning",
+        "Always check both column/box or row/box constraints",
+        "Combine with naked singles for powerful solving capability"
+      ],
+      "next_lesson": {
+        "id": "lesson-04-scanning-techniques",
+        "title": "Scanning Techniques",
+        "teaser": "Master advanced visual scanning methods for faster solving"
+      },
+      "rewards": {
+        "xp": 50,
+        "achievement": {
+          "id": "lesson_03_complete",
+          "name": "Hidden Single Expert",
+          "icon": "search"
+        }
+      }
+    }
+  ],
+
+  "metadata": {
+    "author": "The London Sudoku Team",
+    "version": "1.0",
+    "last_updated": "2025-11-12",
+    "difficulty_rating": 2,
+    "estimated_completion": "15 minutes",
+    "prerequisites_required": true,
+    "practice_puzzles_count": 4,
+    "quiz_questions_count": 3
+  }
+}

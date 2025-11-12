@@ -1,0 +1,181 @@
+{
+  "id": "lesson-08-hidden-triples",
+  "number": 8,
+  "title": "Hidden Triples",
+  "course": "intermediate",
+  "duration": 1500,
+  "premium": false,
+  "xp_reward": 100,
+  "prerequisites": ["lesson-07-naked-triples"],
+  "description": "Find three digits confined to three cells using digit-tracking methods",
+
+  "steps": [
+    {
+      "id": "intro",
+      "type": "introduction",
+      "title": "The Hidden Counterpart",
+      "content": "Welcome to Lesson 8! You've learned naked triples (cell-focused). Now learn **Hidden Triples** - the digit-focused complement.\n\n**What You'll Learn:**\n- What hidden triples are and why they're \"hidden\"\n- How to track three digits to three cells\n- Difference between naked and hidden triples\n- How to use hidden triples for elimination\n\n**Why It's Important:**\nHidden triples unlock cells that naked triple analysis misses. By tracking WHERE digits can go instead of WHAT cells contain, you discover patterns invisible to cell-focused methods.\n\n**Time Estimate:** 25 minutes",
+      "duration": 60
+    },
+
+    {
+      "id": "concept",
+      "type": "explanation",
+      "title": "What Are Hidden Triples?",
+      "content": "A **hidden triple** occurs when three digits can ONLY go in three specific cells within a unit - even though those cells have other candidates.\n\n## The Logic\n\n**Key Insight:**\nIf digits 3, 7, and 9 can ONLY go in cells R5C2, R5C5, and R5C8 within Row 5:\n- These three cells will contain 3, 7, and 9 (one per cell)\n- ALL other candidates in those three cells can be eliminated!\n- The triple is \"hidden\" because cells have extra candidates\n\n## Example\n\n**Row 5 analysis:**\n- R5C2 has: {2, 3, 7, 9}\n- R5C5 has: {3, 5, 7, 9}\n- R5C8 has: {3, 7, 8, 9}\n\n**Track where 3 can go in Row 5:** Only R5C2, R5C5, R5C8\n**Track where 7 can go in Row 5:** Only R5C2, R5C5, R5C8\n**Track where 9 can go in Row 5:** Only R5C2, R5C5, R5C8\n\n**Hidden triple found: {3,7,9} confined to those three cells**\n\n**Elimination:**\n- R5C2: Remove 2 → {3,7,9}\n- R5C5: Remove 5 → {3,7,9}\n- R5C8: Remove 8 → {3,7,9}\n\n**Result:** Hidden triple becomes naked triple after elimination!",
+      "duration": 240,
+      "key_points": [
+        "Hidden triple: three digits confined to three cells",
+        "Found by digit tracking, not cell analysis",
+        "Cells have OTHER candidates (that's why it's hidden)",
+        "Eliminate OTHER candidates FROM the triple cells",
+        "After elimination, becomes a naked triple"
+      ]
+    },
+
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice Finding Hidden Triples",
+      "content": "Practice finding hidden triples through systematic digit tracking.\n\n**Instructions:**\n1. Choose a unit (box, row, column)\n2. List missing digits\n3. Track where each digit can go\n4. Find three digits confined to same three cells\n5. Eliminate OTHER candidates from those cells\n\n**Goal:** Complete at least 3 of 4 puzzles",
+      "duration": 600,
+      "puzzles": [
+        {
+          "id": "practice-hidden-triples-01",
+          "title": "Practice Puzzle 1: Box Hidden Triple",
+          "difficulty": "hard",
+          "hints": [
+            "Focus on Box 1 and track where each missing digit can go",
+            "You'll find three digits can only go in the same three cells",
+            "Those cells have OTHER candidates - eliminate them",
+            "After elimination, check for revealed singles"
+          ]
+        },
+        {
+          "id": "practice-hidden-triples-02",
+          "title": "Practice Puzzle 2: Row Hidden Triple",
+          "difficulty": "hard",
+          "hints": [
+            "Scan Row 4 - track each missing digit",
+            "Three digits should share the same three possible cells",
+            "Remove all other candidates from those cells"
+          ]
+        },
+        {
+          "id": "practice-hidden-triples-03",
+          "title": "Practice Puzzle 3: Multiple Hidden Triples",
+          "difficulty": "expert",
+          "hints": [
+            "This puzzle has hidden triples in multiple units",
+            "Find first one, eliminate, then rescan",
+            "Techniques build on each other"
+          ]
+        },
+        {
+          "id": "practice-hidden-triples-04",
+          "title": "Practice Puzzle 4: Combined Techniques",
+          "difficulty": "expert",
+          "hints": [
+            "Use ALL techniques: singles, pairs, naked triples, hidden triples",
+            "Work systematically through your toolkit",
+            "Real puzzles require combining everything you've learned"
+          ]
+        }
+      ],
+      "success_criteria": {
+        "min_puzzles": 3,
+        "allow_hints": true,
+        "max_errors": 15
+      }
+    },
+
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Test Your Understanding",
+      "content": "Verify your understanding of hidden triples.\n\n**Passing Score:** 2 out of 3 correct",
+      "duration": 120,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "What is a hidden triple?",
+          "type": "multiple-choice",
+          "options": [
+            "Three cells with exactly three candidates each",
+            "Three digits that can only go in three specific cells within a unit",
+            "Three cells that are hard to see on the grid",
+            "A naked triple that hasn't been found yet"
+          ],
+          "correct": 1,
+          "explanation": "A hidden triple is when three DIGITS can only go in three specific cells within a unit, even though those cells may have other candidates."
+        },
+        {
+          "id": "q2",
+          "question": "When you find a hidden triple {3,7,9} in cells that have candidates {3,5,7,9}, {3,7,8,9}, {2,3,7,9}, what should you do?",
+          "type": "multiple-choice",
+          "options": [
+            "Remove 3, 7, 9 from all other cells in the unit",
+            "Remove 5, 8, 2 from those three cells, leaving only {3,7,9}",
+            "Do nothing - it's already correct",
+            "Remove all candidates and start over"
+          ],
+          "correct": 1,
+          "explanation": "For hidden triples, eliminate OTHER candidates FROM the triple cells themselves. Remove 5, 8, and 2, leaving each cell with only the triple digits {3,7,9}."
+        },
+        {
+          "id": "q3",
+          "question": "What's the key difference between naked and hidden triples?",
+          "type": "multiple-choice",
+          "options": [
+            "Naked triples are easier to find",
+            "Hidden triples only work in boxes",
+            "Naked triples: cell-focused (what's in these cells?). Hidden triples: digit-focused (where can these digits go?)",
+            "There is no difference"
+          ],
+          "correct": 2,
+          "explanation": "The fundamental difference is the approach: Naked triples use cell analysis, hidden triples use digit tracking. Both identify the same constraints but from different perspectives."
+        }
+      ],
+      "passing_score": 2
+    },
+
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Lesson Complete!",
+      "content": "Congratulations! You've mastered **Hidden Triples**!\n\n## What You've Learned:\n\n✅ **Definition**: Three digits confined to three cells\n✅ **Discovery**: Digit tracking, not cell analysis\n✅ **Elimination**: Remove OTHER candidates from triple cells\n✅ **Relationship**: Becomes naked triple after elimination\n✅ **Complementary**: Different view of same pattern\n\n## Your Progress:\n\n🎯 **XP Earned**: +100 XP (625 total)\n🏆 **Achievement Unlocked**: \"Hidden Triple Master\"\n📚 **Completion**: 8 of 20 lessons (40%)\n⚡ **New Skill**: Hidden Triples\n🎓 **Intermediate**: 2 of 8 complete\n\n**Next:** Lesson 9: Box/Line Reduction",
+      "duration": 60,
+      "key_takeaways": [
+        "Hidden triples: three digits confined to three cells",
+        "Found by tracking where digits can go",
+        "Eliminate OTHER candidates FROM triple cells",
+        "Complementary to naked triples",
+        "After elimination, becomes naked triple"
+      ],
+      "next_lesson": {
+        "id": "lesson-09-box-line-reduction",
+        "title": "Box/Line Reduction",
+        "teaser": "Learn intersection elimination between boxes and rows/columns"
+      },
+      "rewards": {
+        "xp": 100,
+        "achievement": {
+          "id": "lesson_08_complete",
+          "name": "Hidden Triple Master",
+          "icon": "eye-slash"
+        }
+      }
+    }
+  ],
+
+  "metadata": {
+    "author": "The London Sudoku Team",
+    "version": "1.0",
+    "last_updated": "2025-11-12",
+    "difficulty_rating": 4,
+    "estimated_completion": "25 minutes",
+    "prerequisites_required": true,
+    "practice_puzzles_count": 4,
+    "quiz_questions_count": 3
+  }
+}

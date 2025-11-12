@@ -1,0 +1,282 @@
+{
+  "id": "lesson-02-naked-singles",
+  "number": 2,
+  "title": "Naked Singles",
+  "course": "beginner",
+  "duration": 720,
+  "premium": false,
+  "xp_reward": 50,
+  "prerequisites": ["lesson-01-sudoku-basics"],
+  "description": "Master the most basic solving technique - spotting cells with only one possible value",
+
+  "steps": [
+    {
+      "id": "intro",
+      "type": "introduction",
+      "title": "Your First Solving Technique",
+      "content": "Welcome to your second lesson! Now that you understand the basic rules, it's time to learn your first **solving technique**: the **Naked Single**.\n\n**What You'll Learn:**\n- What a naked single is\n- How to find naked singles using elimination\n- Why this is the most fundamental technique\n- How to use naked singles to solve puzzles\n\n**Why It's Important:**\nNaked singles are the foundation of all Sudoku solving. Every other technique eventually leads to finding naked singles. Master this, and you'll be able to solve many easy puzzles!\n\n**Time Estimate:** 12 minutes",
+      "duration": 60,
+      "media": {
+        "type": "image",
+        "url": "/assets/lessons/naked-single-intro.png",
+        "alt": "A cell with only one possible value highlighted"
+      }
+    },
+
+    {
+      "id": "what-is-naked-single",
+      "type": "explanation",
+      "title": "What is a Naked Single?",
+      "content": "A **naked single** is a cell where only **one digit** is possible based on the puzzle's current state.\n\n## How to Find Naked Singles\n\nThe process is simple:\n\n1. **Look at an empty cell**\n2. **Check its row** - Which digits 1-9 are already used?\n3. **Check its column** - Which digits 1-9 are already used?\n4. **Check its box** - Which digits 1-9 are already used?\n5. **Eliminate** all used digits\n6. **If only one digit remains** - that's a naked single!\n\n## Example\n\nLet's say we're looking at cell R5C5 (center of the grid):\n\n- **Row 5 contains**: 1, 2, 4, 6, 8 (missing: 3, 5, 7, 9)\n- **Column 5 contains**: 2, 3, 5, 7, 9 (missing: 1, 4, 6, 8)\n- **Box 5 (center) contains**: 1, 2, 3, 5, 6, 7, 9 (missing: 4, 8)\n\n**Finding the intersection:**\n- Row 5 allows: {3, 5, 7, 9}\n- Column 5 allows: {1, 4, 6, 8}\n- Box 5 allows: {4, 8}\n\n**The only digit in all three sets is: 4**\n\nTherefore, R5C5 **must be 4** - this is a naked single!",
+      "duration": 180,
+      "diagrams": [
+        {
+          "type": "elimination-demo",
+          "grid": "53..7....6..195....98....6..8...6...34..8.3..17...2...6..6....28....419..5....8..79",
+          "highlights": {
+            "target_cell": [[4, 4]],
+            "row_filled": [[4, 0], [4, 1], [4, 3], [4, 5], [4, 7]],
+            "column_filled": [[0, 4], [1, 4], [2, 4], [3, 4], [5, 4], [6, 4], [7, 4], [8, 4]],
+            "box_filled": [[3, 3], [3, 4], [3, 5], [4, 3], [4, 5], [5, 3], [5, 4], [5, 5]]
+          },
+          "caption": "Cell R5C5 can only be 4 after eliminating all digits in its row, column, and box"
+        }
+      ],
+      "animations": [
+        {
+          "type": "elimination-process",
+          "steps": [
+            {
+              "action": "show-candidates",
+              "cell": [4, 4],
+              "candidates": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+              "message": "Start with all possible digits: 1-9"
+            },
+            {
+              "action": "eliminate-from-row",
+              "row": 4,
+              "removes": [1, 2, 6, 8],
+              "remaining": [3, 4, 5, 7, 9],
+              "message": "Eliminate digits already in Row 5"
+            },
+            {
+              "action": "eliminate-from-column",
+              "column": 4,
+              "removes": [3, 5, 7, 9],
+              "remaining": [4],
+              "message": "Eliminate digits already in Column 5"
+            },
+            {
+              "action": "place-digit",
+              "cell": [4, 4],
+              "digit": 4,
+              "message": "Only 4 remains - this is a naked single!"
+            }
+          ]
+        }
+      ],
+      "key_points": [
+        "A naked single has only one possible digit",
+        "Found by eliminating digits from row, column, and box",
+        "The intersection of what's allowed determines the answer",
+        "This is the most basic and important technique"
+      ]
+    },
+
+    {
+      "id": "finding-strategy",
+      "type": "explanation",
+      "title": "Strategy for Finding Naked Singles",
+      "content": "There are two main approaches to finding naked singles efficiently:\n\n## **Approach 1: Full Cell Analysis**\n\nFor each empty cell:\n1. List all digits in its row\n2. List all digits in its column\n3. List all digits in its box\n4. Find the digit that's missing from all three\n\n**Pros:** Systematic and thorough\n**Cons:** Can be slow for complex puzzles\n\n## **Approach 2: Unit Scanning**\n\nFocus on rows, columns, or boxes that are nearly complete:\n1. Find a unit (row/column/box) with 8 filled cells\n2. The remaining cell must be the missing digit\n3. This is the fastest type of naked single!\n\n**Example of Unit Scanning:**\nIf Row 1 contains: 1, 2, 3, 4, 5, 6, 7, 9, _\nThen the empty cell **must be 8**\n\n## **Pro Tip: Combine Both Approaches**\n\n1. **Start with Unit Scanning** (quick wins)\n2. **Then do Cell Analysis** (thorough check)\n3. **After each placement**, check if new naked singles appear\n4. **Repeat** until no more naked singles exist\n\n## **Chain Reaction**\n\nNaked singles often create **more naked singles**:\n- Placing a digit eliminates it from 20 other cells\n- This elimination might create new naked singles\n- Keep scanning after each placement!\n\n**Example Chain:**\n1. Find naked single: R1C1 = 5\n2. This eliminates 5 from R1C5\n3. Now R1C5 only has one option left: 3\n4. This creates another naked single!\n\nThis **chain reaction** is why naked singles are so powerful.",
+      "duration": 180,
+      "diagrams": [
+        {
+          "type": "chain-reaction",
+          "grid": "8........4.........53...........  ..................................................",
+          "highlights": {
+            "step1": [[0, 1]],
+            "step2": [[0, 5]],
+            "step3": [[2, 5]]
+          },
+          "caption": "Placing one naked single often reveals more naked singles in its row, column, or box"
+        }
+      ],
+      "key_points": [
+        "Unit Scanning: Focus on nearly-complete units",
+        "Cell Analysis: Check each empty cell systematically",
+        "Chain Reaction: Each placement can reveal new naked singles",
+        "Keep scanning after every digit you place"
+      ]
+    },
+
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice Finding Naked Singles",
+      "content": "Now it's your turn! These puzzles are specifically designed to help you practice finding naked singles.\n\n**Instructions:**\n1. Look for cells where only one digit is possible\n2. Use unit scanning (nearly complete rows/columns/boxes)\n3. Use cell analysis (eliminate from row, column, box)\n4. Watch for chain reactions after each placement\n\n**Tips:**\n- Start with boxes, rows, or columns that have 7-8 filled cells\n- After each placement, immediately check its neighbors\n- Don't rush - accuracy builds skill\n- Use hints if you get stuck\n\n**Goal:** Complete at least 3 of 4 puzzles",
+      "duration": 300,
+      "puzzles": [
+        {
+          "id": "practice-naked-singles-01",
+          "title": "Practice Puzzle 1: Unit Scanning",
+          "difficulty": "very_easy",
+          "grid": "415937826328615974769824351894362517236158749571479238947281365182546793653793182",
+          "solution": "415937826328615974769824351894362517236158749571479238947281365182546793653793182",
+          "givens": "415937826328615974769824351894362517236158749571479238947281365182546..3653793182",
+          "target_cells": [[7, 6], [7, 7]],
+          "hints": [
+            "Look at Row 8. It's almost complete - only 2 cells empty!",
+            "Row 8 is missing just two digits: 7 and 9",
+            "Check Column 7 to see which digit goes in R8C7",
+            "Column 7 already has 9, so R8C7 must be 7. Then R8C8 must be 9!"
+          ],
+          "explanation": "This puzzle demonstrates **unit scanning** - finding naked singles by focusing on nearly-complete rows. When a row has 8 cells filled, the last cell is automatically a naked single!"
+        },
+        {
+          "id": "practice-naked-singles-02",
+          "title": "Practice Puzzle 2: Box Scanning",
+          "difficulty": "very_easy",
+          "grid": "629847315348152976751369824897214653164935287532678149473581692285796431916423578",
+          "solution": "629847315348152976751369824897214653164935287532678149473581692285796431916423578",
+          "givens": "629847315348152976751369824897214653164935287532678149473581..22857964319164235.8",
+          "target_cells": [[7, 6], [7, 7], [8, 7]],
+          "hints": [
+            "Focus on Box 9 (bottom-right 3x3 region)",
+            "Box 9 is missing: 6, 7, and 8",
+            "Check which columns already have these digits",
+            "Column 7 has 7, so R8C7 can't be 7. Continue this logic!"
+          ],
+          "explanation": "This puzzle teaches **box scanning** - focusing on 3x3 regions that are nearly complete. Use column constraints to narrow down where each digit goes."
+        },
+        {
+          "id": "practice-naked-singles-03",
+          "title": "Practice Puzzle 3: Cell Analysis",
+          "difficulty": "easy",
+          "grid": "741836925693527418258149736819465372532971864467382159974618523386254197125793648",
+          "solution": "741836925693527418258149736819465372532971864467382159974618523386254197125793648",
+          "givens": "741836925693527418258149736819465372532971864467382159.74618523386254..7125793648",
+          "target_cells": [[7, 0], [8, 6], [8, 7]],
+          "hints": [
+            "Let's analyze R8C1 (first empty cell)",
+            "Row 8 has: 3, 8, 6, 2, 5, 4, 1, 7 (missing: 9)",
+            "Therefore R8C1 must be 9!",
+            "Now continue with R9C7 and R9C8 using the same logic"
+          ],
+          "explanation": "This puzzle requires **cell-by-cell analysis**. For each empty cell, systematically eliminate digits from its row, column, and box until only one remains."
+        },
+        {
+          "id": "practice-naked-singles-04",
+          "title": "Practice Puzzle 4: Chain Reactions",
+          "difficulty": "easy",
+          "grid": "825716349743529816691834257478361592932457168156298734267145983389672415514983627",
+          "solution": "825716349743529816691834257478361592932457168156298734267145983389672415514983627",
+          "givens": "825716349743529816691834257478361592932457168156298734267145..3389.7241.514983627",
+          "target_cells": [[7, 6], [7, 7], [8, 3], [8, 6]],
+          "hints": [
+            "Start with Box 9 - it's almost complete",
+            "Find the first naked single in Row 8",
+            "Watch what happens! Placing that digit reveals another naked single",
+            "This is a **chain reaction** - keep going until all 4 cells are filled"
+          ],
+          "explanation": "This puzzle demonstrates **chain reactions**. Each naked single you find and place will eliminate options from other cells, creating new naked singles. This cascading effect is the power of this technique!"
+        }
+      ],
+      "success_criteria": {
+        "min_puzzles": 3,
+        "allow_hints": true,
+        "max_errors": 8
+      },
+      "success_message": "Outstanding! You've mastered naked singles - the most fundamental Sudoku technique. You can now solve many easy puzzles using just this method!",
+      "failure_message": "Keep practicing! Naked singles take time to master. Review the explanations and try again."
+    },
+
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Test Your Understanding",
+      "content": "Let's verify your understanding of naked singles. Answer these questions to complete the lesson.\n\n**Passing Score:** 2 out of 3 correct",
+      "duration": 120,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "What is a naked single?",
+          "type": "multiple-choice",
+          "options": [
+            "A cell that is currently empty",
+            "A cell where only one digit is possible",
+            "A row with only one empty cell",
+            "A box with only one empty cell"
+          ],
+          "correct": 1,
+          "explanation": "A naked single is a cell where only one digit is possible after eliminating all digits from its row, column, and box."
+        },
+        {
+          "id": "q2",
+          "question": "If a row has 8 filled cells and 1 empty cell, what do you know about the empty cell?",
+          "type": "multiple-choice",
+          "options": [
+            "It could be any digit 1-9",
+            "It must be the digit not yet in the row (naked single)",
+            "You need to check other rows first",
+            "It requires advanced techniques to solve"
+          ],
+          "correct": 1,
+          "explanation": "When a row (or column, or box) has 8 filled cells, the remaining cell must contain the one missing digit from 1-9. This is the fastest type of naked single to spot!"
+        },
+        {
+          "id": "q3",
+          "question": "Why do naked singles often appear in 'chain reactions'?",
+          "type": "multiple-choice",
+          "options": [
+            "Because the puzzle is poorly designed",
+            "Because placing a digit eliminates it from 20 other cells, possibly creating new naked singles",
+            "Because you should always place multiple digits at once",
+            "Because chain reactions only happen in hard puzzles"
+          ],
+          "correct": 1,
+          "explanation": "When you place a digit, it eliminates that digit as a possibility from its entire row (8 cells), column (8 cells), and box (4 remaining cells) = 20 cells. This elimination can reduce other cells to having only one remaining option, creating new naked singles!"
+        }
+      ],
+      "passing_score": 2
+    },
+
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Lesson Complete!",
+      "content": "Congratulations! You've mastered the **Naked Single** technique - the foundation of all Sudoku solving.\n\n## What You've Learned:\n\n✅ **Definition**: A naked single is a cell with only one possible digit\n✅ **Unit Scanning**: Finding naked singles by looking at nearly-complete rows/columns/boxes\n✅ **Cell Analysis**: Systematically eliminating digits from row, column, and box\n✅ **Chain Reactions**: How placing one digit often reveals more naked singles\n\n## The Power of Naked Singles\n\nThis technique might seem simple, but it's incredibly powerful:\n- Can solve entire **easy puzzles** using only naked singles\n- Forms the **foundation** for all advanced techniques\n- Every advanced technique eventually leads to finding naked singles\n- The most frequently used technique in competitive Sudoku\n\n## Next Steps:\n\nIn **Lesson 3: Hidden Singles**, you'll learn a complementary technique that finds digits by scanning rows, columns, and boxes in a different way.\n\nWhile **naked singles** ask: *\"What can go in this cell?\"*\n**Hidden singles** ask: *\"Where can this digit go?\"*\n\nBoth techniques are essential for solving puzzles efficiently!\n\n## Your Progress:\n\n🎯 **XP Earned**: +50 XP (75 total)\n🏆 **Achievement Unlocked**: \"Naked Single Master\"\n📚 **Completion**: 2 of 20 lessons (10%)\n⚡ **New Skill**: Naked Single Technique\n\n**Keep learning!** You're building a strong foundation in Sudoku solving.",
+      "duration": 60,
+      "key_takeaways": [
+        "Naked singles are cells where only one digit is possible",
+        "Unit scanning (nearly-complete units) is the fastest way to find them",
+        "Cell analysis (systematic elimination) is the most thorough way",
+        "Placing naked singles creates chain reactions that reveal more naked singles",
+        "This is the most fundamental and frequently-used solving technique"
+      ],
+      "next_lesson": {
+        "id": "lesson-03-hidden-singles",
+        "title": "Hidden Singles",
+        "teaser": "Learn to find digits that can only go in one cell within a unit"
+      },
+      "rewards": {
+        "xp": 50,
+        "achievement": {
+          "id": "lesson_02_complete",
+          "name": "Naked Single Master",
+          "icon": "eye"
+        }
+      }
+    }
+  ],
+
+  "metadata": {
+    "author": "The London Sudoku Team",
+    "version": "1.0",
+    "last_updated": "2025-11-12",
+    "difficulty_rating": 1,
+    "estimated_completion": "12 minutes",
+    "prerequisites_required": true,
+    "practice_puzzles_count": 4,
+    "quiz_questions_count": 3
+  }
+}

@@ -1,0 +1,256 @@
+{
+  "id": "lesson-01-sudoku-basics",
+  "number": 1,
+  "title": "Sudoku Basics",
+  "course": "beginner",
+  "duration": 600,
+  "premium": false,
+  "xp_reward": 25,
+  "prerequisites": [],
+  "description": "Learn the fundamental rules of Sudoku and how to play the game",
+
+  "steps": [
+    {
+      "id": "intro",
+      "type": "introduction",
+      "title": "Welcome to Sudoku!",
+      "content": "Welcome to your first Sudoku lesson! In this lesson, you'll learn the basic rules of Sudoku and how to solve puzzles.\n\n**What You'll Learn:**\n- The structure of a Sudoku grid\n- The three golden rules\n- How to fill in cells\n- Your first solving techniques\n\n**Why It's Important:**\nUnderstanding the basics is crucial for all future lessons. These fundamental rules form the foundation of every Sudoku solving technique.\n\n**Time Estimate:** 10 minutes",
+      "duration": 60,
+      "media": {
+        "type": "image",
+        "url": "/assets/lessons/sudoku-grid-intro.png",
+        "alt": "A standard 9x9 Sudoku grid"
+      }
+    },
+
+    {
+      "id": "grid-structure",
+      "type": "explanation",
+      "title": "Understanding the Grid",
+      "content": "A Sudoku puzzle is played on a **9×9 grid** divided into nine **3×3 boxes** (also called regions or blocks).\n\n**Grid Components:**\n\n1. **Rows**: 9 horizontal lines numbered 1-9 from top to bottom\n2. **Columns**: 9 vertical lines numbered 1-9 from left to right\n3. **Boxes**: 9 regions of 3×3 cells each\n\n**Cell Notation:**\n- Each cell is identified by its row and column (e.g., R1C1 = Row 1, Column 1)\n- There are **81 cells** total in a Sudoku grid\n\n**Visual Guide:**\nThe grid below shows how rows, columns, and boxes intersect. Notice how each cell belongs to exactly one row, one column, and one box.",
+      "duration": 120,
+      "diagrams": [
+        {
+          "type": "grid-structure",
+          "grid": ".........................................................  ......................",
+          "highlights": {
+            "rows": [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]],
+            "columns": [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]],
+            "boxes": [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]
+          },
+          "caption": "A Sudoku grid showing rows (horizontal), columns (vertical), and boxes (3×3 regions)"
+        }
+      ],
+      "animations": [
+        {
+          "type": "highlight-units",
+          "steps": [
+            {
+              "action": "highlight-row",
+              "row": 0,
+              "message": "This is Row 1 - a horizontal line of 9 cells"
+            },
+            {
+              "action": "highlight-column",
+              "column": 0,
+              "message": "This is Column 1 - a vertical line of 9 cells"
+            },
+            {
+              "action": "highlight-box",
+              "box": 0,
+              "message": "This is Box 1 - a 3×3 region of 9 cells"
+            },
+            {
+              "action": "highlight-cell",
+              "row": 0,
+              "column": 0,
+              "message": "Cell R1C1 belongs to Row 1, Column 1, and Box 1"
+            }
+          ]
+        }
+      ],
+      "key_points": [
+        "9×9 grid = 81 cells total",
+        "9 rows, 9 columns, 9 boxes",
+        "Each cell belongs to 1 row, 1 column, and 1 box"
+      ]
+    },
+
+    {
+      "id": "three-rules",
+      "type": "explanation",
+      "title": "The Three Golden Rules",
+      "content": "Every Sudoku puzzle must follow three simple rules. Understanding these rules is the key to solving any puzzle.\n\n## **Rule 1: Each Row Must Contain 1-9**\nEvery horizontal row must contain the digits 1 through 9 with no repetitions.\n\n## **Rule 2: Each Column Must Contain 1-9**\nEvery vertical column must contain the digits 1 through 9 with no repetitions.\n\n## **Rule 3: Each Box Must Contain 1-9**\nEvery 3×3 box must contain the digits 1 through 9 with no repetitions.\n\n**Important:** These rules work together. When you place a digit in a cell, it affects:\n- The entire row (no other cell in that row can have that digit)\n- The entire column (no other cell in that column can have that digit)\n- The entire box (no other cell in that box can have that digit)\n\n**Example:**\nIf you place a 5 in cell R1C1, then:\n- No other cell in Row 1 can be 5\n- No other cell in Column 1 can be 5\n- No other cell in Box 1 (top-left) can be 5",
+      "duration": 120,
+      "diagrams": [
+        {
+          "type": "rule-demonstration",
+          "grid": "5.........................................................  ......................",
+          "highlights": {
+            "placed": [[0, 0]],
+            "affected_row": [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]],
+            "affected_column": [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]],
+            "affected_box": [[0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]
+          },
+          "caption": "Placing 5 in R1C1 eliminates 5 as a possibility for 20 other cells"
+        }
+      ],
+      "key_points": [
+        "Each row: 1-9, no duplicates",
+        "Each column: 1-9, no duplicates",
+        "Each box: 1-9, no duplicates",
+        "Placing a digit affects its row, column, and box"
+      ]
+    },
+
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Let's Practice!",
+      "content": "Now it's time to apply what you've learned. Complete these simple puzzles by filling in the missing cells.\n\n**Instructions:**\n1. Click on an empty cell\n2. Enter a digit (1-9)\n3. The game will tell you if it's correct\n4. Use the \"Hint\" button if you get stuck\n\n**Tips:**\n- Look for rows, columns, or boxes that are almost complete\n- Eliminate impossible digits\n- Take your time - accuracy is more important than speed",
+      "duration": 300,
+      "puzzles": [
+        {
+          "id": "practice-basics-01",
+          "title": "Practice Puzzle 1",
+          "difficulty": "very_easy",
+          "grid": "123456789456789123789123456234567891567891234891234567312345678645678912978912345",
+          "solution": "123456789456789123789123456234567891567891234891234567312345678645678912978912345",
+          "givens": "1234567894567891237891234..234567891567891234891234567312345678645678912978912345",
+          "target_cells": [[2, 6], [2, 7], [2, 8]],
+          "hints": [
+            "Look at Row 3. Which digits are missing?",
+            "Row 3 needs: 4, 5, 6",
+            "Check Column 7 to see what's allowed in R3C7"
+          ],
+          "explanation": "This puzzle focuses on completing an almost-full row by finding the missing digits."
+        },
+        {
+          "id": "practice-basics-02",
+          "title": "Practice Puzzle 2",
+          "difficulty": "very_easy",
+          "grid": "534678912672195348198342567859761423426853791713924856961537284287419635345286179",
+          "solution": "534678912672195348198342567859761423426853791713924856961537284287419635345286179",
+          "givens": "534678912672195348198342567859761423426853791713924856961537284287419..5345286179",
+          "target_cells": [[7, 6], [7, 7]],
+          "hints": [
+            "Look at Box 9 (bottom-right). Which digits are missing?",
+            "Box 9 needs: 3 and 6",
+            "Check Column 7 to narrow down the options"
+          ],
+          "explanation": "This puzzle teaches you to focus on boxes and use column constraints."
+        },
+        {
+          "id": "practice-basics-03",
+          "title": "Practice Puzzle 3",
+          "difficulty": "very_easy",
+          "grid": "683729154194538276257164983372946518819375642465812739531687492726493815948251367",
+          "solution": "683729154194538276257164983372946518819375642465812739531687492726493815948251367",
+          "givens": "683729154194538276257164983372946518819375642465812739531..74927264938159482513.7",
+          "target_cells": [[7, 3], [7, 4], [8, 7]],
+          "hints": [
+            "Start with Row 8. It's missing 3 digits.",
+            "Row 8 needs: 6, 8, and 9",
+            "Use column constraints to find where each digit goes"
+          ],
+          "explanation": "This puzzle requires using both row and column constraints together."
+        }
+      ],
+      "success_criteria": {
+        "min_puzzles": 2,
+        "allow_hints": true,
+        "max_errors": 5
+      },
+      "success_message": "Excellent work! You've completed the practice puzzles. You're now familiar with the basic mechanics of Sudoku!",
+      "failure_message": "Don't worry - Sudoku takes practice. Review the hints and try again!"
+    },
+
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Test Your Knowledge",
+      "content": "Let's make sure you understand the fundamentals. Answer these questions to complete the lesson.\n\n**Passing Score:** 2 out of 3 correct",
+      "duration": 120,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "How many cells are in a standard Sudoku grid?",
+          "type": "multiple-choice",
+          "options": [
+            "9 cells",
+            "27 cells",
+            "81 cells",
+            "100 cells"
+          ],
+          "correct": 2,
+          "explanation": "A Sudoku grid is 9×9, which equals 81 cells total."
+        },
+        {
+          "id": "q2",
+          "question": "If you place the digit 7 in a cell, how many other cells are immediately affected (cannot be 7)?",
+          "type": "multiple-choice",
+          "options": [
+            "8 cells",
+            "16 cells",
+            "20 cells",
+            "26 cells"
+          ],
+          "correct": 2,
+          "explanation": "Placing a digit affects: 8 cells in its row + 8 cells in its column + 4 remaining cells in its box = 20 cells total."
+        },
+        {
+          "id": "q3",
+          "question": "Which of the following is NOT a rule in Sudoku?",
+          "type": "multiple-choice",
+          "options": [
+            "Each row must contain 1-9",
+            "Each column must contain 1-9",
+            "Each box must contain 1-9",
+            "Each diagonal must contain 1-9"
+          ],
+          "correct": 3,
+          "explanation": "Diagonals are only a constraint in X-Sudoku (a variant). Standard Sudoku only requires rows, columns, and boxes to contain 1-9."
+        }
+      ],
+      "passing_score": 2
+    },
+
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Lesson Complete!",
+      "content": "Congratulations! You've completed your first Sudoku lesson and learned the fundamental rules of the game.\n\n## What You've Learned:\n\n✅ **Grid Structure**: 9×9 grid with 9 rows, 9 columns, and 9 boxes\n✅ **The Three Rules**: Each row, column, and box must contain digits 1-9\n✅ **Cell Constraints**: Placing a digit affects 20 other cells\n✅ **Basic Solving**: How to fill in cells using logic\n\n## Next Steps:\n\nIn **Lesson 2: Naked Singles**, you'll learn your first real solving technique - one of the most powerful tools in Sudoku.\n\nA **naked single** is a cell where only one digit is possible. This technique alone can help you solve many easy puzzles!\n\n## Your Progress:\n\n🎯 **XP Earned**: +25 XP\n🏆 **Achievement Unlocked**: \"First Steps\"\n📚 **Completion**: 1 of 20 lessons (5%)\n\n**Keep going!** The more you learn, the better you'll become.",
+      "duration": 60,
+      "key_takeaways": [
+        "Sudoku is played on a 9×9 grid with 81 cells",
+        "Each row, column, and box must contain digits 1-9 without repetition",
+        "Placing a digit eliminates it from 20 other cells",
+        "Logic and elimination are the keys to solving puzzles"
+      ],
+      "next_lesson": {
+        "id": "lesson-02-naked-singles",
+        "title": "Naked Singles",
+        "teaser": "Learn to spot cells where only one digit is possible"
+      },
+      "rewards": {
+        "xp": 25,
+        "achievement": {
+          "id": "lesson_01_complete",
+          "name": "First Steps",
+          "icon": "graduation-cap"
+        }
+      }
+    }
+  ],
+
+  "metadata": {
+    "author": "The London Sudoku Team",
+    "version": "1.0",
+    "last_updated": "2025-11-12",
+    "difficulty_rating": 1,
+    "estimated_completion": "10 minutes",
+    "prerequisites_required": false,
+    "practice_puzzles_count": 3,
+    "quiz_questions_count": 3
+  }
+}

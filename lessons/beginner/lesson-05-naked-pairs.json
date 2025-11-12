@@ -1,0 +1,313 @@
+{
+  "id": "lesson-05-naked-pairs",
+  "number": 5,
+  "title": "Naked Pairs",
+  "course": "beginner",
+  "duration": 1200,
+  "premium": false,
+  "xp_reward": 75,
+  "prerequisites": ["lesson-01-sudoku-basics", "lesson-02-naked-singles", "lesson-03-hidden-singles", "lesson-04-scanning-techniques"],
+  "description": "Identify two cells with the same two candidates and eliminate them from other cells",
+
+  "steps": [
+    {
+      "id": "intro",
+      "type": "introduction",
+      "title": "Beyond Singles",
+      "content": "Welcome to Lesson 5! You've mastered finding singles. Now it's time to learn your first **pattern-based elimination technique**: **Naked Pairs**.\n\n**The Problem:**\nSometimes you reach a point where:\n- No naked singles are visible\n- No hidden singles can be found\n- The puzzle seems stuck\n\n**The Solution:**\nNaked pairs help you **eliminate candidates** from other cells, which often reveals new singles!\n\n**What You'll Learn:**\n- What naked pairs are and why they work\n- How to spot naked pairs in rows, columns, and boxes\n- How to use them to eliminate candidates\n- How elimination leads to finding more singles\n\n**Why It's Important:**\nThis is your first **pattern recognition technique**. Once you master this concept, you'll understand the logic behind ALL advanced techniques. Naked pairs are the gateway to intermediate solving!\n\n**Time Estimate:** 20 minutes",
+      "duration": 60,
+      "media": {
+        "type": "image",
+        "url": "/assets/lessons/naked-pairs-intro.png",
+        "alt": "Two cells containing the same pair of candidates"
+      }
+    },
+
+    {
+      "id": "what-are-naked-pairs",
+      "type": "explanation",
+      "title": "What Are Naked Pairs?",
+      "content": "A **naked pair** occurs when two cells in the same unit (row, column, or box) can only contain the same two candidates.\n\n## The Logic\n\n**Key Insight:**\nIf two cells can ONLY be {2, 5}, then:\n- One cell will be 2, the other will be 5\n- We don't know which is which yet\n- But we DO know: no other cell in that unit can be 2 or 5\n- Therefore, we can eliminate 2 and 5 from all other cells in the unit!\n\n## Example\n\n**Look at Row 3:**\n- R3C1 has candidates: {2, 5}\n- R3C4 has candidates: {2, 5}\n- R3C7 has candidates: {2, 5, 8}\n- R3C9 has candidates: {2, 7}\n\n**Analysis:**\nR3C1 and R3C4 form a **naked pair** {2, 5}.\n\nThese two cells will contain 2 and 5 (in some order).\n\n**Elimination:**\n- R3C7 has {2, 5, 8} → Remove 2 and 5 → {8} ✅ Naked single!\n- R3C9 has {2, 7} → Remove 2 → {7} ✅ Naked single!\n\n**Result:** The naked pair unlocked TWO naked singles!\n\n## Requirements for Naked Pairs\n\nFor a valid naked pair:\n\n✅ **Exactly two cells** in the same unit\n✅ **Both cells have the same two candidates** (e.g., both are {2, 5})\n✅ **No other candidates** in those cells (if R3C1 has {2, 5, 7}, it's NOT a naked pair)\n✅ **Same unit**: row, column, or box (not diagonal)\n\n## Important Subtlety\n\nA naked pair can exist even if the cells don't have EXACTLY the same candidates:\n\n**Case 1**: Both cells have {2, 5} → Classic naked pair ✅\n**Case 2**: One cell has {2, 5}, other has {2, 5} → Classic naked pair ✅\n**Case 3**: One cell has {2}, other has {2, 5} → Still works! ✅\n\n**Why Case 3 works:**\n- If one cell is already {2}, it WILL be 2\n- The other cell {2, 5} must then be 5\n- Together they still lock up 2 and 5\n- Eliminate 2 and 5 from other cells!\n\nActually, let me correct this - Case 3 is not a true naked pair. Let me revise:\n\n## Naked Pair vs. Naked Single\n\n**Case 1**: Both cells have {2, 5} → Naked pair ✅\n**Case 2**: One cell has {2}, other has {5} → Not a pair, these are naked singles! ✅\n**Case 3**: One cell has {2}, other has {2, 5} → Not a pair, first is a naked single! ✅\n\nSo for a true naked pair:\n- Both cells must have EXACTLY 2 candidates\n- Both must have THE SAME 2 candidates",
+      "duration": 180,
+      "diagrams": [
+        {
+          "type": "naked-pair-demo",
+          "grid": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "highlights": {
+            "naked_pair_cells": [[2, 0], [2, 3]],
+            "naked_pair_candidates": [2, 5],
+            "affected_cells": [[2, 6], [2, 8]],
+            "eliminations": {
+              "R3C7": [2, 5],
+              "R3C9": [2]
+            }
+          },
+          "caption": "Cells R3C1 and R3C4 form a naked pair {2,5}, eliminating 2 and 5 from other Row 3 cells"
+        }
+      ],
+      "animations": [
+        {
+          "type": "naked-pair-discovery",
+          "steps": [
+            {
+              "action": "show-candidates",
+              "cells": [
+                {"cell": [2, 0], "candidates": [2, 5]},
+                {"cell": [2, 3], "candidates": [2, 5]},
+                {"cell": [2, 6], "candidates": [2, 5, 8]},
+                {"cell": [2, 8], "candidates": [2, 7]}
+              ],
+              "message": "Row 3 has these candidate sets"
+            },
+            {
+              "action": "identify-pair",
+              "cells": [[2, 0], [2, 3]],
+              "candidates": [2, 5],
+              "message": "R3C1 and R3C4 both have exactly {2, 5} - this is a naked pair!"
+            },
+            {
+              "action": "explain-logic",
+              "message": "One of these cells will be 2, the other will be 5. So no other Row 3 cell can be 2 or 5."
+            },
+            {
+              "action": "eliminate-candidates",
+              "cell": [2, 6],
+              "remove": [2, 5],
+              "remaining": [8],
+              "message": "R3C7 had {2, 5, 8}. Remove 2 and 5 → {8} = Naked single!"
+            },
+            {
+              "action": "eliminate-candidates",
+              "cell": [2, 8],
+              "remove": [2],
+              "remaining": [7],
+              "message": "R3C9 had {2, 7}. Remove 2 → {7} = Naked single!"
+            },
+            {
+              "action": "place-digits",
+              "placements": [
+                {"cell": [2, 6], "digit": 8},
+                {"cell": [2, 8], "digit": 7}
+              ],
+              "message": "The naked pair revealed two naked singles!"
+            }
+          ]
+        }
+      ],
+      "key_points": [
+        "Naked pair: two cells with the same two candidates in one unit",
+        "One cell gets first digit, other gets second digit (unknown which)",
+        "Eliminate both digits from all other cells in the unit",
+        "Often reveals naked singles after elimination",
+        "Both cells must have EXACTLY the same 2 candidates"
+      ]
+    },
+
+    {
+      "id": "finding-naked-pairs",
+      "type": "explanation",
+      "title": "How to Find Naked Pairs",
+      "content": "Finding naked pairs requires looking for patterns in your candidate notes. Here's how to spot them efficiently.\n\n## Step 1: Use Pencilmarks (Candidates)\n\nNaked pairs are nearly impossible to spot without writing candidates. For each empty cell:\n\n1. Determine which digits 1-9 are possible\n2. Write them as small numbers in the cell\n3. These are your \"pencilmarks\" or \"candidates\"\n\n**Example:**\nIf R4C5 can be 2, 4, or 7, write small \"2 4 7\" in that cell.\n\n## Step 2: Scan for Matching Pairs\n\n**Look for cells with exactly 2 candidates in the same unit.**\n\nThen check: Do two cells have the SAME two candidates?\n\n**Visual Pattern:**\n```\nRow 5:\n[1,6] [3,8] [2,7] [4] [2,7] [9] [3,8,5] [6,1] [7]\n        ↑                 ↑\n     {2,7}            {2,7}  ← Naked Pair!\n```\n\nR5C3 and R5C5 both have {2, 7} → Naked pair!\n\n## Step 3: Apply Elimination\n\nOnce you find a naked pair:\n\n1. **Identify the unit** (row, column, or box)\n2. **Look at all other cells** in that unit\n3. **Remove both digits** from their candidates\n4. **Check for new naked singles**\n\nIn our example:\n- R5C2 has {3, 8} - no elimination (doesn't contain 2 or 7)\n- R5C7 has {3, 8, 5} - no elimination\n- All other cells don't contain 2 or 7\n\n## Pro Technique: Systematic Scanning\n\n### **Priority 1: Scan Boxes**\nBoxes are 3×3, easier to visualize:\n1. Look at all candidates in Box 1\n2. Find cells with exactly 2 candidates\n3. Check if any two cells match\n4. Apply elimination if found\n5. Repeat for all 9 boxes\n\n### **Priority 2: Scan Rows**\n1. Look at all candidates in Row 1\n2. Find cells with exactly 2 candidates\n3. Check if any two cells match\n4. Apply elimination if found\n5. Repeat for all 9 rows\n\n### **Priority 3: Scan Columns**\nSame process as rows, but vertical.\n\n## Common Patterns to Recognize\n\n### **Pattern 1: Sequential Pairs**\n```\nRow: [2,5] [2,5] [8] [3,9] [1] ...\n      ↑     ↑\n   Naked Pair {2,5}\n```\nTwo cells next to each other - easiest to spot!\n\n### **Pattern 2: Distant Pairs**\n```\nRow: [2,5] [8] [3,9] [1] [7] [2,5] ...\n      ↑                       ↑\n         Naked Pair {2,5}\n```\nTwo cells far apart - requires careful scanning.\n\n### **Pattern 3: Box Pairs**\n```\nBox 1:\n[2,5] [4] [7]\n[9]   [2,5] [6]\n[3]   [1] [8]\n ↑      ↑\nNaked Pair {2,5}\n```\nWithin a box - very common!\n\n## Tips for Success\n\n✅ **Keep Clean Pencilmarks**\nUpdate candidates after every digit you place. Outdated candidates = missed pairs.\n\n✅ **Focus on 2-Candidate Cells**\nNaked pairs can ONLY form from cells with exactly 2 candidates. Ignore cells with 3+.\n\n✅ **Check All Three Units**\nA cell belongs to a row, column, AND box. Check all three for pairs!\n\n✅ **Verify Before Eliminating**\nDouble-check that both cells have EXACTLY the same two digits.\n\n✅ **Look for Chain Reactions**\nEliminating candidates can create:\n- New naked singles\n- New naked pairs\n- Other opportunities\n\nAlways rescan after elimination!\n\n## Common Mistakes\n\n❌ **Forgetting to Update Candidates**\nIf candidates are stale, you'll miss pairs.\n\n❌ **Confusing with Naked Singles**\nIf one cell is {2} and another is {2, 5}, that's a naked single, not a pair.\n\n❌ **Looking at Wrong Unit**\nCells in different units (e.g., one in Row 3, one in Row 7) cannot form a pair.\n\n❌ **Over-Eliminating**\nOnly eliminate from OTHER cells, not from the pair itself!",
+      "duration": 240,
+      "diagrams": [
+        {
+          "type": "scanning-pattern",
+          "grid": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "highlights": {
+            "box_scan": 0,
+            "two_candidate_cells": [[0, 0], [0, 1], [1, 1], [1, 2]],
+            "matching_pairs": [
+              {"cells": [[0, 0], [1, 1]], "candidates": [4, 8]}
+            ]
+          },
+          "caption": "Scanning Box 1 for cells with 2 candidates, then checking for matches"
+        }
+      ],
+      "key_points": [
+        "Use pencilmarks (candidates) - essential for spotting pairs",
+        "Scan for cells with exactly 2 candidates in same unit",
+        "Check if any two cells have matching candidates",
+        "Eliminate both digits from all other cells in the unit",
+        "Boxes are easiest to scan (3×3 visualization)"
+      ]
+    },
+
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice Finding Naked Pairs",
+      "content": "Time to practice finding and using naked pairs! These puzzles require you to spot pairs and use them to eliminate candidates.\n\n**Instructions:**\n1. Fill in pencilmarks (candidates) for empty cells\n2. Scan rows, columns, and boxes for cells with 2 candidates\n3. Check if any two cells have matching candidates\n4. Eliminate those candidates from other cells\n5. Look for naked singles revealed by elimination\n\n**Strategy:**\n- Start with boxes (easiest to scan)\n- Keep pencilmarks clean and updated\n- After finding a pair, immediately check what it eliminates\n- Look for chain reactions\n\n**Goal:** Complete at least 3 of 4 puzzles using naked pairs",
+      "duration": 420,
+      "puzzles": [
+        {
+          "id": "practice-naked-pairs-01",
+          "title": "Practice Puzzle 1: Box Naked Pair",
+          "difficulty": "medium",
+          "grid": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "solution": "483921657967345821251876493381429765729635148546718239162594378438267519795183264",
+          "givens": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "target_cells": [[0, 0], [0, 1], [1, 1], [1, 2]],
+          "hints": [
+            "Start by filling in candidates for all empty cells in Box 1",
+            "Look for cells with exactly 2 candidates",
+            "Do any two cells in Box 1 have the same 2 candidates?",
+            "You should find a naked pair {4, 8}",
+            "Eliminate 4 and 8 from all other Box 1 cells",
+            "This should reveal at least one naked single!"
+          ],
+          "explanation": "This puzzle has a **naked pair in Box 1**. Once you spot it and apply elimination, you'll unlock several naked singles. This demonstrates the power of pattern-based elimination!"
+        },
+        {
+          "id": "practice-naked-pairs-02",
+          "title": "Practice Puzzle 2: Row Naked Pair",
+          "difficulty": "medium",
+          "grid": "2...8.3...6..7..84.3.5..2.9.1..6.5.48...8...73...2..468..1...3.....8..1.7...3..",
+          "solution": "215486379968237154437591628392146857456879231781325496824613795639758412571924683",
+          "givens": "2...8.3...6..7..84.3.5..2.9.1..6.5.48...8...73...2..468..1...3.....8..1.7...3..",
+          "target_cells": [[0, 1], [0, 3], [1, 2], [1, 3]],
+          "hints": [
+            "Fill in candidates for Row 1",
+            "Look for cells in Row 1 with exactly 2 candidates",
+            "You should find a naked pair {1, 5}",
+            "Eliminate 1 and 5 from all other Row 1 cells",
+            "Check what naked singles appear after elimination"
+          ],
+          "explanation": "This puzzle has a **naked pair in Row 1**. Row and column pairs can be harder to spot than box pairs because they're spread across 9 cells instead of 3×3. Practice systematic scanning!"
+        },
+        {
+          "id": "practice-naked-pairs-03",
+          "title": "Practice Puzzle 3: Multiple Pairs",
+          "difficulty": "medium",
+          "grid": "3.542.81.4879.1.524.2.1.79.5.6.3.2...1.5.9.....3.8..5.8.6.1.9.61.29...787.9.6.12",
+          "solution": "395427816487931652621518794549673281731852946268149375853764129614295738729386514",
+          "givens": "3.542.81.4879.1.524.2.1.79.5.6.3.2...1.5.9.....3.8..5.8.6.1.9.61.29...787.9.6.12",
+          "target_cells": [[0, 1], [0, 5], [1, 4], [2, 2], [2, 4]],
+          "hints": [
+            "This puzzle has naked pairs in MULTIPLE units",
+            "Start with boxes - scan Box 1, then Box 2, etc.",
+            "You'll find at least 2 different naked pairs",
+            "Apply elimination from first pair, then rescan",
+            "Second pair might only become visible after first elimination",
+            "This teaches you to iterate: find pair → eliminate → rescan → repeat"
+          ],
+          "explanation": "This puzzle has **multiple naked pairs** across different units. You'll need to find one, apply elimination, then scan again for more. This demonstrates the iterative nature of advanced solving!"
+        },
+        {
+          "id": "practice-naked-pairs-04",
+          "title": "Practice Puzzle 4: Hidden After Pair",
+          "difficulty": "medium",
+          "grid": "..2.3...8.....8....63.2...9..5...2....1...4..3.6...7...1.7.......4...5..2...36.",
+          "solution": "192435768457968231863127549685749123721583694934612875316274958874391652529856317",
+          "givens": "..2.3...8.....8....63.2...9..5...2....1...4..3.6...7...1.7.......4...5..2...36.",
+          "target_cells": [[0, 0], [0, 1], [0, 5], [1, 1], [1, 2]],
+          "hints": [
+            "This puzzle requires combining naked pairs with hidden singles",
+            "First, scan for naked pairs and apply elimination",
+            "After elimination, don't just look for naked singles!",
+            "Also scan for hidden singles - elimination might have revealed them",
+            "You'll need to use ALL techniques: naked singles, hidden singles, and naked pairs",
+            "This is realistic puzzle solving - techniques work together!"
+          ],
+          "explanation": "This **advanced puzzle** requires combining naked pairs with hidden single techniques. Elimination from a naked pair might reveal a hidden single (not just a naked single). This teaches you that techniques interact and complement each other!"
+        }
+      ],
+      "success_criteria": {
+        "min_puzzles": 3,
+        "allow_hints": true,
+        "max_errors": 12
+      },
+      "success_message": "Excellent work! You've mastered naked pairs - your first pattern-based elimination technique. This is a major milestone in your Sudoku journey!",
+      "failure_message": "Naked pairs can be challenging at first. Make sure to keep clean pencilmarks, scan systematically, and double-check your pairs. Review the hints and try again!"
+    },
+
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Test Your Understanding",
+      "content": "Let's verify your understanding of naked pairs. Answer these questions to complete the lesson.\n\n**Passing Score:** 2 out of 3 correct",
+      "duration": 120,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "What is a naked pair?",
+          "type": "multiple-choice",
+          "options": [
+            "Two cells in the same unit that have exactly the same two candidates",
+            "Two cells anywhere on the grid with the same candidates",
+            "Two naked singles next to each other",
+            "Two digits that appear twice in a row"
+          ],
+          "correct": 0,
+          "explanation": "A naked pair is two cells in the SAME UNIT (row, column, or box) that both have exactly the same two candidates. For example, both cells have {2, 5}. The cells must be in the same unit to form a valid pair."
+        },
+        {
+          "id": "q2",
+          "question": "When you find a naked pair {3, 7} in Row 5, what should you do?",
+          "type": "multiple-choice",
+          "options": [
+            "Remove 3 and 7 from all cells on the entire grid",
+            "Remove 3 and 7 from all OTHER cells in Row 5 only",
+            "Remove 3 and 7 from the pair cells themselves",
+            "Place 3 in one cell and 7 in the other immediately"
+          ],
+          "correct": 1,
+          "explanation": "When you find a naked pair, you eliminate those two digits from all OTHER cells in the SAME UNIT only. Don't eliminate from the pair itself, and don't eliminate from other units. In this case, remove 3 and 7 from all other Row 5 cells."
+        },
+        {
+          "id": "q3",
+          "question": "Why are naked pairs useful even if they don't tell you which cell gets which digit?",
+          "type": "multiple-choice",
+          "options": [
+            "They're not useful - you need to know which digit goes where",
+            "They eliminate candidates from other cells, often revealing naked singles",
+            "They make the puzzle look more organized",
+            "They only work in easy puzzles"
+          ],
+          "correct": 1,
+          "explanation": "Naked pairs are powerful because of ELIMINATION. Even though you don't know which cell in the pair gets which digit, you KNOW that both digits are locked in those two cells. This means no other cell in that unit can have those digits, allowing you to eliminate candidates - which often reveals naked singles!"
+        }
+      ],
+      "passing_score": 2
+    },
+
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Lesson Complete!",
+      "content": "Congratulations! You've mastered **Naked Pairs** - your first pattern-based elimination technique and a major milestone!\n\n## What You've Learned:\n\n✅ **Definition**: Two cells in same unit with same two candidates\n✅ **Logic**: One gets first digit, other gets second → eliminate both from other cells\n✅ **Scanning**: Focus on cells with exactly 2 candidates, check for matches\n✅ **Elimination**: Remove both digits from all other cells in the unit\n✅ **Chain Reactions**: Elimination reveals naked singles and more patterns\n\n## Why This Is a Milestone\n\nNaked pairs represent a **fundamental shift** in your solving approach:\n\n**Before Naked Pairs:**\n- Direct solving only (singles)\n- If no singles exist, you're stuck\n- Limited to easy puzzles\n\n**After Naked Pairs:**\n- Pattern recognition and elimination\n- Can make progress even without visible singles\n- Can solve medium puzzles\n- Foundation for ALL advanced techniques\n\n**Every advanced technique follows this pattern:**\n1. Identify a pattern (like a pair)\n2. Apply logical deduction\n3. Eliminate candidates\n4. Unlock new progress\n\nYou now understand this process!\n\n## Your Complete Toolkit\n\n🔧 **Lesson 1**: Sudoku rules and grid structure\n🔧 **Lesson 2**: Naked singles (direct solving)\n🔧 **Lesson 3**: Hidden singles (digit tracking)\n🔧 **Lesson 4**: Efficient scanning methods\n🔧 **Lesson 5**: Naked pairs (pattern elimination) ✨ NEW!\n\n**With this toolkit, you can solve most medium puzzles!**\n\n## Next Steps:\n\nIn **Lesson 6: Hidden Pairs**, you'll learn the complementary technique to naked pairs.\n\nWhile **naked pairs** are easy to spot (both cells have same 2 candidates), **hidden pairs** are \"hidden\" because the cells might have 3-4 candidates, but two specific digits are confined to just those two cells.\n\nThis completes your \"pairs\" education!\n\n## Practice Recommendation\n\nBefore moving forward:\n1. **Solve 5-10 medium puzzles** using naked pairs\n2. **Practice keeping clean pencilmarks** - essential for pattern recognition\n3. **Focus on boxes first** - easiest place to spot pairs\n4. **Build pattern recognition** - naked pairs should become automatic\n\n## Your Progress:\n\n🎯 **XP Earned**: +75 XP (250 total)\n🏆 **Achievement Unlocked**: \"Pattern Master\"\n📚 **Completion**: 5 of 20 lessons (25%)\n⚡ **New Skill**: Naked Pairs (Pattern Elimination)\n🎓 **Milestone**: First advanced technique mastered!\n\n**Outstanding progress!** You've completed the beginner fundamentals and entered intermediate territory.",
+      "duration": 60,
+      "key_takeaways": [
+        "Naked pair: two cells with same two candidates in same unit",
+        "Eliminate both digits from all OTHER cells in the unit",
+        "First pattern-based elimination technique (not direct solving)",
+        "Requires clean pencilmarks to spot efficiently",
+        "Boxes are easiest place to find naked pairs",
+        "Elimination often reveals naked singles - check after each pair"
+      ],
+      "next_lesson": {
+        "id": "lesson-06-hidden-pairs",
+        "title": "Hidden Pairs",
+        "teaser": "Learn to find pairs where two digits are confined to two cells, even when those cells have other candidates"
+      },
+      "rewards": {
+        "xp": 75,
+        "achievement": {
+          "id": "lesson_05_complete",
+          "name": "Pattern Master",
+          "icon": "puzzle-piece"
+        }
+      }
+    }
+  ],
+
+  "metadata": {
+    "author": "The London Sudoku Team",
+    "version": "1.0",
+    "last_updated": "2025-11-12",
+    "difficulty_rating": 3,
+    "estimated_completion": "20 minutes",
+    "prerequisites_required": true,
+    "practice_puzzles_count": 4,
+    "quiz_questions_count": 3
+  }
+}
