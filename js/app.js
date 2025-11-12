@@ -903,6 +903,8 @@ class SudokuChampionship {
                 if (window.achievementsManager) {
                     await window.achievementsManager.updateAchievements(this.entries, this.streaks, this.records);
                 }
+                // Update modern user-centric achievement summary
+                await this.updateAchievementSummary();
                 break;
             case 'leaderboards':
                 this.updateLeaderboards();
@@ -2144,6 +2146,64 @@ class SudokuChampionship {
         if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
         if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
         return then.toLocaleDateString();
+    }
+
+    /**
+     * Update user-centric achievement summary section
+     * Used on achievements page
+     */
+    async updateAchievementSummary() {
+        try {
+            const user = this.getCurrentUser();
+
+            // Get user's achievements
+            const response = await fetch('/api/achievements');
+            if (!response.ok) return;
+
+            const allAchievements = await response.json();
+            const userAchievements = allAchievements.filter(a => a.player === user.username);
+
+            // Total achievements in system (updated to 390 from Phase 6 Month 23)
+            const totalAchievements = 390;
+            const unlockedCount = userAchievements.length;
+            const lockedCount = totalAchievements - unlockedCount;
+            const completionPercentage = Math.round((unlockedCount / totalAchievements) * 100);
+
+            // Update summary stats
+            const userAchievementCountEl = document.getElementById('userAchievementCount');
+            if (userAchievementCountEl) {
+                userAchievementCountEl.textContent = unlockedCount;
+            }
+
+            const lockedAchievementCountEl = document.getElementById('lockedAchievementCount');
+            if (lockedAchievementCountEl) {
+                lockedAchievementCountEl.textContent = lockedCount;
+            }
+
+            const completionPercentageEl = document.getElementById('completionPercentage');
+            if (completionPercentageEl) {
+                completionPercentageEl.textContent = `${completionPercentage}%`;
+            }
+
+            const totalAchievementsUnlockedEl = document.getElementById('totalAchievementsUnlocked');
+            if (totalAchievementsUnlockedEl) {
+                totalAchievementsUnlockedEl.textContent = unlockedCount;
+            }
+
+            const totalAchievementsEl = document.getElementById('totalAchievements');
+            if (totalAchievementsEl) {
+                totalAchievementsEl.textContent = totalAchievements;
+            }
+
+            // Update progress bar
+            const achievementProgressFill = document.getElementById('achievementProgressFill');
+            if (achievementProgressFill) {
+                achievementProgressFill.style.width = `${completionPercentage}%`;
+            }
+
+        } catch (error) {
+            console.error('Error updating achievement summary:', error);
+        }
     }
 }
 

@@ -691,48 +691,40 @@
                     </div>
                 </div>
 
-                <!-- Mobile Head-to-Head Score (visible only on mobile) -->
-                <section class="mobile-head-to-head">
-                    <div class="mobile-player-score faidao">
-                        <div class="mobile-player-name">Faidao</div>
-                        <div class="mobile-player-score-value" id="achievementsMobileScoreFaidao">0</div>
-                    </div>
-                    <div class="mobile-vs-divider">
-                        <div class="mobile-vs-circle">VS</div>
-                        <div class="mobile-overall-record" id="achievementsMobileOverallRecord">Loading...</div>
-                    </div>
-                    <div class="mobile-player-score filip">
-                        <div class="mobile-player-name">Filip</div>
-                        <div class="mobile-player-score-value" id="achievementsMobileScoreFilip">0</div>
-                    </div>
-                </section>
-
-                <!-- Achievements Summary -->
+                <!-- User Achievement Summary -->
                 <div class="achievements-summary" id="achievementsSummary">
-                    <div class="summary-card">
-                        <div class="player-summary faidao-themed">
-                            <div class="player-name">Faidao</div>
-                            <div class="achievement-count">
-                                <span class="count-number" id="faidaoAchievementCount">0</span>
-                                <span class="count-label">achievements unlocked</span>
+                    <div class="summary-card single-user">
+                        <div class="achievement-stats">
+                            <div class="stat-item">
+                                <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="userAchievementCount">0</div>
+                                    <div class="stat-label">Unlocked</div>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon"><i class="fas fa-lock"></i></div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="lockedAchievementCount">0</div>
+                                    <div class="stat-label">Locked</div>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="completionPercentage">0%</div>
+                                    <div class="stat-label">Complete</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="vs-divider">
-                            <div class="vs-circle-container">
-                                <span class="vs-circle-shine"></span>
-                                VS
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-label">
+                                <span id="totalAchievementsUnlocked">0</span> of <span id="totalAchievements">390</span> achievements
+                            </div>
+                            <div class="achievement-progress-bar">
+                                <div class="achievement-progress-fill" id="achievementProgressFill" style="width: 0%"></div>
                             </div>
                         </div>
-                        <div class="player-summary filip-themed">
-                            <div class="player-name">Filip</div>
-                            <div class="achievement-count">
-                                <span class="count-number" id="filipAchievementCount">0</span>
-                                <span class="count-label">achievements unlocked</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="total-summary">
-                        <span id="totalAchievementsUnlocked">0</span> of <span id="totalAchievements">136</span> achievements unlocked
                     </div>
                 </div>
 

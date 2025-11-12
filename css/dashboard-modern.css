@@ -487,6 +487,156 @@
 }
 
 /* ============================================
+   ACHIEVEMENTS PAGE - USER-CENTRIC SUMMARY
+   ============================================ */
+
+.achievements-summary .summary-card.single-user {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--shadow-glass);
+    margin-bottom: var(--space-8);
+}
+
+.achievements-summary .achievement-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+.achievements-summary .stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+    transition: var(--transition-fast);
+}
+
+.achievements-summary .stat-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.achievements-summary .stat-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+    border-radius: var(--radius-md);
+    font-size: var(--text-xl);
+    color: white;
+    flex-shrink: 0;
+}
+
+.achievements-summary .stat-item:nth-child(2) .stat-icon {
+    background: linear-gradient(135deg, #64748b, #475569);
+}
+
+.achievements-summary .stat-item:nth-child(3) .stat-icon {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+}
+
+.achievements-summary .stat-content {
+    flex: 1;
+}
+
+.achievements-summary .stat-value {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-black);
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: var(--space-1);
+}
+
+.achievements-summary .stat-label {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    font-weight: var(--font-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+}
+
+.achievements-summary .progress-bar-container {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--glass-border);
+}
+
+.achievements-summary .progress-bar-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    font-weight: var(--font-medium);
+}
+
+.achievements-summary .achievement-progress-bar {
+    width: 100%;
+    height: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    box-shadow: var(--shadow-inner);
+    position: relative;
+}
+
+.achievements-summary .achievement-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-gold), var(--accent-orange));
+    border-radius: var(--radius-full);
+    transition: width 0.5s var(--ease-out);
+    box-shadow: 0 0 20px rgba(var(--accent-gold-rgb), 0.6);
+    position: relative;
+}
+
+.achievements-summary .achievement-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+    .achievements-summary .achievement-stats {
+        grid-template-columns: 1fr;
+        gap: var(--space-3);
+    }
+
+    .achievements-summary .summary-card.single-user {
+        padding: var(--space-6);
+    }
+
+    .achievements-summary .stat-item {
+        padding: var(--space-3);
+    }
+
+    .achievements-summary .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: var(--text-lg);
+    }
+
+    .achievements-summary .stat-value {
+        font-size: var(--text-xl);
+    }
+}
+
+/* ============================================
    ACCESSIBILITY
    ============================================ */
 
