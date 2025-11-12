@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudoku Championship Arena - Faidao vs Filip</title>
+    <title>The London Sudoku - Daily Puzzle Challenge</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/enhanced-design-system.css">
     <link rel="stylesheet" href="css/enhancements.css">
     <link rel="stylesheet" href="css/tutorial.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -129,78 +130,93 @@
         <main class="main-content">
             <!-- Dashboard Page -->
             <div class="page active" id="dashboard">
+                <!-- Personal Dashboard Header -->
                 <div class="dashboard-header">
-                    <h1 class="page-title">
-                        <i class="fas fa-gamepad"></i>
-                        Daily Battle Arena
-                    </h1>
+                    <div class="welcome-section">
+                        <h1 class="page-title">
+                            Welcome back, <span class="username-display" id="usernameDisplay">Player</span>!
+                        </h1>
+                        <div class="streak-badge" id="streakBadge">
+                            <i class="fas fa-fire"></i>
+                            <span id="currentStreakDisplay">0</span> day streak
+                        </div>
+                    </div>
                     <div class="current-date" id="currentDate"></div>
                 </div>
 
-                <!-- Mobile Head-to-Head Score (visible only on mobile) -->
-                <section class="mobile-head-to-head">
-                    <div class="mobile-player-score faidao">
-                        <div class="mobile-player-name">Faidao</div>
-                        <div class="mobile-player-score-value" id="mobileScoreFaidao">0</div>
+                <!-- Quick Stats Section -->
+                <section class="quick-stats-section">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="userXpDisplay">0</div>
+                            <div class="stat-label">XP This Season</div>
+                        </div>
                     </div>
-                    <div class="mobile-vs-divider">
-                        <div class="mobile-vs-circle">VS</div>
-                        <div class="mobile-overall-record" id="mobileOverallRecord">Loading...</div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="userRankDisplay">-</div>
+                            <div class="stat-label">Global Rank</div>
+                        </div>
                     </div>
-                    <div class="mobile-player-score filip">
-                        <div class="mobile-player-name">Filip</div>
-                        <div class="mobile-player-score-value" id="mobileScoreFilip">0</div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="userAchievementsDisplay">0/500</div>
+                            <div class="stat-label">Achievements</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="userLeagueTierDisplay">-</div>
+                            <div class="stat-label">League Tier</div>
+                        </div>
                     </div>
                 </section>
 
                 <!-- PHASE 1 MONTH 6: Ad Banner (Free Tier Users Only) -->
-                <div class="ad-container" id="dashboardBannerAd">
+                <div class="ad-container" id="dashboardBannerAd" style="display: none;">
                     <div class="ad-placeholder">Advertisement</div>
                 </div>
 
-                <!-- Win Streaks Display -->
-                <section class="win-streaks-section">
-                    <div class="streak-cards">
-                        <div class="streak-card faidao">
-                            <div class="streak-header">
-                                <h3><i class="fas fa-fire"></i> Faidao</h3>
-                                <div class="player-avatar faidao-avatar">F</div>
+                <!-- Personal Progress Section -->
+                <section class="personal-progress-section">
+                    <div class="progress-card battle-pass-preview">
+                        <div class="card-header">
+                            <h3><i class="fas fa-trophy"></i> Battle Pass Progress</h3>
+                            <a href="battle-pass.html" class="view-link">View All <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="progress-content">
+                            <div class="tier-info">
+                                <span class="tier-label">Tier <span id="battlePassTierDisplay">0</span>/100</span>
+                                <span class="xp-needed">Next reward in <span id="xpNeededDisplay">100</span> XP</span>
                             </div>
-                            <div class="streak-stats">
-                                <div class="current-streak">
-                                    <span class="streak-number" id="faidaoCurrentStreak">0</span>
-                                    <span class="streak-label">Current Streak</span>
-                                </div>
-                                <div class="best-streak">
-                                    <span class="streak-number" id="faidaoBestStreak">0</span>
-                                    <span class="streak-label">Best Streak</span>
-                                </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="battlePassProgress" style="width: 0%"></div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="vs-divider">
-                            <div class="vs-circle-container">
-                                <span class="vs-circle-shine"></span>
-                                VS
-                            </div>
-                            <div class="overall-record" id="overallRecord">0 - 0</div>
+                    <div class="progress-card recent-achievements">
+                        <div class="card-header">
+                            <h3><i class="fas fa-star"></i> Recent Achievements</h3>
+                            <a href="#" class="view-link" data-page="achievements">View All <i class="fas fa-arrow-right"></i></a>
                         </div>
-
-                        <div class="streak-card filip">
-                            <div class="streak-header">
-                                <h3><i class="fas fa-fire"></i> Filip</h3>
-                                <div class="player-avatar filip-avatar">F</div>
-                            </div>
-                            <div class="streak-stats">
-                                <div class="current-streak">
-                                    <span class="streak-number" id="filipCurrentStreak">0</span>
-                                    <span class="streak-label">Current Streak</span>
-                                </div>
-                                <div class="best-streak">
-                                    <span class="streak-number" id="filipBestStreak">0</span>
-                                    <span class="streak-label">Best Streak</span>
-                                </div>
-                            </div>
+                        <div class="achievements-list" id="recentAchievementsList">
+                            <p class="empty-state">Complete challenges to unlock achievements!</p>
                         </div>
                     </div>
                 </section>

@@ -3,8 +3,15 @@ class SudokuChampionship {
         this.entries = [];
         this.achievements = [];
         this.challenges = [];
-        this.streaks = { faidao: { current: 0, best: 0 }, filip: { current: 0, best: 0 } };
-        this.records = { faidao: {}, filip: {} };
+        // User-centric data (no hardcoded players)
+        this.userStats = {
+            xp: 0,
+            globalRank: null,
+            achievementCount: 0,
+            leagueTier: null,
+            currentStreak: 0,
+            bestStreak: 0
+        };
         this.migrationDone = false;
 
         // 🚀 PERFORMANCE OPTIMIZATION: Enhanced in-memory data management system
@@ -718,9 +725,8 @@ class SudokuChampionship {
     }
 
     async updateDashboard() {
-        this.updateStreakDisplay();
-        this.updateOverallRecord();
-        this.updateRecentHistory();
+        // Modern user-centric dashboard
+        await this.updateModernDashboard();
         await this.updateTodayProgress();
         this.updateProgressNotifications();
     }
@@ -1846,6 +1852,298 @@ class SudokuChampionship {
                 await this.updateTodayProgress();
             }
         }
+    }
+
+    // ============================================
+    // MODERN USER-CENTRIC DASHBOARD METHODS
+    // Phase 1 Week 2: Component Migration
+    // ============================================
+
+    /**
+     * Get current authenticated user information
+     * @returns {Object} Current user data
+     */
+    getCurrentUser() {
+        return {
+            id: sessionStorage.getItem('clerk_user_id') || sessionStorage.getItem('currentPlayer'),
+            username: sessionStorage.getItem('playerName') || 'Player',
+            isAuthenticated: !!sessionStorage.getItem('clerk_token') || sessionStorage.getItem('sudokuAuth') === 'authenticated'
+        };
+    }
+
+    /**
+     * Update modern user-centric dashboard
+     * Populates: welcome section, streak badge, quick stats, progress sections
+     */
+    async updateModernDashboard() {
+        try {
+            const user = this.getCurrentUser();
+
+            // Update welcome section
+            this.updateWelcomeSection(user);
+
+            // Update streak badge
+            await this.updateStreakBadge(user);
+
+            // Update quick stats (4 cards)
+            await this.updateQuickStats(user);
+
+            // Update progress sections
+            await this.updateProgressSections(user);
+
+        } catch (error) {
+            console.error('Error updating modern dashboard:', error);
+        }
+    }
+
+    /**
+     * Update welcome section with username
+     */
+    updateWelcomeSection(user) {
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        if (usernameDisplay) {
+            usernameDisplay.textContent = user.username;
+        }
+
+        // Update current date
+        const currentDateEl = document.getElementById('currentDate');
+        if (currentDateEl) {
+            currentDateEl.textContent = new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+    }
+
+    /**
+     * Update streak badge on dashboard
+     */
+    async updateStreakBadge(user) {
+        try {
+            // Get user streak from database
+            const response = await fetch('/api/stats?type=streaks');
+            const streaks = await response.json();
+
+            // Get current user's streak (default to 0 if not found)
+            const userStreak = streaks[user.username] || { current: 0, best: 0 };
+
+            // Update streak display
+            const currentStreakDisplay = document.getElementById('currentStreakDisplay');
+            if (currentStreakDisplay) {
+                currentStreakDisplay.textContent = userStreak.current;
+            }
+
+            // Update user stats cache
+            this.userStats.currentStreak = userStreak.current;
+            this.userStats.bestStreak = userStreak.best;
+
+        } catch (error) {
+            console.error('Error updating streak badge:', error);
+        }
+    }
+
+    /**
+     * Update quick stats section (4 cards)
+     */
+    async updateQuickStats(user) {
+        try {
+            // Card 1: XP This Season
+            await this.updateXPCard(user);
+
+            // Card 2: Global Rank
+            await this.updateRankCard(user);
+
+            // Card 3: Achievements Unlocked
+            await this.updateAchievementsCard(user);
+
+            // Card 4: League Tier
+            await this.updateLeagueTierCard(user);
+
+        } catch (error) {
+            console.error('Error updating quick stats:', error);
+        }
+    }
+
+    /**
+     * Update XP card (Card 1)
+     */
+    async updateXPCard(user) {
+        try {
+            // Get battle pass status for XP
+            const response = await fetch(`/api/stats?type=battle-pass&userId=${user.id}`);
+            if (response.ok) {
+                const battlePassData = await response.json();
+                const xpDisplay = document.getElementById('userXpDisplay');
+                if (xpDisplay && battlePassData.xp !== undefined) {
+                    xpDisplay.textContent = battlePassData.xp.toLocaleString();
+                    this.userStats.xp = battlePassData.xp;
+                }
+            }
+        } catch (error) {
+            console.error('Error updating XP card:', error);
+        }
+    }
+
+    /**
+     * Update global rank card (Card 2)
+     */
+    async updateRankCard(user) {
+        try {
+            // Get user's rank from leaderboard
+            const response = await fetch('/api/stats?type=leaderboards&period=all&limit=1000');
+            if (response.ok) {
+                const data = await response.json();
+                const leaderboard = data.leaderboard || [];
+
+                // Find user's rank
+                const userRank = leaderboard.findIndex(entry => entry.player === user.username) + 1;
+
+                const rankDisplay = document.getElementById('userRankDisplay');
+                if (rankDisplay) {
+                    rankDisplay.textContent = userRank > 0 ? `#${userRank}` : '--';
+                    this.userStats.globalRank = userRank || null;
+                }
+            }
+        } catch (error) {
+            console.error('Error updating rank card:', error);
+        }
+    }
+
+    /**
+     * Update achievements card (Card 3)
+     */
+    async updateAchievementsCard(user) {
+        try {
+            // Get user's achievement count
+            const response = await fetch('/api/achievements');
+            if (response.ok) {
+                const achievements = await response.json();
+                const userAchievements = achievements.filter(a => a.player === user.username);
+
+                const achievementsDisplay = document.getElementById('userAchievementsDisplay');
+                if (achievementsDisplay) {
+                    achievementsDisplay.textContent = userAchievements.length;
+                    this.userStats.achievementCount = userAchievements.length;
+                }
+            }
+        } catch (error) {
+            console.error('Error updating achievements card:', error);
+        }
+    }
+
+    /**
+     * Update league tier card (Card 4)
+     */
+    async updateLeagueTierCard(user) {
+        try {
+            // TODO: Get user's league tier from leagues API
+            // For now, show placeholder
+            const leagueTierDisplay = document.getElementById('userLeagueTierDisplay');
+            if (leagueTierDisplay) {
+                leagueTierDisplay.textContent = 'Bronze III'; // Placeholder
+                this.userStats.leagueTier = 'Bronze III';
+            }
+        } catch (error) {
+            console.error('Error updating league tier card:', error);
+        }
+    }
+
+    /**
+     * Update progress sections (Battle Pass + Recent Achievements)
+     */
+    async updateProgressSections(user) {
+        try {
+            await this.updateBattlePassPreview(user);
+            await this.updateRecentAchievements(user);
+        } catch (error) {
+            console.error('Error updating progress sections:', error);
+        }
+    }
+
+    /**
+     * Update Battle Pass preview section
+     */
+    async updateBattlePassPreview(user) {
+        try {
+            const response = await fetch(`/api/stats?type=battle-pass&userId=${user.id}`);
+            if (response.ok) {
+                const battlePassData = await response.json();
+
+                // Update tier info
+                const tierLabel = document.querySelector('.tier-label span');
+                if (tierLabel && battlePassData.currentTier) {
+                    tierLabel.textContent = battlePassData.currentTier;
+                }
+
+                // Update XP needed
+                const xpNeeded = document.querySelector('.xp-needed span');
+                if (xpNeeded && battlePassData.xpForNextTier) {
+                    xpNeeded.textContent = battlePassData.xpForNextTier.toLocaleString();
+                }
+
+                // Update progress bar
+                const progressFill = document.getElementById('battlePassProgress');
+                if (progressFill && battlePassData.progressPercentage !== undefined) {
+                    progressFill.style.width = `${battlePassData.progressPercentage}%`;
+                }
+            }
+        } catch (error) {
+            console.error('Error updating battle pass preview:', error);
+        }
+    }
+
+    /**
+     * Update recent achievements section
+     */
+    async updateRecentAchievements(user) {
+        try {
+            const response = await fetch('/api/achievements');
+            if (response.ok) {
+                const achievements = await response.json();
+                const userAchievements = achievements
+                    .filter(a => a.player === user.username)
+                    .sort((a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt))
+                    .slice(0, 3); // Show last 3
+
+                const achievementsList = document.querySelector('.achievements-list');
+                if (achievementsList) {
+                    if (userAchievements.length === 0) {
+                        achievementsList.innerHTML = '<p class="empty-state">No achievements yet. Complete puzzles to earn your first achievement!</p>';
+                    } else {
+                        achievementsList.innerHTML = userAchievements.map(achievement => `
+                            <div class="achievement-item">
+                                <div class="achievement-icon">${achievement.icon || '🏆'}</div>
+                                <div class="achievement-info">
+                                    <div class="achievement-name">${achievement.name || achievement.id}</div>
+                                    <div class="achievement-time">${this.getTimeAgo(achievement.unlockedAt)}</div>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error updating recent achievements:', error);
+        }
+    }
+
+    /**
+     * Get human-readable time ago string
+     * @param {string} timestamp - ISO timestamp
+     * @returns {string} Time ago string
+     */
+    getTimeAgo(timestamp) {
+        const now = new Date();
+        const then = new Date(timestamp);
+        const seconds = Math.floor((now - then) / 1000);
+
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+        if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+        if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+        return then.toLocaleDateString();
     }
 }
 
