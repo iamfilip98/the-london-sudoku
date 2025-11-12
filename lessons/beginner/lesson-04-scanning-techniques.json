@@ -1,0 +1,301 @@
+{
+  "id": "lesson-04-scanning-techniques",
+  "number": 4,
+  "title": "Scanning Techniques",
+  "course": "beginner",
+  "duration": 900,
+  "premium": false,
+  "xp_reward": 50,
+  "prerequisites": ["lesson-01-sudoku-basics", "lesson-02-naked-singles", "lesson-03-hidden-singles"],
+  "description": "Master row, column, and box scanning with cross-hatching for faster solving",
+
+  "steps": [
+    {
+      "id": "intro",
+      "type": "introduction",
+      "title": "Speed Up Your Solving",
+      "content": "Welcome to Lesson 4! You know **what** to look for (naked singles, hidden singles). Now let's learn **how** to find them quickly and efficiently.\n\n**What You'll Learn:**\n- Cross-hatching: the fastest box scanning method\n- Row and column sweeping techniques\n- Visual pattern recognition shortcuts\n- How to scan systematically for maximum efficiency\n\n**Why It's Important:**\nThe difference between a slow solver and a fast solver isn't knowledge - it's technique. Professional solvers use systematic visual scanning methods to find singles in seconds, not minutes. These techniques will dramatically improve your speed!\n\n**Real Impact:**\n- **Before**: 15-20 minutes to solve an easy puzzle\n- **After**: 3-5 minutes with efficient scanning\n\n**Time Estimate:** 15 minutes",
+      "duration": 60,
+      "media": {
+        "type": "image",
+        "url": "/assets/lessons/scanning-intro.png",
+        "alt": "Visual representation of cross-hatching technique"
+      }
+    },
+
+    {
+      "id": "cross-hatching",
+      "type": "explanation",
+      "title": "Cross-Hatching: The Power Technique",
+      "content": "**Cross-hatching** is the single most important scanning technique in Sudoku. It's a visual method for quickly finding where digits can go in boxes.\n\n## What is Cross-Hatching?\n\nCross-hatching means:\n1. Pick a digit (e.g., digit 5)\n2. Look at all rows and columns that contain that digit\n3. Mentally \"draw lines\" through those rows/columns\n4. Find boxes where those lines eliminate most cells\n5. If only one cell remains uncrossed in a box → hidden single!\n\n## How It Works: Visual Example\n\nLet's find where **5** can go in Box 9 (bottom-right):\n\n**Step 1**: Scan the entire grid for all **5s**\n- Row 2 has 5 (crosses out Row 2 in Box 9)\n- Row 7 has 5 (crosses out Row 7 in Box 9)\n- Column 3 has 5 (crosses out Column 3 in Box 9)\n- Column 6 has 5 (crosses out Column 6 in Box 9)\n\n**Step 2**: Look at Box 9's 9 cells\n- Rows 7, 8, 9 (3 rows)\n- Columns 7, 8, 9 (3 columns)\n\n**Step 3**: Eliminate crossed cells\n- Row 7 is crossed out (3 cells eliminated)\n- Column 3 doesn't intersect Box 9 (no effect)\n- Let's say Row 8 has a filled cell at R8C8 (1 more eliminated)\n- Let's say Column 7 and 9 have 5 elsewhere\n\n**Result**: Only R9C8 remains → **5 must go there!**\n\n## Why Cross-Hatching is Fast\n\n✅ **Visual Processing**: Your brain processes visual patterns faster than logic\n✅ **Batch Processing**: Check one digit across all boxes at once\n✅ **Eliminates Counting**: No need to count candidates manually\n✅ **Works at a Glance**: Experienced solvers do this almost instantly\n\n## Pro Technique: Digit Priority\n\nStart cross-hatching with digits that appear most frequently:\n\n**High Priority** (6-7 instances on board):\n- These digits have the most constraints\n- Easiest to find hidden singles\n- Usually digits: 1, 2, 5, 8, 9\n\n**Low Priority** (1-3 instances on board):\n- Fewer constraints\n- Less likely to yield hidden singles immediately\n- Usually digits: 3, 4, 6, 7\n\n## Cross-Hatching Workflow\n\n1. **Scan the grid** and count how many times each digit appears\n2. **Start with most frequent** digit (e.g., if 7 appears 6 times, start with 7)\n3. **Check each box** to see if 7 can only go in one cell\n4. **Place the digit** if found\n5. **Move to next frequent digit**\n6. **Repeat** until all digits are cross-hatched\n\nThis systematic approach ensures you don't miss any hidden singles!",
+      "duration": 210,
+      "diagrams": [
+        {
+          "type": "cross-hatching-demo",
+          "grid": "53..7....6..195....98....6..8...6...34..8.3..17...2...6..6....28....419..5....8..79",
+          "highlights": {
+            "target_box": 8,
+            "target_digit": 5,
+            "blocking_rows": [1, 6],
+            "blocking_columns": [4, 7],
+            "eliminated_cells": [[6, 6], [6, 7], [6, 8], [7, 4], [7, 7], [8, 4]],
+            "valid_cell": [[7, 6]]
+          },
+          "caption": "Cross-hatching digit 5 in Box 9: blocking rows and columns eliminate all cells except R8C7"
+        }
+      ],
+      "animations": [
+        {
+          "type": "cross-hatching-process",
+          "steps": [
+            {
+              "action": "select-digit",
+              "digit": 5,
+              "message": "Let's cross-hatch digit 5 across all boxes"
+            },
+            {
+              "action": "highlight-all-fives",
+              "cells": [[0, 4], [1, 7], [3, 2], [5, 6], [6, 4]],
+              "message": "Digit 5 appears in these cells"
+            },
+            {
+              "action": "draw-blocking-lines",
+              "rows": [0, 1, 3, 5, 6],
+              "columns": [4, 7, 2, 6, 4],
+              "message": "Each 5 blocks its entire row and column"
+            },
+            {
+              "action": "analyze-box",
+              "box": 8,
+              "message": "Let's check Box 9 (bottom-right)"
+            },
+            {
+              "action": "show-eliminated",
+              "cells": [[6, 6], [6, 7], [6, 8], [7, 4], [7, 7], [8, 4], [8, 7]],
+              "message": "These cells are blocked by existing 5s or filled"
+            },
+            {
+              "action": "reveal-hidden-single",
+              "cell": [8, 6],
+              "digit": 5,
+              "message": "Only R9C7 remains → Hidden single found!"
+            }
+          ]
+        }
+      ],
+      "key_points": [
+        "Cross-hatching: scan one digit across all boxes at once",
+        "Use blocking rows/columns to eliminate cells visually",
+        "Start with most frequent digits (6-7 instances)",
+        "Works at a glance once you practice",
+        "The fastest method for finding box hidden singles"
+      ]
+    },
+
+    {
+      "id": "row-column-sweeping",
+      "type": "explanation",
+      "title": "Row and Column Sweeping",
+      "content": "While cross-hatching handles boxes efficiently, **row and column sweeping** helps you find hidden singles in rows and columns quickly.\n\n## Row Sweeping\n\n**Goal**: Quickly scan all rows to find nearly-complete ones\n\n### **Technique:**\n\n1. **Visual Scan**: Look at all 9 rows at once\n2. **Count Filled Cells**: Identify rows with 7-8 filled cells\n3. **Quick Analysis**: For each nearly-complete row:\n   - What digits are missing? (1-2 digits)\n   - Where can each missing digit go?\n   - Check column and box constraints\n\n### **Example:**\n\nRow 4 has: **1, _, 4, 6, 7, _, 3, 8, _** (6 filled, 3 empty)\n\n**Missing**: 2, 5, 9\n\n**Where can 2 go?**\n- R4C2: Column 2 has 2? Check.\n- R4C6: Column 6 has 2? Check.\n- R4C9: Column 9 has 2? Check.\n\nIf only one is valid → **hidden single found!**\n\n## Column Sweeping\n\n**Goal**: Same as row sweeping, but vertical\n\n### **Technique:**\n\n1. **Rotate Mental View**: Think vertically\n2. **Scan All Columns**: Find ones with 7-8 filled cells\n3. **Quick Analysis**: Check row and box constraints for missing digits\n\n### **Pro Tip: Alternating Pattern**\n\nDon't do all rows, then all columns. Instead:\n1. Do one **row sweep**\n2. Do one **column sweep**\n3. Repeat\n\nWhy? Placing a digit in a row immediately affects columns (and vice versa). Alternating catches new opportunities faster!\n\n## Combining All Three Techniques\n\nThe **optimal scanning workflow** used by competitive solvers:\n\n### **Phase 1: Cross-Hatching** (30 seconds)\n- Scan digit by digit for box hidden singles\n- Start with most frequent digits\n- Place all findings\n\n### **Phase 2: Row Sweeping** (20 seconds)\n- Scan all rows for nearly-complete ones\n- Find hidden singles and naked singles\n- Place all findings\n\n### **Phase 3: Column Sweeping** (20 seconds)\n- Scan all columns for nearly-complete ones\n- Find hidden singles and naked singles\n- Place all findings\n\n### **Phase 4: Repeat** (until solved)\n- Go back to Phase 1\n- Each placement creates new opportunities\n- Keep cycling through all three techniques\n\n## Visual Scanning Shortcuts\n\n✅ **The \"Gap Method\"**: \nVisually scan for gaps (empty cells) in rows/columns. Rows with 1-2 gaps = priority!\n\n✅ **The \"Symmetry Check\"**:\nSome puzzles have symmetric patterns. If you find a hidden single in Box 1, check Box 9 (opposite corner) - might have similar pattern.\n\n✅ **The \"Last Digit in Unit\"**:\nWhen a row/column/box has 8 filled cells, the last is automatically determined - don't waste time analyzing!\n\n✅ **The \"Frequent Digits First\"**:\nDigits that appear 6-7 times are closest to completion → highest priority for cross-hatching.",
+      "duration": 210,
+      "diagrams": [
+        {
+          "type": "sweeping-workflow",
+          "grid": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "highlights": {
+            "nearly_complete_rows": [
+              {"row": 3, "filled": 7, "missing": [3, 4]},
+              {"row": 6, "filled": 7, "missing": [4, 7]}
+            ],
+            "nearly_complete_columns": [
+              {"column": 1, "filled": 8, "missing": [1]},
+              {"column": 7, "filled": 7, "missing": [6, 4]}
+            ]
+          },
+          "caption": "Row and column sweeping identifies nearly-complete units for quick analysis"
+        }
+      ],
+      "key_points": [
+        "Row sweeping: find rows with 7-8 filled cells",
+        "Column sweeping: find columns with 7-8 filled cells",
+        "Alternate between techniques to catch new opportunities",
+        "Use visual 'gap method' to find nearly-complete units quickly",
+        "Combine with cross-hatching for complete coverage"
+      ]
+    },
+
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice Efficient Scanning",
+      "content": "Time to apply these scanning techniques! Focus on **speed and efficiency** - use the systematic methods you've learned.\n\n**Instructions:**\n1. **Start with cross-hatching**: Pick most frequent digits\n2. **Do row sweeping**: Find nearly-complete rows\n3. **Do column sweeping**: Find nearly-complete columns\n4. **Repeat the cycle** until solved\n\n**Speed Challenge:**\nThese puzzles can be solved in under 5 minutes each using efficient scanning. Try to beat that time!\n\n**Tips:**\n- Don't analyze cells one-by-one (slow)\n- Use visual patterns (fast)\n- After each placement, immediately check its row, column, and box\n- Think in \"sweeps\" not \"cells\"\n\n**Goal:** Complete at least 3 of 4 puzzles using systematic scanning",
+      "duration": 360,
+      "puzzles": [
+        {
+          "id": "practice-scanning-01",
+          "title": "Practice Puzzle 1: Cross-Hatching Focus",
+          "difficulty": "easy",
+          "grid": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "solution": "483921657967345821251876493381429765729635148546718239162594378438267519795183264",
+          "givens": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "target_cells": [[0, 0], [0, 1], [0, 5], [1, 1], [1, 2], [2, 0]],
+          "hints": [
+            "Start by cross-hatching: Which digit appears most frequently?",
+            "Count occurrences: 1 appears 4 times, 2 appears 6 times, 3 appears 5 times...",
+            "Start with digit 2 (appears 6 times) - cross-hatch all boxes",
+            "Use blocking rows and columns to find where 2 can go in each box",
+            "After cross-hatching, do a row sweep for nearly-complete rows"
+          ],
+          "explanation": "This puzzle is **designed for cross-hatching practice**. Count digit frequencies, start with most common, and systematically cross-hatch box by box. You'll find multiple hidden singles quickly!"
+        },
+        {
+          "id": "practice-scanning-02",
+          "title": "Practice Puzzle 2: Row/Column Sweeping",
+          "difficulty": "easy",
+          "grid": "2...8.3...6..7..84.3.5..2.9.1..6.5.48...8...73...2..468..1...3.....8..1.7...3..",
+          "solution": "215486379968237154437591628392146857456879231781325496824613795639758412571924683",
+          "givens": "2...8.3...6..7..84.3.5..2.9.1..6.5.48...8...73...2..468..1...3.....8..1.7...3..",
+          "target_cells": [[0, 1], [0, 3], [1, 2], [1, 3], [2, 3]],
+          "hints": [
+            "This puzzle has several nearly-complete rows and columns",
+            "Start with row sweeping: Which rows have 7-8 filled cells?",
+            "Row 5 is very complete - what's missing?",
+            "After row sweep, do column sweep - Column 4 has 7 cells filled",
+            "Alternate between row and column sweeping"
+          ],
+          "explanation": "This puzzle is **optimized for sweeping techniques**. You'll find most singles using row and column sweeping rather than cross-hatching. Practice identifying nearly-complete units visually!"
+        },
+        {
+          "id": "practice-scanning-03",
+          "title": "Practice Puzzle 3: Combined Techniques",
+          "difficulty": "medium",
+          "grid": "3.542.81.4879.1.524.2.1.79.5.6.3.2...1.5.9.....3.8..5.8.6.1.9.61.29...787.9.6.12",
+          "solution": "395427816487931652621518794549673281731852946268149375853764129614295738729386514",
+          "givens": "3.542.81.4879.1.524.2.1.79.5.6.3.2...1.5.9.....3.8..5.8.6.1.9.61.29...787.9.6.12",
+          "target_cells": [[0, 1], [0, 5], [1, 4], [2, 2], [2, 4]],
+          "hints": [
+            "Use ALL three techniques: cross-hatching, row sweeping, column sweeping",
+            "Start with cross-hatching digit 2 (appears 6 times)",
+            "Then sweep rows - Row 1 needs only 2 digits",
+            "Then sweep columns - Column 5 has good opportunities",
+            "Cycle through all techniques repeatedly"
+          ],
+          "explanation": "This puzzle requires **combining all three scanning techniques**. You'll need to cycle through cross-hatching → row sweeping → column sweeping → repeat. This simulates real puzzle-solving!"
+        },
+        {
+          "id": "practice-scanning-04",
+          "title": "Practice Puzzle 4: Speed Challenge",
+          "difficulty": "easy",
+          "grid": "53..7....6..195....98....6..8...6...34..8.3..17...2...6..6....28....419..5....8..79",
+          "solution": "534678912672195348198342567859761423426853791713924856961537284287419635345286179",
+          "givens": "53..7....6..195....98....6..8...6...34..8.3..17...2...6..6....28....419..5....8..79",
+          "target_cells": [[0, 2], [0, 3], [0, 7], [1, 2], [1, 6]],
+          "hints": [
+            "Goal: Solve as fast as possible using systematic scanning",
+            "Don't overthink - use visual patterns",
+            "Cross-hatch high-frequency digits first",
+            "After each placement, immediately scan its neighbors",
+            "Trust the techniques - they work!"
+          ],
+          "explanation": "This is a **speed challenge puzzle**. With proper scanning techniques, you should solve this in under 5 minutes. Focus on efficiency, not perfection. Speed comes from systematic visual scanning, not careful analysis!"
+        }
+      ],
+      "success_criteria": {
+        "min_puzzles": 3,
+        "allow_hints": true,
+        "max_errors": 10
+      },
+      "success_message": "Excellent! You've mastered efficient scanning techniques. You're now solving puzzles much faster than before. Keep practicing to build muscle memory!",
+      "failure_message": "Scanning techniques take practice. Don't analyze cell-by-cell - think in sweeps and patterns. Review the techniques and try again!"
+    },
+
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Test Your Understanding",
+      "content": "Let's verify your understanding of scanning techniques. Answer these questions to complete the lesson.\n\n**Passing Score:** 2 out of 3 correct",
+      "duration": 120,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "What is cross-hatching?",
+          "type": "multiple-choice",
+          "options": [
+            "Filling in candidate numbers in cells",
+            "Scanning one digit across all boxes using blocking rows/columns",
+            "Checking every empty cell systematically",
+            "Drawing X patterns on the grid"
+          ],
+          "correct": 1,
+          "explanation": "Cross-hatching is the technique of picking one digit and scanning all boxes to find where it can go. You use existing instances of that digit to 'cross out' (block) rows and columns, leaving only valid placement(s)."
+        },
+        {
+          "id": "q2",
+          "question": "When cross-hatching, which digits should you start with for maximum efficiency?",
+          "type": "multiple-choice",
+          "options": [
+            "Always start with digit 1, then 2, 3, etc. in order",
+            "Start with digits that appear most frequently (6-7 times)",
+            "Start with digits that appear least frequently (1-2 times)",
+            "It doesn't matter - random order is fine"
+          ],
+          "correct": 1,
+          "explanation": "Starting with the most frequent digits is more efficient because they have more constraints. A digit that appears 6-7 times on the board has more blocking rows/columns, making it easier to find where it can go in remaining boxes."
+        },
+        {
+          "id": "q3",
+          "question": "What is the optimal scanning workflow used by competitive solvers?",
+          "type": "multiple-choice",
+          "options": [
+            "Check every cell one at a time from top-left to bottom-right",
+            "Only use cross-hatching until stuck, then try other methods",
+            "Cycle through: Cross-hatching → Row sweeping → Column sweeping → Repeat",
+            "Focus on one row at a time until it's complete"
+          ],
+          "correct": 2,
+          "explanation": "The optimal workflow is to cycle through all three techniques: (1) Cross-hatching for box hidden singles, (2) Row sweeping for row singles, (3) Column sweeping for column singles, then repeat. Each placement creates new opportunities, so cycling ensures you catch them quickly!"
+        }
+      ],
+      "passing_score": 2
+    },
+
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Lesson Complete!",
+      "content": "Congratulations! You've mastered **Scanning Techniques** - the methods that separate fast solvers from slow ones.\n\n## What You've Learned:\n\n✅ **Cross-Hatching**: Scan one digit across all boxes using blocking lines\n✅ **Row Sweeping**: Quickly find nearly-complete rows (7-8 filled cells)\n✅ **Column Sweeping**: Quickly find nearly-complete columns (7-8 filled cells)\n✅ **Optimal Workflow**: Cycle through all three techniques systematically\n✅ **Visual Patterns**: Use gaps and frequency to prioritize scanning\n\n## The Speed Transformation\n\n**Before This Lesson:**\n- Analyzed each cell individually\n- Took 15-20 minutes for easy puzzles\n- Felt overwhelmed by empty cells\n- Missed obvious hidden singles\n\n**After This Lesson:**\n- Scan in systematic patterns\n- Can solve easy puzzles in 3-5 minutes\n- Know exactly where to look\n- Find singles quickly and confidently\n\n## Your Solving Toolkit So Far\n\n🔧 **Lesson 1**: Basic rules and grid understanding\n🔧 **Lesson 2**: Naked singles (what goes in this cell?)\n🔧 **Lesson 3**: Hidden singles (where can this digit go?)\n🔧 **Lesson 4**: Efficient scanning methods (HOW to find them fast)\n\n**With these four lessons, you can solve most easy and many medium puzzles efficiently!**\n\n## Next Steps:\n\nIn **Lesson 5: Naked Pairs**, you'll learn your first **advanced technique**. When singles aren't enough, naked pairs help eliminate candidates and unlock new progress.\n\nA **naked pair** is two cells in a unit that can only contain the same two digits. This powerful technique eliminates those digits from other cells in the unit!\n\n## Practice Recommendation\n\nBefore moving to advanced techniques:\n1. **Solve 5-10 easy puzzles** using your new scanning techniques\n2. **Time yourself** - aim for under 5 minutes\n3. **Build muscle memory** - the techniques should feel automatic\n4. **Then** proceed to Lesson 5 when ready\n\nSpeed comes from practice!\n\n## Your Progress:\n\n🎯 **XP Earned**: +50 XP (175 total)\n🏆 **Achievement Unlocked**: \"Speed Scanner\"\n📚 **Completion**: 4 of 20 lessons (20%)\n⚡ **New Skill**: Cross-Hatching, Row/Column Sweeping\n⏱️ **Speed Boost**: 3-4x faster solving!\n\n**Amazing progress!** You've completed the fundamental scanning techniques module.",
+      "duration": 60,
+      "key_takeaways": [
+        "Cross-hatching: scan one digit across boxes using blocking lines",
+        "Row/column sweeping: find nearly-complete units (7-8 cells)",
+        "Optimal workflow: cycle through all three techniques",
+        "Start cross-hatching with most frequent digits",
+        "Speed comes from systematic visual scanning, not cell-by-cell analysis"
+      ],
+      "next_lesson": {
+        "id": "lesson-05-naked-pairs",
+        "title": "Naked Pairs",
+        "teaser": "Learn to use pairs of cells with the same two candidates to eliminate options"
+      },
+      "rewards": {
+        "xp": 50,
+        "achievement": {
+          "id": "lesson_04_complete",
+          "name": "Speed Scanner",
+          "icon": "bolt"
+        }
+      }
+    }
+  ],
+
+  "metadata": {
+    "author": "The London Sudoku Team",
+    "version": "1.0",
+    "last_updated": "2025-11-12",
+    "difficulty_rating": 2,
+    "estimated_completion": "15 minutes",
+    "prerequisites_required": true,
+    "practice_puzzles_count": 4,
+    "quiz_questions_count": 3
+  }
+}

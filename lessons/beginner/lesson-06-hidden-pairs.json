@@ -1,0 +1,355 @@
+{
+  "id": "lesson-06-hidden-pairs",
+  "number": 6,
+  "title": "Hidden Pairs",
+  "course": "beginner",
+  "duration": 1200,
+  "premium": false,
+  "xp_reward": 75,
+  "prerequisites": ["lesson-01-sudoku-basics", "lesson-02-naked-singles", "lesson-03-hidden-singles", "lesson-04-scanning-techniques", "lesson-05-naked-pairs"],
+  "description": "Find two digits confined to the same two cells and use them to solve puzzles",
+
+  "steps": [
+    {
+      "id": "intro",
+      "type": "introduction",
+      "title": "The Hidden Pattern",
+      "content": "Welcome to Lesson 6 - the final lesson in the beginner course! You've learned naked pairs. Now learn their \"hidden\" counterpart: **Hidden Pairs**.\n\n**The Difference:**\n- **Naked Pairs**: Two cells with ONLY two candidates (easy to spot)\n- **Hidden Pairs**: Two cells where two digits are confined to those cells, but other candidates exist (hard to spot - \"hidden\")\n\n**What You'll Learn:**\n- What hidden pairs are and why they're \"hidden\"\n- How to find them by tracking digit placements\n- How to use them to eliminate candidates\n- The relationship between naked and hidden pairs\n\n**Why It's Important:**\nHidden pairs are often missed by beginners because they're not visually obvious. Learning to spot them will:\n- Unlock puzzles that seem stuck\n- Train your brain to think in multiple ways\n- Complete your fundamental pattern recognition skillset\n\n**Time Estimate:** 20 minutes",
+      "duration": 60,
+      "media": {
+        "type": "image",
+        "url": "/assets/lessons/hidden-pairs-intro.png",
+        "alt": "Two digits confined to two cells with other candidates present"
+      }
+    },
+
+    {
+      "id": "what-are-hidden-pairs",
+      "type": "explanation",
+      "title": "What Are Hidden Pairs?",
+      "content": "A **hidden pair** occurs when two digits can ONLY go in two specific cells within a unit - but those cells also have other candidates, \"hiding\" the pair.\n\n## The Logic\n\n**Key Insight:**\nIf digits 3 and 7 can ONLY go in cells R4C2 and R4C6 within Row 4:\n- One cell will be 3, the other will be 7 (unknown which)\n- ALL other candidates in those two cells can be eliminated!\n- Those two cells form a \"hidden pair\"\n\n## Example\n\n**Look at Row 4:**\n- R4C2 has candidates: {2, 3, 7, 9}\n- R4C6 has candidates: {3, 5, 7, 8}\n- Other Row 4 cells have: various candidates, but none contain both 3 and 7\n\n**Analysis:**\nChecking where 3 can go in Row 4:\n- Only R4C2 and R4C6 can be 3\n\nChecking where 7 can go in Row 4:\n- Only R4C2 and R4C6 can be 7\n\n**Conclusion:**\nDigits {3, 7} are confined to cells {R4C2, R4C6} → Hidden pair!\n\n**Elimination:**\n- R4C2 had {2, 3, 7, 9} → Remove 2 and 9 → {3, 7}\n- R4C6 had {3, 5, 7, 8} → Remove 5 and 8 → {3, 7}\n\n**Result:** The hidden pair becomes a naked pair after elimination!\n\n## Why \"Hidden\"?\n\nThe pair is \"hidden\" because:\n1. The cells have multiple candidates (3-4 typically)\n2. You can't see it by looking at the cells\n3. You only discover it by tracking where specific DIGITS can go\n4. Once found, you eliminate the \"extra\" candidates\n\n## Hidden vs. Naked Pairs Comparison\n\n**Naked Pair {3, 7}:**\n```\nRow 4: ... [3,7] ... [3,7] ...\n           ↑         ↑\n        Obvious naked pair\n```\n- **Before**: Cells have ONLY {3, 7}\n- **Visible**: Yes, easy to spot\n- **Action**: Eliminate 3 and 7 from OTHER cells\n\n**Hidden Pair {3, 7}:**\n```\nRow 4: ... [2,3,7,9] ... [3,5,7,8] ...\n              ↑              ↑\n          Hidden pair - not obvious!\n```\n- **Before**: Cells have {2,3,7,9} and {3,5,7,8}\n- **Visible**: No, looks like random candidates\n- **Discovery**: Track where 3 and 7 can go → only these two cells\n- **Action**: Eliminate OTHER candidates (2,9,5,8) from THESE cells\n- **After**: Becomes naked pair {3,7}\n\n## The Fundamental Difference\n\n**Naked Pairs**: Eliminate FROM other cells\n**Hidden Pairs**: Eliminate FROM the pair cells themselves",
+      "duration": 180,
+      "diagrams": [
+        {
+          "type": "hidden-pair-demo",
+          "grid": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "highlights": {
+            "hidden_pair_cells": [[3, 1], [3, 5]],
+            "hidden_pair_digits": [3, 7],
+            "before_candidates": {
+              "R4C2": [2, 3, 7, 9],
+              "R4C6": [3, 5, 7, 8]
+            },
+            "after_candidates": {
+              "R4C2": [3, 7],
+              "R4C6": [3, 7]
+            },
+            "eliminated": {
+              "R4C2": [2, 9],
+              "R4C6": [5, 8]
+            }
+          },
+          "caption": "Hidden pair {3,7} in Row 4: only R4C2 and R4C6 can contain 3 or 7"
+        }
+      ],
+      "animations": [
+        {
+          "type": "hidden-pair-discovery",
+          "steps": [
+            {
+              "action": "show-candidates",
+              "unit": "row",
+              "unit_index": 3,
+              "cells": [
+                {"cell": [3, 1], "candidates": [2, 3, 7, 9]},
+                {"cell": [3, 5], "candidates": [3, 5, 7, 8]},
+                {"cell": [3, 7], "candidates": [4, 6]}
+              ],
+              "message": "Row 4 has these candidates in empty cells"
+            },
+            {
+              "action": "track-digit",
+              "digit": 3,
+              "message": "Let's track where 3 can go in Row 4"
+            },
+            {
+              "action": "show-possibilities",
+              "digit": 3,
+              "cells": [[3, 1], [3, 5]],
+              "message": "Digit 3 can only go in R4C2 or R4C6"
+            },
+            {
+              "action": "track-digit",
+              "digit": 7,
+              "message": "Now let's track where 7 can go in Row 4"
+            },
+            {
+              "action": "show-possibilities",
+              "digit": 7,
+              "cells": [[3, 1], [3, 5]],
+              "message": "Digit 7 can also only go in R4C2 or R4C6"
+            },
+            {
+              "action": "identify-hidden-pair",
+              "cells": [[3, 1], [3, 5]],
+              "digits": [3, 7],
+              "message": "Hidden pair found! Digits {3,7} are confined to these two cells"
+            },
+            {
+              "action": "eliminate-others",
+              "cell": [3, 1],
+              "remove": [2, 9],
+              "remaining": [3, 7],
+              "message": "Remove all OTHER candidates from R4C2: {2,3,7,9} → {3,7}"
+            },
+            {
+              "action": "eliminate-others",
+              "cell": [3, 5],
+              "remove": [5, 8],
+              "remaining": [3, 7],
+              "message": "Remove all OTHER candidates from R4C6: {3,5,7,8} → {3,7}"
+            },
+            {
+              "action": "reveal-naked-pair",
+              "message": "The hidden pair is now a naked pair {3,7}!"
+            }
+          ]
+        }
+      ],
+      "key_points": [
+        "Hidden pair: two digits confined to two cells in a unit",
+        "Cells have OTHER candidates too - that's why it's 'hidden'",
+        "Found by tracking where digits can go (like hidden singles)",
+        "Eliminate OTHER candidates FROM the pair cells themselves",
+        "After elimination, hidden pair becomes a naked pair"
+      ]
+    },
+
+    {
+      "id": "finding-hidden-pairs",
+      "type": "explanation",
+      "title": "How to Find Hidden Pairs",
+      "content": "Finding hidden pairs requires systematic digit tracking. Here's the efficient method.\n\n## Step 1: Choose a Unit to Analyze\n\nPick a row, column, or box to scan. Good candidates:\n- Units with 5-6 filled cells (moderate number of empty cells)\n- Units where naked singles/pairs haven't helped\n\n## Step 2: List Missing Digits\n\nFor your chosen unit, identify which digits (1-9) are missing.\n\n**Example: Row 5**\nFilled: 1, 2, 5, 6, 9\nMissing: {3, 4, 7, 8}\n\n## Step 3: Track Each Missing Digit\n\nFor each missing digit, ask: \"Which empty cells can hold this digit?\"\n\nUse column and box constraints to eliminate impossible placements.\n\n**Tracking digit 3 in Row 5:**\n- R5C2: Can it be 3? Check Column 2 and Box 4\n- R5C4: Can it be 3? Check Column 4 and Box 5\n- R5C7: Can it be 3? Check Column 7 and Box 6\n- R5C8: Can it be 3? Check Column 8 and Box 6\n\n**Result**: Digit 3 can go in: {R5C2, R5C7}\n\nRepeat for all missing digits.\n\n## Step 4: Look for Pairs\n\nCheck if any TWO digits share the SAME TWO possible cells.\n\n**Example tracking results:**\n- Digit 3 can go in: {R5C2, R5C7}\n- Digit 4 can go in: {R5C4, R5C8}\n- Digit 7 can go in: {R5C2, R5C7} ← Same as 3!\n- Digit 8 can go in: {R5C4, R5C8, R5C9}\n\n**Hidden pair found!** Digits {3, 7} both confined to {R5C2, R5C7}\n\n## Step 5: Apply Elimination\n\nFor the two cells in the hidden pair:\n1. Keep ONLY the pair digits as candidates\n2. Remove ALL other candidates\n\n**Example:**\n- R5C2 had {3, 5, 7, 9} → Keep {3, 7} → Remove {5, 9}\n- R5C7 had {2, 3, 6, 7} → Keep {3, 7} → Remove {2, 6}\n\n## Systematic Scanning Strategy\n\n### **Priority 1: Boxes**\n\nBoxes are best for hidden pairs:\n1. Only 9 cells (less tracking)\n2. Usually 5-6 filled (ideal)\n3. Box constraints are easier to visualize\n\n**Process:**\n- Scan Box 1\n- List missing digits\n- Track where each can go\n- Look for two digits confined to two cells\n- Apply elimination if found\n- Repeat for all 9 boxes\n\n### **Priority 2: Rows**\n\n**Process:**\n- Pick a row with 5-6 filled cells\n- List missing digits\n- Track using column and box constraints\n- Look for pairs\n\n### **Priority 3: Columns**\n\nSame as rows, but vertical.\n\n## Pro Tips for Efficiency\n\n✅ **Focus on Units with 4-5 Empty Cells**\n- Too many empty cells (7-8) → too many possibilities\n- Too few empty cells (1-2) → no pairs possible\n- Sweet spot: 4-5 empty cells\n\n✅ **Track Digits with Limited Placements**\nIf a digit can go in 2-3 cells, it's a good candidate for a hidden pair.\n\nIf a digit can go in 5-6 cells, it's unlikely to form a hidden pair.\n\n✅ **Use Pencilmarks**\nWrite small numbers in cells to track possibilities:\n```\nR5C2: 3 5 7 9  ← After finding hidden pair {3,7}, cross out 5 and 9\n```\n\n✅ **Check After Naked Pairs**\nAfter finding and applying a naked pair, check for hidden pairs in the same unit. Elimination often reveals them!\n\n✅ **Look for Complementary Patterns**\nIf you find a hidden pair {3, 7} in cells {R5C2, R5C7}, this also means:\n- No other Row 5 cell can be 3 or 7\n- This is a naked pair property!\n\nHidden pairs and naked pairs are two views of the same constraint.\n\n## Common Patterns\n\n### **Pattern 1: Box Hidden Pair**\n```\nBox 5 (center):\n[2,4,5] [6] [1]\n[9] [2,4,8] [3]\n[7] [8] [2,4,5]\n ↑          ↑\nDigits {2,4} confined to R4C4 and R5C7\n```\n\n### **Pattern 2: Row Hidden Pair**\n```\nRow 3: [5,6,9] [1] [5,9] [8] [5,6,9] [4] [2] [7] [3]\n        ↑              ↑       ↑\nDigits {6,9} confined to R3C1 and R3C5\n```\n\n## Common Mistakes\n\n❌ **Forgetting Box Constraints**\nWhen tracking row placements, don't forget to check box constraints too!\n\n❌ **Looking at Cells Instead of Digits**\nHidden pairs require DIGIT tracking, not cell analysis.\n\n❌ **Eliminating from Wrong Cells**\nRemember: eliminate OTHER candidates FROM the pair cells, not the pair digits FROM other cells.\n\n❌ **Missing Partial Overlaps**\nSometimes three digits share partial overlaps:\n- Digit 3: cells {A, B}\n- Digit 7: cells {A, B} ← Hidden pair {3,7}\n- Digit 9: cells {A, B, C} ← Not part of pair\n\nDon't let extra overlaps confuse you!",
+      "duration": 240,
+      "diagrams": [
+        {
+          "type": "digit-tracking",
+          "grid": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "highlights": {
+            "unit": "box",
+            "unit_index": 4,
+            "digit_tracking": [
+              {"digit": 3, "possible_cells": [[3, 4], [4, 3]]},
+              {"digit": 7, "possible_cells": [[3, 4], [4, 3]]},
+              {"digit": 5, "possible_cells": [[3, 3], [3, 5], [4, 4]]}
+            ],
+            "hidden_pair": {
+              "digits": [3, 7],
+              "cells": [[3, 4], [4, 3]]
+            }
+          },
+          "caption": "Tracking digits in Box 5: digits 3 and 7 can only go in two cells → hidden pair"
+        }
+      ],
+      "key_points": [
+        "Track where each missing digit can go in the unit",
+        "Look for two digits confined to the same two cells",
+        "Eliminate OTHER candidates from those two cells",
+        "Boxes are easiest (fewer cells to track)",
+        "Focus on units with 4-5 empty cells",
+        "After elimination, hidden pair becomes naked pair"
+      ]
+    },
+
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice Finding Hidden Pairs",
+      "content": "Time to practice finding hidden pairs! These puzzles require systematic digit tracking.\n\n**Instructions:**\n1. Choose a unit (box, row, or column) with 4-5 empty cells\n2. List missing digits for that unit\n3. Track where each digit can go\n4. Look for two digits confined to the same two cells\n5. Eliminate OTHER candidates from those two cells\n6. Continue solving with revealed patterns\n\n**Strategy:**\n- Start with boxes (easiest to visualize)\n- Keep detailed notes of where each digit can go\n- Don't confuse with naked pairs (different elimination!)\n- After elimination, check for newly revealed singles or pairs\n\n**Goal:** Complete at least 3 of 4 puzzles using hidden pairs",
+      "duration": 420,
+      "puzzles": [
+        {
+          "id": "practice-hidden-pairs-01",
+          "title": "Practice Puzzle 1: Box Hidden Pair",
+          "difficulty": "medium",
+          "grid": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "solution": "483921657967345821251876493381429765729635148546718239162594378438267519795183264",
+          "givens": "..3.2.6..9..3.5..1..18.64...81.29..7.......8..67.82...26.95..8..2.3..9..5.1.3..",
+          "target_cells": [[0, 0], [0, 1], [1, 1], [1, 2]],
+          "hints": [
+            "Start by analyzing Box 1 (top-left 3×3)",
+            "List all missing digits in Box 1",
+            "For each missing digit, track which cells can contain it",
+            "Check column constraints and existing box numbers",
+            "You should find two digits that can only go in the same two cells",
+            "Eliminate all OTHER candidates from those two cells"
+          ],
+          "explanation": "This puzzle has a **hidden pair in Box 1**. Unlike naked pairs (which are obvious), you need to track digit placements to discover this pattern. This teaches you digit-focused thinking!"
+        },
+        {
+          "id": "practice-hidden-pairs-02",
+          "title": "Practice Puzzle 2: Row Hidden Pair",
+          "difficulty": "medium",
+          "grid": "2...8.3...6..7..84.3.5..2.9.1..6.5.48...8...73...2..468..1...3.....8..1.7...3..",
+          "solution": "215486379968237154437591628392146857456879231781325496824613795639758412571924683",
+          "givens": "2...8.3...6..7..84.3.5..2.9.1..6.5.48...8...73...2..468..1...3.....8..1.7...3..",
+          "target_cells": [[0, 1], [0, 3], [1, 2], [1, 3]],
+          "hints": [
+            "Focus on Row 1 - it has several empty cells",
+            "List missing digits: which numbers don't appear in Row 1?",
+            "For each missing digit, check which cells can hold it",
+            "Use column and box constraints to eliminate impossibilities",
+            "Track carefully - two digits should only fit in two cells",
+            "Remember: eliminate OTHER candidates, not the pair digits!"
+          ],
+          "explanation": "This puzzle has a **hidden pair in Row 1**. Rows and columns require more careful tracking than boxes because you need to check both perpendicular columns/rows AND boxes. Practice systematic digit tracking!"
+        },
+        {
+          "id": "practice-hidden-pairs-03",
+          "title": "Practice Puzzle 3: Multiple Hidden Pairs",
+          "difficulty": "hard",
+          "grid": "3.542.81.4879.1.524.2.1.79.5.6.3.2...1.5.9.....3.8..5.8.6.1.9.61.29...787.9.6.12",
+          "solution": "395427816487931652621518794549673281731852946268149375853764129614295738729386514",
+          "givens": "3.542.81.4879.1.524.2.1.79.5.6.3.2...1.5.9.....3.8..5.8.6.1.9.61.29...787.9.6.12",
+          "target_cells": [[0, 1], [0, 5], [1, 4], [2, 2], [2, 4]],
+          "hints": [
+            "This puzzle has hidden pairs in MULTIPLE units",
+            "Start with boxes - scan Box 2, Box 5, etc.",
+            "After finding first hidden pair, rescan for more",
+            "Elimination might reveal new hidden pairs",
+            "You'll need to iterate: find pair → eliminate → rescan",
+            "This teaches you that patterns often appear in clusters"
+          ],
+          "explanation": "This **advanced puzzle** has multiple hidden pairs across different units. You need to find one, apply elimination, then scan again. This demonstrates how hidden pairs often appear after other eliminations create the right conditions!"
+        },
+        {
+          "id": "practice-hidden-pairs-04",
+          "title": "Practice Puzzle 4: Combining All Techniques",
+          "difficulty": "hard",
+          "grid": "..2.3...8.....8....63.2...9..5...2....1...4..3.6...7...1.7.......4...5..2...36.",
+          "solution": "192435768457968231863127549685749123721583694934612875316274958874391652529856317",
+          "givens": "..2.3...8.....8....63.2...9..5...2....1...4..3.6...7...1.7.......4...5..2...36.",
+          "target_cells": [[0, 0], [0, 1], [0, 5], [1, 1], [1, 2]],
+          "hints": [
+            "This puzzle requires ALL your skills:",
+            "- Naked singles",
+            "- Hidden singles",
+            "- Naked pairs",
+            "- Hidden pairs",
+            "Start with easier techniques, then progress to pairs",
+            "After finding any pattern, immediately check for revealed singles",
+            "Hidden pairs might only become visible after placing several singles",
+            "This is realistic solving - you need the complete toolkit!"
+          ],
+          "explanation": "This **master puzzle** requires combining ALL techniques from Lessons 1-6. You'll use naked singles, hidden singles, naked pairs, and hidden pairs together. This is how real puzzles work - techniques complement each other. Completing this proves you've mastered the beginner course!"
+        }
+      ],
+      "success_criteria": {
+        "min_puzzles": 3,
+        "allow_hints": true,
+        "max_errors": 12
+      },
+      "success_message": "Outstanding! You've mastered hidden pairs and completed the entire beginner course! You now have all fundamental Sudoku solving skills.",
+      "failure_message": "Hidden pairs are challenging - they require careful digit tracking. Make sure to track where EACH digit can go, not just analyze cells. Review the process and try again!"
+    },
+
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Test Your Understanding",
+      "content": "Let's verify your understanding of hidden pairs. Answer these questions to complete the lesson and the beginner course!\n\n**Passing Score:** 2 out of 3 correct",
+      "duration": 120,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "What is a hidden pair?",
+          "type": "multiple-choice",
+          "options": [
+            "Two cells in a unit that have only two candidates each",
+            "Two digits that can only go in two specific cells within a unit (even if those cells have other candidates)",
+            "Two cells that are hidden behind other cells",
+            "Two digits that appear twice in a row"
+          ],
+          "correct": 1,
+          "explanation": "A hidden pair is when two DIGITS can only go in two specific cells within a unit. The key is digit tracking, not cell analysis. The cells typically have OTHER candidates too, which is why the pair is 'hidden'."
+        },
+        {
+          "id": "q2",
+          "question": "When you find a hidden pair {4, 9} in cells R2C3 (which has candidates {2,4,7,9}) and R2C8 (which has candidates {4,5,9}), what should you do?",
+          "type": "multiple-choice",
+          "options": [
+            "Remove 4 and 9 from all other Row 2 cells",
+            "Remove 2, 7 from R2C3 and remove 5 from R2C8, leaving both cells with only {4,9}",
+            "Place 4 in one cell and 9 in the other immediately",
+            "Do nothing - it's already a valid pair"
+          ],
+          "correct": 1,
+          "explanation": "For hidden pairs, you eliminate OTHER candidates FROM the pair cells themselves. R2C3 keeps {4,9} (removes 2,7), and R2C8 keeps {4,9} (removes 5). After elimination, the hidden pair becomes a naked pair. Note: This is opposite of naked pairs, where you eliminate FROM other cells!"
+        },
+        {
+          "id": "q3",
+          "question": "What is the key difference between finding naked pairs and hidden pairs?",
+          "type": "multiple-choice",
+          "options": [
+            "Naked pairs are easier to find than hidden pairs",
+            "Naked pairs use cell-focused analysis (look at cell candidates), while hidden pairs use digit-focused analysis (track where digits can go)",
+            "Hidden pairs only work in boxes, naked pairs work anywhere",
+            "There is no difference - they're the same technique"
+          ],
+          "correct": 1,
+          "explanation": "The fundamental difference is the approach: Naked pairs are found by looking at CELLS (two cells with same candidates are obvious). Hidden pairs are found by tracking DIGITS (where can each digit go?) - two digits confined to two cells. This requires different thinking: cell-focused vs. digit-focused!"
+        }
+      ],
+      "passing_score": 2
+    },
+
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Beginner Course Complete!",
+      "content": "🎓 **CONGRATULATIONS!** 🎓\n\nYou've completed **Lesson 6: Hidden Pairs** and the entire **Beginner Course**!\n\n## What You've Learned:\n\n✅ **Definition**: Two digits confined to two cells in a unit\n✅ **Discovery Method**: Track where each digit can go (digit-focused)\n✅ **Elimination**: Remove OTHER candidates FROM the pair cells\n✅ **Result**: Hidden pair becomes a naked pair after elimination\n✅ **Relationship**: Complementary to naked pairs (two views of same constraint)\n\n## Beginner Course Summary (Lessons 1-6)\n\n### **Foundation (Lessons 1-4):**\n\n🔧 **Lesson 1: Sudoku Basics**\n- Grid structure (9×9, boxes, rows, columns)\n- Three golden rules\n- Basic cell constraints\n\n🔧 **Lesson 2: Naked Singles**\n- What digit goes in this cell?\n- Elimination from row/column/box\n- Most fundamental solving technique\n\n🔧 **Lesson 3: Hidden Singles**\n- Where can this digit go?\n- Unit scanning and digit tracking\n- Complementary to naked singles\n\n🔧 **Lesson 4: Scanning Techniques**\n- Cross-hatching for fast box scanning\n- Row and column sweeping\n- Systematic solving workflow\n\n### **Advanced Beginner (Lessons 5-6):**\n\n🔧 **Lesson 5: Naked Pairs**\n- Two cells with same two candidates\n- Eliminate pair digits FROM other cells\n- First pattern recognition technique\n\n🔧 **Lesson 6: Hidden Pairs** ✨\n- Two digits confined to two cells\n- Eliminate other candidates FROM pair cells\n- Digit-focused pattern recognition\n\n## Your Complete Beginner Toolkit\n\nWith these 6 lessons, you can:\n✅ Solve ALL easy puzzles efficiently (3-5 minutes)\n✅ Solve MOST medium puzzles (8-12 minutes)\n✅ Understand fundamental pattern recognition\n✅ Use systematic scanning workflows\n✅ Apply both direct solving (singles) and elimination (pairs)\n\n## The Two Thinking Modes\n\nYou've now mastered both fundamental approaches:\n\n**Cell-Focused Thinking:**\n- Naked singles: \"What goes in this cell?\"\n- Naked pairs: \"These two cells share candidates\"\n\n**Digit-Focused Thinking:**\n- Hidden singles: \"Where can this digit go?\"\n- Hidden pairs: \"Where can these digits go?\"\n\n**Professional solvers switch between both modes constantly!**\n\n## What's Next?\n\n### **Intermediate Course (Lessons 7-14):**\n\n**Lessons 7-9** (FREE):\n- Lesson 7: Naked Triples (3 cells, 3 candidates)\n- Lesson 8: Hidden Triples (3 digits, 3 cells)\n- Lesson 9: Box/Line Reduction (intersection techniques)\n\n**Lessons 10-14** (PREMIUM):\n- Lesson 10: X-Wing (advanced pattern)\n- Lesson 11: Swordfish (3×3 pattern)\n- Lesson 12: XY-Wing (chain logic)\n- Lesson 13: XYZ-Wing (3-cell chains)\n- Lesson 14: Simple Coloring (candidate coloring)\n\n### **Variant Course (Lessons 15-20)** (ALL PREMIUM):\n- X-Sudoku, Killer Sudoku, Anti-Knight\n- Thermo Sudoku, Jigsaw Sudoku\n- Advanced Combinations\n\n## Practice Recommendation\n\nBefore starting intermediate lessons:\n\n1. **Solve 10-20 medium puzzles** using your complete toolkit\n2. **Master the workflow**:\n   - Singles first (naked and hidden)\n   - Then cross-hatching\n   - Then pairs (naked and hidden)\n   - Repeat until solved\n3. **Build muscle memory** - techniques should feel automatic\n4. **Aim for consistency** - can you solve mediums in under 10 minutes?\n\nOnce comfortable, proceed to Lesson 7: Naked Triples!\n\n## Your Final Progress:\n\n🎯 **XP Earned**: +75 XP (325 total)\n🏆 **Achievement Unlocked**: \"Beginner Course Graduate\"\n📚 **Completion**: 6 of 20 lessons (30%)\n⚡ **New Skill**: Hidden Pairs\n🎓 **MILESTONE**: **BEGINNER COURSE COMPLETE!**\n\n**Amazing achievement!** You've built a strong foundation in Sudoku solving. You're now ready for intermediate techniques!\n\n## Thank You!\n\nThank you for completing the beginner course. You've demonstrated dedication and skill. The journey continues with even more powerful techniques ahead!\n\n**Keep solving, keep learning, and most importantly - have fun!** 🎉",
+      "duration": 60,
+      "key_takeaways": [
+        "Hidden pair: two digits confined to two cells (with other candidates)",
+        "Found by tracking where DIGITS can go (digit-focused analysis)",
+        "Eliminate OTHER candidates FROM the pair cells themselves",
+        "After elimination, hidden pair becomes naked pair",
+        "Complementary to naked pairs (same constraint, different view)",
+        "BEGINNER COURSE COMPLETE - 6 fundamental techniques mastered!"
+      ],
+      "next_lesson": {
+        "id": "lesson-07-naked-triples",
+        "title": "Naked Triples",
+        "teaser": "Expand your pattern recognition to three cells with three candidates (Intermediate Course starts here)"
+      },
+      "rewards": {
+        "xp": 75,
+        "achievement": {
+          "id": "lesson_06_complete",
+          "name": "Beginner Course Graduate",
+          "icon": "graduation-cap"
+        },
+        "bonus_achievement": {
+          "id": "beginner_course_complete",
+          "name": "Foundation Master",
+          "description": "Completed all 6 beginner lessons",
+          "icon": "trophy",
+          "xp_bonus": 100
+        }
+      }
+    }
+  ],
+
+  "metadata": {
+    "author": "The London Sudoku Team",
+    "version": "1.0",
+    "last_updated": "2025-11-12",
+    "difficulty_rating": 3,
+    "estimated_completion": "20 minutes",
+    "prerequisites_required": true,
+    "practice_puzzles_count": 4,
+    "quiz_questions_count": 3,
+    "course_completion": true,
+    "completion_bonus_xp": 100
+  }
+}
