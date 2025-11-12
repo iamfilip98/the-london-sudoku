@@ -4,6 +4,8 @@
 **Status**: 🚨 **CRITICAL UI OVERHAUL REQUIRED**
 **Goal**: Transform from 2-player arena to premium public platform
 
+**📋 USER CONCERNS TRACKING**: See `docs/USER_CONCERNS_TRACKING.md` for detailed tracking of all user requirements
+
 ---
 
 ## 🚨 CRITICAL FINDINGS

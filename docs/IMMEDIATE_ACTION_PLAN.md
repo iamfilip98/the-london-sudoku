@@ -4,6 +4,8 @@
 **Priority**: 🔴 **CRITICAL**
 **Timeline**: Start TODAY
 
+**📋 USER CONCERNS TRACKING**: See `docs/USER_CONCERNS_TRACKING.md` for detailed tracking of all user requirements
+
 ---
 
 ## 🚨 CRITICAL DISCOVERY
