@@ -494,3 +494,228 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* ==============================================
+   SEASON INFO CARD STYLES (Phase 6 Month 19)
+   ============================================== */
+
+.season-info-card {
+    margin: 30px 0;
+}
+
+.season-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.season-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.season-header h3 {
+    margin: 0;
+    font-size: 1.4em;
+    color: #333;
+}
+
+.season-countdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #667eea;
+}
+
+.season-countdown.urgent {
+    background: #ffebee;
+    color: #e53935;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.season-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.season-stat {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.season-stat strong {
+    display: block;
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.season-stat .value {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #333;
+}
+
+.season-stat.promotion-zone {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+}
+
+.season-stat.promotion-zone .value {
+    color: #2e7d32;
+}
+
+.season-stat.demotion-zone {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+}
+
+.season-stat.demotion-zone .value {
+    color: #c62828;
+}
+
+.season-stat.safe-zone {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+}
+
+.season-stat.safe-zone .value {
+    color: #e65100;
+}
+
+.zone-info {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.zone-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.zone-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.zone-line.promotion {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.zone-line.safe {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.zone-line.demotion {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.no-season-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+.no-season-message i {
+    font-size: 3em;
+    color: #ddd;
+    margin-bottom: 15px;
+}
+
+/* Season History Modal */
+.history-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.outcome-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.outcome-badge.promoted {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.outcome-badge.demoted {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.outcome-badge.stayed {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.history-stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+    font-size: 0.9em;
+}
+
+.history-date {
+    font-size: 0.85em;
+    color: #999;
+    margin-top: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .season-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .season-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .history-stats {
+        flex-direction: column;
+        gap: 8px;
+    }
+}

@@ -5,8 +5,10 @@
 
 let currentUser = null;
 let userLeagueStatus = null;
-let official Leagues = [];
+let officialLeagues = [];  // Fixed typo: was "official Leagues"
 let customLeagues = [];
+let currentSeasonInfo = null;
+let seasonHistory = [];
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', async () => {
@@ -57,11 +59,13 @@ async function loadLeaguesData() {
             throw new Error('User ID not found');
         }
 
-        // Fetch data in parallel
-        const [statusResponse, officialResponse, customResponse] = await Promise.all([
+        // Fetch data in parallel (including season data)
+        const [statusResponse, officialResponse, customResponse, seasonResponse, historyResponse] = await Promise.all([
             fetch(`/api/stats?type=leagues-user-status&userId=${userId}`),
             fetch(`/api/stats?type=leagues-official`),
-            fetch(`/api/stats?type=leagues-custom&userId=${userId}`)
+            fetch(`/api/stats?type=leagues-custom&userId=${userId}`),
+            fetch(`/api/stats?type=leagues-current-season&userId=${userId}`),
+            fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=10`)
         ]);
 
         if (!statusResponse.ok || !officialResponse.ok || !customResponse.ok) {
@@ -72,11 +76,23 @@ async function loadLeaguesData() {
         const officialData = await officialResponse.json();
         const customData = await customResponse.json();
 
+        // Season data (may not exist if user not in a league)
+        if (seasonResponse.ok) {
+            const seasonData = await seasonResponse.json();
+            currentSeasonInfo = seasonData.success ? seasonData.data : null;
+        }
+
+        if (historyResponse.ok) {
+            const historyData = await historyResponse.json();
+            seasonHistory = historyData.success ? historyData.data : [];
+        }
+
         officialLeagues = officialData.leagues || [];
         customLeagues = customData.leagues || [];
 
         // Render UI
         renderUserStatus();
+        renderSeasonInfo();
         renderOfficialLeagues();
         renderCustomLeagues();
     } catch (error) {
@@ -141,6 +157,233 @@ function renderUserStatus() {
             </div>
         </div>
     `;
+}
+
+// Render season info card
+function renderSeasonInfo() {
+    const container = document.getElementById('season-info-section');
+
+    if (!container) {
+        // Section doesn't exist in HTML yet - will add it
+        return;
+    }
+
+    if (!currentSeasonInfo) {
+        container.innerHTML = `
+            <div class="no-season-message">
+                <i class="fas fa-calendar-times"></i>
+                <p>No active season - join a league to participate!</p>
+            </div>
+        `;
+        return;
+    }
+
+    const season = currentSeasonInfo.season;
+    const stats = currentSeasonInfo.userStats;
+    const zones = currentSeasonInfo.zones;
+
+    // Calculate days/hours remaining
+    const now = new Date();
+    const endDate = new Date(season.endDate);
+    const timeRemaining = endDate - now;
+    const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+    const hoursRemaining = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+    // Determine zone status and styling
+    let zoneClass = '';
+    let zoneText = '';
+    let zoneIcon = '';
+
+    if (stats.zone === 'promotion') {
+        zoneClass = 'promotion-zone';
+        zoneText = 'Promotion Zone';
+        zoneIcon = 'fa-arrow-up';
+    } else if (stats.zone === 'demotion') {
+        zoneClass = 'demotion-zone';
+        zoneText = 'Demotion Zone';
+        zoneIcon = 'fa-arrow-down';
+    } else {
+        zoneClass = 'safe-zone';
+        zoneText = 'Safe Zone';
+        zoneIcon = 'fa-shield-alt';
+    }
+
+    container.innerHTML = `
+        <div class="season-card">
+            <div class="season-header">
+                <h3><i class="fas fa-trophy"></i> Season ${season.number}</h3>
+                <div class="season-countdown ${daysRemaining <= 1 ? 'urgent' : ''}">
+                    <i class="fas fa-clock"></i>
+                    <span>${daysRemaining}d ${hoursRemaining}h remaining</span>
+                </div>
+            </div>
+
+            <div class="season-stats-grid">
+                <div class="season-stat">
+                    <strong>Your Rank</strong>
+                    <div class="value">#${stats.rank || '-'} / ${stats.totalMembers}</div>
+                </div>
+                <div class="season-stat">
+                    <strong>Season Points</strong>
+                    <div class="value">${stats.points || 0}</div>
+                </div>
+                <div class="season-stat ${zoneClass}">
+                    <strong>Status</strong>
+                    <div class="value">
+                        <i class="fas ${zoneIcon}"></i> ${zoneText}
+                    </div>
+                </div>
+            </div>
+
+            <div class="zone-info">
+                <div class="zone-details">
+                    <div class="zone-line promotion">
+                        <i class="fas fa-arrow-up"></i>
+                        Top ${zones.promotionCutoff} promoted
+                    </div>
+                    <div class="zone-line safe">
+                        <i class="fas fa-minus"></i>
+                        Middle ${stats.totalMembers - zones.promotionCutoff - (stats.totalMembers - zones.demotionCutoff)} stay
+                    </div>
+                    <div class="zone-line demotion">
+                        <i class="fas fa-arrow-down"></i>
+                        Bottom ${stats.totalMembers - zones.demotionCutoff} demoted
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; text-align: center;">
+                <button class="btn-secondary" onclick="viewSeasonHistory()">
+                    <i class="fas fa-history"></i> View Season History
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Start countdown timer update
+    startCountdownTimer(endDate);
+}
+
+// Update countdown timer every minute
+function startCountdownTimer(endDate) {
+    const updateCountdown = () => {
+        const now = new Date();
+        const timeRemaining = endDate - now;
+
+        if (timeRemaining <= 0) {
+            // Season ended, reload data
+            loadLeaguesData();
+            return;
+        }
+
+        const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hoursRemaining = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        const countdownEl = document.querySelector('.season-countdown span');
+        if (countdownEl) {
+            countdownEl.textContent = `${daysRemaining}d ${hoursRemaining}h remaining`;
+
+            // Add urgent class if less than 2 days
+            const parentEl = countdownEl.parentElement;
+            if (daysRemaining <= 1) {
+                parentEl.classList.add('urgent');
+            } else {
+                parentEl.classList.remove('urgent');
+            }
+        }
+    };
+
+    // Update every minute
+    const intervalId = setInterval(updateCountdown, 60000);
+
+    // Store interval ID for cleanup
+    window.seasonCountdownInterval = intervalId;
+}
+
+// View season history modal
+function viewSeasonHistory() {
+    if (seasonHistory.length === 0) {
+        alert('No season history available yet');
+        return;
+    }
+
+    const modal = document.getElementById('season-history-modal') || createSeasonHistoryModal();
+
+    const historyHTML = seasonHistory.map((season, index) => {
+        let outcomeClass = '';
+        let outcomeIcon = '';
+        let outcomeText = season.outcome;
+
+        if (season.outcome === 'promoted') {
+            outcomeClass = 'promoted';
+            outcomeIcon = 'fa-arrow-up';
+            outcomeText = `Promoted to ${season.new_tier}`;
+        } else if (season.outcome === 'demoted') {
+            outcomeClass = 'demoted';
+            outcomeIcon = 'fa-arrow-down';
+            outcomeText = `Demoted to ${season.new_tier}`;
+        } else {
+            outcomeClass = 'stayed';
+            outcomeIcon = 'fa-minus';
+            outcomeText = 'Stayed in league';
+        }
+
+        return `
+            <div class="history-item">
+                <div class="history-header">
+                    <strong>Season ${season.season_number}</strong>
+                    <span class="outcome-badge ${outcomeClass}">
+                        <i class="fas ${outcomeIcon}"></i> ${outcomeText}
+                    </span>
+                </div>
+                <div class="history-stats">
+                    <span><strong>Rank:</strong> #${season.final_rank}</span>
+                    <span><strong>Points:</strong> ${season.final_points}</span>
+                    <span><strong>League:</strong> ${season.league_name}</span>
+                </div>
+                <div class="history-date">${new Date(season.end_date).toLocaleDateString()}</div>
+            </div>
+        `;
+    }).join('');
+
+    modal.querySelector('.modal-body').innerHTML = historyHTML || '<p>No history available</p>';
+    modal.style.display = 'block';
+
+    // Track with PostHog
+    if (window.posthog) {
+        posthog.capture('season_history_viewed', {
+            username: currentUser.username,
+            seasonsCount: seasonHistory.length
+        });
+    }
+}
+
+// Create season history modal
+function createSeasonHistoryModal() {
+    const modal = document.createElement('div');
+    modal.id = 'season-history-modal';
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-history"></i> Season History</h2>
+                <button class="modal-close" onclick="closeSeasonHistoryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    return modal;
+}
+
+// Close season history modal
+function closeSeasonHistoryModal() {
+    const modal = document.getElementById('season-history-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
 }
 
 // Render official leagues
