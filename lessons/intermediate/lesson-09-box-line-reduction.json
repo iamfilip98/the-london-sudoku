@@ -1,0 +1,170 @@
+{
+  "id": "lesson-09-box-line-reduction",
+  "number": 9,
+  "title": "Box/Line Reduction",
+  "course": "intermediate",
+  "duration": 1200,
+  "premium": false,
+  "xp_reward": 100,
+  "prerequisites": ["lesson-01-sudoku-basics", "lesson-02-naked-singles", "lesson-03-hidden-singles"],
+  "description": "Use intersection constraints between boxes and lines for powerful eliminations",
+
+  "steps": [
+    {
+      "id": "intro",
+      "type": "introduction",
+      "title": "Intersection Logic",
+      "content": "Welcome to Lesson 9! Learn **Box/Line Reduction** - using the intersection between boxes and rows/columns for elimination.\n\n**What You'll Learn:**\n- Pointing pairs/triples (box → line elimination)\n- Box/line reduction (line → box elimination)\n- How intersections create constraints\n\n**Why It's Important:**\nThis technique uses the grid's structure itself. When a digit in a box must be in one row/column, or when a digit in a row/column must be in one box, you can eliminate from other areas.\n\n**Time Estimate:** 20 minutes",
+      "duration": 60
+    },
+
+    {
+      "id": "concept",
+      "type": "explanation",
+      "title": "Box/Line Reduction Explained",
+      "content": "**Pointing Pairs/Triples (Box → Line):**\nIf a digit in a box can only go in one row/column of that box, eliminate it from the REST of that row/column.\n\n**Example:**\nIn Box 1, digit 5 can only go in Row 1 (cells R1C1, R1C2, or R1C3).\n→ Eliminate 5 from REST of Row 1 (R1C4-R1C9)\n\n**Box/Line Reduction (Line → Box):**\nIf a digit in a row/column can only go in one box, eliminate it from the REST of that box.\n\n**Example:**\nIn Row 1, digit 5 can only go in Box 1 (cells R1C1, R1C2, or R1C3).\n→ Eliminate 5 from REST of Box 1 (R2C1-R3C3)\n\n## The Logic\n\nThese techniques use the fact that cells belong to BOTH a box AND a line:\n- If confined to box's row → can't be in that row outside the box\n- If confined to line's box → can't be in that box outside the line",
+      "duration": 240,
+      "key_points": [
+        "Pointing: digit in box confined to one line → eliminate from rest of line",
+        "Reduction: digit in line confined to one box → eliminate from rest of box",
+        "Uses intersection constraints",
+        "Works with rows and columns",
+        "Often reveals hidden singles"
+      ]
+    },
+
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice Box/Line Reduction",
+      "content": "Practice identifying and using box/line intersections.\n\n**Instructions:**\n1. Scan boxes - can any digit only go in one row/column?\n2. Scan rows/columns - can any digit only go in one box?\n3. Apply appropriate elimination\n4. Check for revealed singles\n\n**Goal:** Complete at least 2 of 3 puzzles",
+      "duration": 480,
+      "puzzles": [
+        {
+          "id": "practice-box-line-01",
+          "title": "Practice Puzzle 1: Pointing Pairs",
+          "difficulty": "medium",
+          "hints": [
+            "Scan Box 1 - where can digit 5 go?",
+            "If 5 is confined to Row 1 of Box 1, eliminate 5 from rest of Row 1",
+            "This should reveal a hidden single"
+          ]
+        },
+        {
+          "id": "practice-box-line-02",
+          "title": "Practice Puzzle 2: Box/Line Reduction",
+          "difficulty": "medium",
+          "hints": [
+            "Scan Row 1 - where can digit 7 go?",
+            "If 7 is confined to Box 2 in Row 1, eliminate 7 from rest of Box 2",
+            "Check for newly revealed patterns"
+          ]
+        },
+        {
+          "id": "practice-box-line-03",
+          "title": "Practice Puzzle 3: Combined",
+          "difficulty": "hard",
+          "hints": [
+            "This puzzle requires both pointing and reduction",
+            "Scan systematically: boxes first, then rows, then columns",
+            "Multiple applications needed"
+          ]
+        }
+      ],
+      "success_criteria": {
+        "min_puzzles": 2,
+        "allow_hints": true,
+        "max_errors": 10
+      }
+    },
+
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Test Your Understanding",
+      "content": "Verify your understanding of box/line reduction.\n\n**Passing Score:** 2 out of 3 correct",
+      "duration": 120,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "What is a pointing pair?",
+          "type": "multiple-choice",
+          "options": [
+            "Two cells pointing at each other",
+            "When a digit in a box can only go in one row/column of that box, eliminating it from the rest of that row/column",
+            "Two identical candidates in a row",
+            "A type of naked pair"
+          ],
+          "correct": 1,
+          "explanation": "A pointing pair (or triple) occurs when a digit in a box is confined to one row or column of that box, allowing elimination from the rest of that line."
+        },
+        {
+          "id": "q2",
+          "question": "If in Box 1, digit 8 can only go in cells R1C1, R1C2, or R1C3 (all in Row 1), what can you eliminate?",
+          "type": "multiple-choice",
+          "options": [
+            "8 from all of Row 1",
+            "8 from all of Box 1",
+            "8 from Row 1 cells R1C4-R1C9 (outside Box 1)",
+            "Nothing - need more information"
+          ],
+          "correct": 2,
+          "explanation": "Since 8 in Box 1 is confined to Row 1, it must be in one of those cells. Therefore, 8 cannot be anywhere else in Row 1 (cells R1C4-R1C9)."
+        },
+        {
+          "id": "q3",
+          "question": "What's the difference between pointing and box/line reduction?",
+          "type": "multiple-choice",
+          "options": [
+            "No difference - same technique",
+            "Pointing: box → line elimination. Reduction: line → box elimination",
+            "Pointing is easier than reduction",
+            "Pointing only works in boxes"
+          ],
+          "correct": 1,
+          "explanation": "Pointing eliminates from lines (when digit confined to one line in box). Reduction eliminates from boxes (when digit confined to one box in line). Both use intersection logic."
+        }
+      ],
+      "passing_score": 2
+    },
+
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Beginner Course Complete!",
+      "content": "Congratulations! You've completed the **FREE Intermediate lessons**!\n\n## What You've Learned:\n\n✅ **Pointing Pairs/Triples**: Box → line elimination\n✅ **Box/Line Reduction**: Line → box elimination\n✅ **Intersection Logic**: Using grid structure\n\n## Intermediate FREE Lessons Complete!\n\nYou've now completed Lessons 7-9 (FREE intermediate content):\n- Lesson 7: Naked Triples\n- Lesson 8: Hidden Triples\n- Lesson 9: Box/Line Reduction\n\n**Next lessons (10-14) require Premium** to unlock advanced patterns like X-Wing, Swordfish, and Wings.\n\n## Your Progress:\n\n🎯 **XP Earned**: +100 XP (725 total)\n🏆 **Achievement Unlocked**: \"Reduction Specialist\"\n📚 **Completion**: 9 of 20 lessons (45%)\n⚡ **New Skill**: Box/Line Reduction\n🎓 **Intermediate FREE**: 3 of 3 complete ✅\n\n**Next:** Lesson 10: X-Wing (Premium)",
+      "duration": 60,
+      "key_takeaways": [
+        "Pointing: digit in box confined to one line",
+        "Reduction: digit in line confined to one box",
+        "Use intersection constraints",
+        "Reveals hidden singles",
+        "Essential intermediate technique"
+      ],
+      "next_lesson": {
+        "id": "lesson-10-x-wing",
+        "title": "X-Wing",
+        "teaser": "Master the powerful X-Wing pattern for advanced elimination (Premium)"
+      },
+      "rewards": {
+        "xp": 100,
+        "achievement": {
+          "id": "lesson_09_complete",
+          "name": "Reduction Specialist",
+          "icon": "compress"
+        }
+      }
+    }
+  ],
+
+  "metadata": {
+    "author": "The London Sudoku Team",
+    "version": "1.0",
+    "last_updated": "2025-11-12",
+    "difficulty_rating": 3,
+    "estimated_completion": "20 minutes",
+    "prerequisites_required": true,
+    "practice_puzzles_count": 3,
+    "quiz_questions_count": 3
+  }
+}

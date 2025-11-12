@@ -1,0 +1,53 @@
+{
+  "id": "lesson-20-advanced-combinations",
+  "number": 20,
+  "title": "Advanced Combinations",
+  "course": "variants",
+  "duration": 2400,
+  "premium": true,
+  "xp_reward": 200,
+  "prerequisites": ["lesson-19-jigsaw-sudoku"],
+  "description": "Master combining multiple variants and techniques for ultimate Sudoku mastery",
+  "steps": [
+    {"id": "intro", "type": "introduction", "title": "The Final Challenge", "content": "Welcome to **Lesson 20** - the FINAL lesson!\n\nLearn to combine MULTIPLE variants and techniques in single puzzles.\n\n**What You'll Learn:**\n- Multi-variant puzzles (e.g., X-Sudoku + Thermo)\n- Combining all techniques\n- Master-level problem solving\n- The complete Sudoku skillset\n\n**This is the Ultimate Test:**\nSolve puzzles combining everything you've learned across 20 lessons.\n\n**Time Estimate:** 40 minutes", "duration": 60},
+    {"id": "concept", "type": "explanation", "title": "Multi-Variant Strategy", "content": "**Advanced Combinations = Multiple Variants + All Techniques**\n\n**Common Combinations:**\n1. **X-Sudoku + Killer**: Diagonals + Cage sums\n2. **Anti-Knight + Thermo**: Chess moves + Ordering\n3. **Jigsaw + X-Sudoku**: Irregular regions + Diagonals\n4. **Killer + Thermo**: Cage sums + Thermometers\n\n**Solving Strategy:**\n1. **Identify all constraints** (list every rule)\n2. **Find easiest constraint** (which gives most info?)\n3. **Apply systematically** (one technique at a time)\n4. **Look for interactions** (how do constraints combine?)\n5. **Iterate** (each finding reveals more)\n\n**Key Skills:**\n- **Prioritization**: Which technique to use when\n- **Constraint tracking**: Managing multiple rules\n- **Pattern recognition**: Spotting opportunities\n- **Logical reasoning**: Combining deductions\n\n**The Ultimate Mindset:**\n- Stay organized (clean pencilmarks)\n- Be systematic (don't skip techniques)\n- Think flexibly (switch between approaches)\n- Trust your training (you know 20+ techniques!)\n\n**You Are Now a Sudoku Master:**\nWith 20 lessons complete, you can solve ANY standard or variant Sudoku puzzle!", "duration": 540, "key_points": ["Combine multiple variants", "Use all 20 lessons' techniques", "Systematic approach essential", "Constraint interactions are key", "Master-level problem solving"]},
+    {"id": "practice", "type": "practice", "title": "Master Practice", "content": "Solve master-level multi-variant puzzles.\n\n**Goal:** Complete at least 2 of 3 puzzles", "duration": 1500, "puzzles": [{"id": "practice-master-01", "title": "X-Sudoku + Killer", "difficulty": "master", "hints": ["Use diagonals for elimination", "Calculate cage combinations", "Combine both constraints", "Requires ALL beginner + intermediate techniques"]}, {"id": "practice-master-02", "title": "Anti-Knight + Thermo + Jigsaw", "difficulty": "master", "hints": ["Triple variant - track all constraints", "Chess logic + Ordering + Irregular regions", "Most complex puzzle in course", "Methodical approach required"]}, {"id": "practice-master-03", "title": "Ultimate Challenge", "difficulty": "extreme", "hints": ["All techniques required", "Multiple variants combined", "This is the final boss puzzle", "Trust your complete skillset", "Take your time - this is HARD!"]}], "success_criteria": {"min_puzzles": 2, "allow_hints": true, "max_errors": 25}},
+    {"id": "quiz", "type": "quiz", "title": "Final Exam", "content": "**Passing Score:** 2 out of 3 correct", "duration": 180, "questions": [{"id": "q1", "question": "When solving multi-variant puzzles, what's the best approach?", "type": "multiple-choice", "options": ["Random guessing", "Identify all constraints, find easiest, apply systematically, look for interactions", "Only use one technique", "Give up if stuck"], "correct": 1, "explanation": "Multi-variant puzzles require identifying all constraints, starting with the easiest, applying techniques systematically, and watching for constraint interactions."}, {"id": "q2", "question": "What makes master-level puzzles difficult?", "type": "multiple-choice", "options": ["Impossible to solve", "Require combining multiple advanced techniques and variants", "They're not difficult", "Need special software"], "correct": 1, "explanation": "Master puzzles require combining multiple advanced techniques and sometimes multiple variants, demanding high skill and systematic thinking."}, {"id": "q3", "question": "After 20 lessons, what level are you?", "type": "multiple-choice", "options": ["Beginner", "Intermediate", "Advanced", "Master - can solve any standard or variant Sudoku"], "correct": 3, "explanation": "Congratulations! With 20 lessons complete, you're a Sudoku Master capable of solving any standard or variant puzzle!"}], "passing_score": 2},
+    {"id": "summary", "type": "summary", "title": "SUDOKU MASTER!", "content": "🎓 **CONGRATULATIONS! ALL 20 LESSONS COMPLETE!** 🎓\n\nYou've completed the ENTIRE tutorial course and achieved **Sudoku Mastery**!\n\n## Your Complete Journey:\n\n**Beginner Course (Lessons 1-6):** ✅\n- Sudoku basics, singles, scanning, pairs\n- 325 XP + 100 bonus = 425 XP\n\n**Intermediate Course (Lessons 7-14):** ✅\n- Triples, reduction, wings, coloring\n- 1300 XP + 200 bonus = 1500 XP\n\n**Variant Course (Lessons 15-20):** ✅\n- X-Sudoku, Killer, Anti-Knight, Thermo, Jigsaw, Combinations\n- 1000 XP + 300 bonus = 1300 XP\n\n## Final Statistics:\n\n🎯 **Total XP**: 3225 XP (+ 500 bonus from master achievement = **3725 XP**)\n🏆 **Achievement**: \"Sudoku Sensei\" (LEGENDARY)\n📚 **Completion**: 20 of 20 (100%) ✅\n⚡ **All Courses**: COMPLETE ✅\n🎓 **Status**: **MASTER**\n\n## What You've Mastered:\n\n**Core Techniques (20+):**\n- Singles (naked & hidden)\n- Scanning methods\n- Pairs & Triples (naked & hidden)\n- Box/Line Reduction\n- Fish patterns (X-Wing, Swordfish)\n- Wings (XY, XYZ)\n- Simple Coloring\n\n**Variants (6):**\n- X-Sudoku\n- Killer Sudoku\n- Anti-Knight\n- Thermo Sudoku\n- Jigsaw Sudoku\n- Multi-variant combinations\n\n## You Can Now Solve:\n\n✅ Easy puzzles (under 3 minutes)\n✅ Medium puzzles (5-8 minutes)\n✅ Hard puzzles (10-15 minutes)\n✅ Expert puzzles (20-30 minutes)\n✅ Master puzzles (30+ minutes)\n✅ ANY variant puzzle\n✅ Multi-variant combinations\n\n## What's Next?\n\n**Practice Your Skills:**\n- Solve daily puzzles on The London Sudoku\n- Try practice mode for specific variants\n- Challenge yourself with master puzzles\n- Compete in daily battles\n\n**Keep Learning:**\n- Explore advanced techniques independently\n- Join Sudoku communities\n- Study world-class solvers\n- Create your own puzzles\n\n**Teach Others:**\n- You're now qualified to teach Sudoku\n- Share your knowledge\n- Help beginners learn\n- Spread the joy of logical puzzles\n\n## Final Words:\n\nYou started with zero knowledge and now possess complete Sudoku mastery.\n\nYou've learned 20+ techniques, 6 variants, and developed master-level problem-solving skills.\n\n**You are officially a Sudoku Master.**\n\nThank you for completing this comprehensive tutorial course!\n\nNow go solve some puzzles and show the world your skills! 🎉\n\n---\n\n**- The London Sudoku Team**",
+      "duration": 120,
+      "key_takeaways": [
+        "20 lessons complete - SUDOKU MASTER",
+        "Can solve any standard or variant puzzle",
+        "20+ techniques mastered",
+        "6 variants mastered",
+        "Multi-variant combinations mastered",
+        "3725 total XP earned",
+        "LEGENDARY status achieved"
+      ],
+      "rewards": {
+        "xp": 200,
+        "achievement": {
+          "id": "lesson_20_complete",
+          "name": "Advanced Combinator",
+          "icon": "crown"
+        },
+        "master_achievement": {
+          "id": "all_lessons_complete",
+          "name": "Sudoku Sensei",
+          "description": "Complete ALL 20 tutorial lessons",
+          "icon": "user-graduate",
+          "xp_bonus": 500,
+          "rarity": "legendary"
+        },
+        "variant_course_complete": {
+          "id": "variants_course_complete",
+          "name": "Variant Master",
+          "description": "Complete all 6 variant lessons",
+          "icon": "trophy",
+          "xp_bonus": 300
+        }
+      }
+    }
+  ],
+  "metadata": {"author": "The London Sudoku Team", "version": "1.0", "last_updated": "2025-11-12", "difficulty_rating": 10, "estimated_completion": "40 minutes", "prerequisites_required": true, "practice_puzzles_count": 3, "quiz_questions_count": 3, "course_completion": true, "master_completion": true, "completion_bonus_xp": 500}
+}
