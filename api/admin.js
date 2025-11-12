@@ -9,7 +9,9 @@ const { migrateBattlePass } = require('../lib/battle-pass-migration');
 const { migrateLeagues } = require('../lib/leagues-migration');
 const { migrateLeagueSeasons } = require('../lib/league-seasons-migration');
 const { migrateLeagueSeasonTracking } = require('../lib/league-season-tracking-migration');
+const { migrateLeagueZoneTracking } = require('../lib/league-zone-tracking-migration');
 const { processSeasonEnd, createNewSeasons } = require('../lib/league-seasons');
+const { takeLeagueSnapshots } = require('../lib/league-zone-snapshots');
 
 module.exports = async function handler(req, res) {
   // Handle CORS
@@ -96,6 +98,12 @@ module.exports = async function handler(req, res) {
       case 'migrate-phase6-month22':
         await handleMigratePhase6Month22(req, res);
         break;
+      case 'migrate-phase6-month23':
+        await handleMigratePhase6Month23(req, res);
+        break;
+      case 'take-league-snapshots':
+        await handleTakeLeagueSnapshots(req, res);
+        break;
       case 'process-league-season':
         await handleProcessLeagueSeason(req, res);
         break;
@@ -120,7 +128,7 @@ module.exports = async function handler(req, res) {
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'migrate-leagues', 'migrate-league-seasons', 'migrate-phase6-month22', 'process-league-season', 'create-new-seasons', 'cron-process-seasons', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'migrate-leagues', 'migrate-league-seasons', 'migrate-phase6-month22', 'migrate-phase6-month23', 'take-league-snapshots', 'process-league-season', 'create-new-seasons', 'cron-process-seasons', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
         });
     }
   } catch (error) {
@@ -1032,6 +1040,69 @@ async function handleMigratePhase6Month22(req, res) {
     res.status(500).json({
       success: false,
       error: 'Phase 6 Month 22 migration failed',
+      details: error.message
+    });
+  }
+}
+
+// Phase 6 Month 23: Intra-Season Zone Tracking migration
+async function handleMigratePhase6Month23(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Starting Phase 6 Month 23 migration (Intra-Season Zone Tracking)...');
+
+    // Run the migration
+    const result = await migrateLeagueZoneTracking();
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        error: 'Phase 6 Month 23 migration failed'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Phase 6 Month 23 migration completed successfully',
+      features: result.features,
+      tables: result.tables
+    });
+  } catch (error) {
+    console.error('Phase 6 Month 23 migration error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Phase 6 Month 23 migration failed',
+      details: error.message
+    });
+  }
+}
+
+// Take daily league position snapshots
+async function handleTakeLeagueSnapshots(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Taking league position snapshots...');
+
+    const result = await takeLeagueSnapshots();
+
+    res.status(200).json({
+      success: true,
+      message: 'League snapshots completed successfully',
+      result: result
+    });
+  } catch (error) {
+    console.error('Take snapshots error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to take league snapshots',
       details: error.message
     });
   }

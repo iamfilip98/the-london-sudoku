@@ -5990,9 +5990,29 @@ class AchievementsManager {
     }
 
     async checkDemotionEscapes(req) {
-        // TODO: Implement when demotion zone tracking is added
-        // Check avoided demotion X times while in bottom 30%
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            try {
+                // Call backend API to get demotion escape count
+                const response = await fetch(`/api/stats?type=demotion-escapes&userId=${userId}`);
+                if (!response.ok) continue;
+
+                const data = await response.json();
+                const escapeCount = data.escapeCount || 0;
+
+                if (escapeCount >= req.count) {
+                    players.push(player);
+                }
+            } catch (error) {
+                console.error(`Error checking demotion escapes for ${player}:`, error);
+            }
+        }
+
+        return players;
     }
 
     async checkPhoenixPattern(req) {
