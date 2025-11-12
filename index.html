@@ -406,83 +406,76 @@
                     </div>
                 </section>
 
-                <!-- Battle Results -->
-                <section class="battle-results">
-                    <div class="results-header">
-                        <h3><i class="fas fa-trophy"></i> Today's Battle</h3>
-                        <div class="winner-announcement" id="winnerAnnouncement">
-                            <span class="winner-text">Play Sudoku to compete!</span>
+                <!-- Today's Goals -->
+                <section class="daily-goals">
+                    <div class="goals-header">
+                        <h3><i class="fas fa-bullseye"></i> Today's Goals</h3>
+                        <div class="goals-progress" id="goalsProgress">
+                            <span class="progress-text">0/3 completed</span>
                         </div>
                     </div>
-                    <div class="score-comparison">
-                        <div class="score-bar faidao-bar">
-                            <div class="score-fill" id="faidaoScoreBar"></div>
-                            <span class="score-text" id="faidaoScoreText">0</span>
-                        </div>
-                        <div class="score-bar filip-bar">
-                            <div class="score-fill" id="filipScoreBar"></div>
-                            <span class="score-text" id="filipScoreText">0</span>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Real-time Progress Notifications -->
-                <section class="progress-notifications" id="progressNotifications">
-                    <h3><i class="fas fa-bell"></i> Live Updates</h3>
-                    <div class="notifications-container" id="notificationsContainer">
-                        <div class="no-notifications">
-                            Complete puzzles to see live updates from your opponent!
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Today's Progress -->
-                <section class="today-progress">
-                    <h3><i class="fas fa-puzzle-piece"></i> Today's Progress</h3>
-                    <div class="progress-grid">
-                        <div class="player-progress faidao-progress">
-                            <h4>Faidao</h4>
-                            <div class="difficulty-progress">
-                                <div class="progress-item" id="faidao-easy-progress">
-                                    <span class="difficulty-label">Easy</span>
-                                    <span class="progress-status">Not started</span>
-                                </div>
-                                <div class="progress-item" id="faidao-medium-progress">
-                                    <span class="difficulty-label">Medium</span>
-                                    <span class="progress-status">Not started</span>
-                                </div>
-                                <div class="progress-item" id="faidao-hard-progress">
-                                    <span class="difficulty-label">Hard</span>
-                                    <span class="progress-status">Not started</span>
-                                </div>
+                    <div class="goals-grid">
+                        <div class="goal-card" id="goal-easy">
+                            <div class="goal-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="goal-content">
+                                <div class="goal-title">Easy Puzzle</div>
+                                <div class="goal-status">Not completed</div>
                             </div>
                         </div>
-                        <div class="player-progress filip-progress">
-                            <h4>Filip</h4>
-                            <div class="difficulty-progress">
-                                <div class="progress-item" id="filip-easy-progress">
-                                    <span class="difficulty-label">Easy</span>
-                                    <span class="progress-status">Not started</span>
-                                </div>
-                                <div class="progress-item" id="filip-medium-progress">
-                                    <span class="difficulty-label">Medium</span>
-                                    <span class="progress-status">Not started</span>
-                                </div>
-                                <div class="progress-item" id="filip-hard-progress">
-                                    <span class="difficulty-label">Hard</span>
-                                    <span class="progress-status">Not started</span>
-                                </div>
+                        <div class="goal-card" id="goal-medium">
+                            <div class="goal-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="goal-content">
+                                <div class="goal-title">Medium Puzzle</div>
+                                <div class="goal-status">Not completed</div>
+                            </div>
+                        </div>
+                        <div class="goal-card" id="goal-hard">
+                            <div class="goal-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="goal-content">
+                                <div class="goal-title">Hard Puzzle</div>
+                                <div class="goal-status">Not completed</div>
                             </div>
                         </div>
                     </div>
                 </section>
 
+                <!-- Today's Performance -->
+                <section class="today-performance">
+                    <h3><i class="fas fa-chart-line"></i> Today's Performance</h3>
+                    <div class="performance-grid">
+                        <div class="performance-card">
+                            <div class="performance-icon"><i class="fas fa-trophy"></i></div>
+                            <div class="performance-content">
+                                <div class="performance-value" id="todayScore">0</div>
+                                <div class="performance-label">Total Score</div>
+                            </div>
+                        </div>
+                        <div class="performance-card">
+                            <div class="performance-icon"><i class="fas fa-clock"></i></div>
+                            <div class="performance-content">
+                                <div class="performance-value" id="todayTime">--</div>
+                                <div class="performance-label">Avg Time</div>
+                            </div>
+                        </div>
+                        <div class="performance-card">
+                            <div class="performance-icon"><i class="fas fa-crosshairs"></i></div>
+                            <div class="performance-content">
+                                <div class="performance-value" id="todayAccuracy">100%</div>
+                                <div class="performance-label">Accuracy</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-                <!-- Recent History -->
-                <section class="recent-history">
-                    <h3><i class="fas fa-history"></i> Recent Battles</h3>
-                    <div class="history-cards" id="historyCards">
-                        <!-- History cards will be populated by JavaScript -->
+                <!-- Recent Games -->
+                <section class="recent-games">
+                    <h3><i class="fas fa-history"></i> Recent Games</h3>
+                    <div class="games-list" id="recentGamesList">
+                        <!-- Recent games will be populated by JavaScript -->
+                        <div class="no-games">
+                            <i class="fas fa-puzzle-piece"></i>
+                            <p>No games completed yet. Start playing!</p>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -514,32 +507,22 @@
 
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <h4 data-icon="trophy">Win Rates</h4>
+                            <h4 data-icon="trophy">Games Completed</h4>
                             <div class="stat-content">
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Faidao:</span>
-                                    <span class="stat-value" id="faidaoWinRate">--</span>
-                                </div>
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Filip:</span>
-                                    <span class="stat-value" id="filipWinRate">--</span>
+                                <div class="user-stat-row">
+                                    <span class="stat-value large" id="userGamesCompleted">0</span>
                                 </div>
                                 <div class="stat-footer">
-                                    <span class="footer-text" id="totalGamesCount">-- games total</span>
+                                    <span class="footer-text" id="totalGamesCount">All-time games</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="stat-card">
-                            <h4 data-icon="chart">Average Scores</h4>
+                            <h4 data-icon="chart">Average Score</h4>
                             <div class="stat-content">
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Faidao:</span>
-                                    <span class="stat-value" id="faidaoAvgScore">--</span>
-                                </div>
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Filip:</span>
-                                    <span class="stat-value" id="filipAvgScore">--</span>
+                                <div class="user-stat-row">
+                                    <span class="stat-value large" id="userAvgScore">--</span>
                                 </div>
                                 <div class="stat-footer">
                                     <span class="footer-text" id="scoreDifference">All-time average</span>
@@ -550,13 +533,8 @@
                         <div class="stat-card">
                             <h4 data-icon="trophy">Total Points</h4>
                             <div class="stat-content">
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Faidao:</span>
-                                    <span class="stat-value" id="faidaoRecentForm">--</span>
-                                </div>
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Filip:</span>
-                                    <span class="stat-value" id="filipRecentForm">--</span>
+                                <div class="user-stat-row">
+                                    <span class="stat-value large" id="userTotalPoints">0</span>
                                 </div>
                                 <div class="stat-footer">
                                     <span class="footer-text" id="recentFormNote">All-time total</span>
@@ -567,52 +545,37 @@
 
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <h4 data-icon="trophy">Biggest Win</h4>
+                            <h4 data-icon="trophy">Best Score</h4>
                             <div class="stat-content">
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Faidao:</span>
-                                    <span class="stat-value" id="faidaoBiggestWin">--</span>
-                                </div>
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Filip:</span>
-                                    <span class="stat-value" id="filipBiggestWin">--</span>
+                                <div class="user-stat-row">
+                                    <span class="stat-value large" id="userBestScore">--</span>
                                 </div>
                                 <div class="stat-footer">
-                                    <span class="footer-text" id="biggestWinNote">Margin of victory</span>
+                                    <span class="footer-text" id="bestScoreNote">Personal best</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="stat-card">
-                            <h4 data-icon="chart">Closest Win</h4>
+                            <h4 data-icon="chart">Fastest Time</h4>
                             <div class="stat-content">
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Faidao:</span>
-                                    <span class="stat-value" id="faidaoClosestWin">--</span>
-                                </div>
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Filip:</span>
-                                    <span class="stat-value" id="filipClosestWin">--</span>
+                                <div class="user-stat-row">
+                                    <span class="stat-value large" id="userFastestTime">--</span>
                                 </div>
                                 <div class="stat-footer">
-                                    <span class="footer-text" id="closestWinNote">Smallest margin</span>
+                                    <span class="footer-text" id="fastestTimeNote">Speed record</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="stat-card">
-                            <h4 data-icon="trophy">Most Dominant Game</h4>
+                            <h4 data-icon="trophy">Perfect Games</h4>
                             <div class="stat-content">
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Faidao:</span>
-                                    <span class="stat-value" id="faidaoDominantGame">--</span>
-                                </div>
-                                <div class="simple-stat-row">
-                                    <span class="stat-label">Filip:</span>
-                                    <span class="stat-value" id="filipDominantGame">--</span>
+                                <div class="user-stat-row">
+                                    <span class="stat-value large" id="userPerfectGames">0</span>
                                 </div>
                                 <div class="stat-footer">
-                                    <span class="footer-text" id="dominantGameNote">Highest single day score</span>
+                                    <span class="footer-text" id="perfectGamesNote">Zero errors</span>
                                 </div>
                             </div>
                         </div>
@@ -896,14 +859,13 @@
             }
 
             if (currentPlayer && playerDisplay) {
-                const playerName = currentPlayer === 'faidao' ? 'Faidao' : 'Filip';
-                const playerSubtitle = currentPlayer === 'faidao' ? 'The Queen' : 'The Champion';
+                const username = sessionStorage.getItem('playerName') || currentPlayer;
                 const playerContent = `
                     <div class="player-info">
-                        <div class="player-avatar ${currentPlayer}-avatar">
-                            ${playerName.charAt(0)}
+                        <div class="player-avatar user-avatar">
+                            ${username.charAt(0).toUpperCase()}
                         </div>
-                        <span class="player-name">${playerName}</span>
+                        <span class="player-name">${username}</span>
                     </div>
                 `;
 

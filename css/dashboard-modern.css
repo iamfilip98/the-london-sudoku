@@ -637,11 +637,344 @@
 }
 
 /* ============================================
+   DAILY GOALS SECTION
+   ============================================ */
+
+.daily-goals {
+    margin-bottom: var(--space-8);
+}
+
+.daily-goals .goals-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.daily-goals .goals-header h3 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.daily-goals .goals-progress {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    font-weight: var(--font-medium);
+}
+
+.daily-goals .goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+}
+
+.daily-goals .goal-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--shadow-glass);
+    transition: var(--transition-normal);
+}
+
+.daily-goals .goal-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.daily-goals .goal-card.completed {
+    border-color: var(--accent-green);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
+}
+
+.daily-goals .goal-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    border-radius: var(--radius-md);
+    font-size: var(--text-lg);
+    color: white;
+    flex-shrink: 0;
+}
+
+.daily-goals .goal-card.completed .goal-icon {
+    background: linear-gradient(135deg, #22c55e, #10b981);
+}
+
+.daily-goals .goal-content {
+    flex: 1;
+}
+
+.daily-goals .goal-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+}
+
+.daily-goals .goal-status {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+.daily-goals .goal-card.completed .goal-status {
+    color: #22c55e;
+}
+
+/* ============================================
+   TODAY'S PERFORMANCE SECTION
+   ============================================ */
+
+.today-performance {
+    margin-bottom: var(--space-8);
+}
+
+.today-performance h3 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.today-performance .performance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-4);
+}
+
+.today-performance .performance-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--shadow-glass);
+    transition: var(--transition-normal);
+}
+
+.today-performance .performance-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.today-performance .performance-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+    border-radius: var(--radius-md);
+    font-size: var(--text-xl);
+    color: white;
+    flex-shrink: 0;
+}
+
+.today-performance .performance-card:nth-child(2) .performance-icon {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+}
+
+.today-performance .performance-card:nth-child(3) .performance-icon {
+    background: linear-gradient(135deg, #22c55e, #10b981);
+}
+
+.today-performance .performance-content {
+    flex: 1;
+}
+
+.today-performance .performance-value {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-black);
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: var(--space-1);
+}
+
+.today-performance .performance-label {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    font-weight: var(--font-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+}
+
+/* ============================================
+   RECENT GAMES SECTION
+   ============================================ */
+
+.recent-games {
+    margin-bottom: var(--space-8);
+}
+
+.recent-games h3 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.recent-games .games-list {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--shadow-glass);
+    min-height: 200px;
+}
+
+.recent-games .no-games {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8);
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.recent-games .no-games i {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-3);
+    opacity: 0.5;
+}
+
+.recent-games .game-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--glass-border);
+    transition: var(--transition-fast);
+}
+
+.recent-games .game-item:last-child {
+    border-bottom: none;
+}
+
+.recent-games .game-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+}
+
+.recent-games .game-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.recent-games .game-difficulty {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+}
+
+.recent-games .game-difficulty.easy {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.recent-games .game-difficulty.medium {
+    background: rgba(251, 146, 60, 0.2);
+    color: #fb923c;
+}
+
+.recent-games .game-difficulty.hard {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.recent-games .game-stats {
+    display: flex;
+    gap: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+/* ============================================
+   ANALYTICS USER STATS
+   ============================================ */
+
+.analytics-grid .user-stat-row {
+    text-align: center;
+    padding: var(--space-4) 0;
+}
+
+.analytics-grid .stat-value.large {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-black);
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    line-height: 1;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+    .daily-goals .goals-grid,
+    .today-performance .performance-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .daily-goals .goal-card,
+    .today-performance .performance-card {
+        padding: var(--space-3);
+    }
+
+    .daily-goals .goal-icon,
+    .today-performance .performance-icon {
+        width: 40px;
+        height: 40px;
+        font-size: var(--text-base);
+    }
+
+    .today-performance .performance-value {
+        font-size: var(--text-xl);
+    }
+
+    .analytics-grid .stat-value.large {
+        font-size: var(--text-3xl);
+    }
+}
+
+/* ============================================
    ACCESSIBILITY
    ============================================ */
 
 .stat-card:focus-visible,
-.progress-card:focus-visible {
+.progress-card:focus-visible,
+.goal-card:focus-visible,
+.performance-card:focus-visible {
     outline: 3px solid var(--accent-blue);
     outline-offset: 2px;
 }
@@ -651,7 +984,10 @@
     .stat-card,
     .progress-card,
     .progress-fill,
-    .achievement-item {
+    .achievement-item,
+    .goal-card,
+    .performance-card,
+    .game-item {
         animation: none !important;
         transition: none !important;
     }

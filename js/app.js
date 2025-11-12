@@ -727,6 +727,9 @@ class SudokuChampionship {
     async updateDashboard() {
         // Modern user-centric dashboard
         await this.updateModernDashboard();
+        await this.updateDailyGoals();
+        await this.updateTodayPerformance();
+        await this.updateRecentGames();
         await this.updateTodayProgress();
         this.updateProgressNotifications();
     }
@@ -898,6 +901,8 @@ class SudokuChampionship {
                 if (window.analyticsManager) {
                     window.analyticsManager.updateCharts(this.entries);
                 }
+                // Update modern user-centric analytics stats
+                await this.updateAnalyticsUserStats();
                 break;
             case 'achievements':
                 if (window.achievementsManager) {
@@ -2203,6 +2208,224 @@ class SudokuChampionship {
 
         } catch (error) {
             console.error('Error updating achievement summary:', error);
+        }
+    }
+
+    /**
+     * Update daily goals section
+     * Shows completion status for easy/medium/hard puzzles
+     */
+    async updateDailyGoals() {
+        try {
+            const user = this.getCurrentUser();
+            const today = this.getTodayDate();
+
+            // Fetch today's games
+            const response = await fetch(`/api/games?date=${today}`);
+            if (!response.ok) return;
+
+            const games = await response.json();
+            const userGames = games.filter(g => g.player === user.username);
+
+            // Check which difficulties are completed
+            const completedDifficulties = {
+                easy: userGames.some(g => g.difficulty === 'easy' && g.completed),
+                medium: userGames.some(g => g.difficulty === 'medium' && g.completed),
+                hard: userGames.some(g => g.difficulty === 'hard' && g.completed)
+            };
+
+            const completedCount = Object.values(completedDifficulties).filter(Boolean).length;
+
+            // Update progress text
+            const goalsProgress = document.getElementById('goalsProgress');
+            if (goalsProgress) {
+                goalsProgress.querySelector('.progress-text').textContent = `${completedCount}/3 completed`;
+            }
+
+            // Update each goal card
+            ['easy', 'medium', 'hard'].forEach(difficulty => {
+                const goalCard = document.getElementById(`goal-${difficulty}`);
+                if (goalCard) {
+                    const statusEl = goalCard.querySelector('.goal-status');
+                    if (completedDifficulties[difficulty]) {
+                        goalCard.classList.add('completed');
+                        if (statusEl) statusEl.textContent = 'Completed ✓';
+                    } else {
+                        goalCard.classList.remove('completed');
+                        if (statusEl) statusEl.textContent = 'Not completed';
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error('Error updating daily goals:', error);
+        }
+    }
+
+    /**
+     * Update today's performance section
+     * Shows total score, average time, and accuracy
+     */
+    async updateTodayPerformance() {
+        try {
+            const user = this.getCurrentUser();
+            const today = this.getTodayDate();
+
+            // Fetch today's games
+            const response = await fetch(`/api/games?date=${today}`);
+            if (!response.ok) return;
+
+            const games = await response.json();
+            const userGames = games.filter(g => g.player === user.username && g.completed);
+
+            if (userGames.length === 0) {
+                // No games completed today
+                return;
+            }
+
+            // Calculate total score
+            const totalScore = userGames.reduce((sum, game) => sum + (game.score || 0), 0);
+
+            // Calculate average time
+            const totalTime = userGames.reduce((sum, game) => sum + (game.time || 0), 0);
+            const avgTime = Math.floor(totalTime / userGames.length);
+            const avgMinutes = Math.floor(avgTime / 60);
+            const avgSeconds = avgTime % 60;
+
+            // Calculate accuracy (100% - error rate)
+            const totalErrors = userGames.reduce((sum, game) => sum + (game.errors || 0), 0);
+            const totalCells = userGames.length * 81; // Assuming 9x9 grid
+            const accuracy = Math.max(0, Math.min(100, 100 - (totalErrors / totalCells * 100)));
+
+            // Update display
+            const todayScoreEl = document.getElementById('todayScore');
+            if (todayScoreEl) {
+                todayScoreEl.textContent = totalScore.toFixed(0);
+            }
+
+            const todayTimeEl = document.getElementById('todayTime');
+            if (todayTimeEl) {
+                todayTimeEl.textContent = `${avgMinutes}:${avgSeconds.toString().padStart(2, '0')}`;
+            }
+
+            const todayAccuracyEl = document.getElementById('todayAccuracy');
+            if (todayAccuracyEl) {
+                todayAccuracyEl.textContent = `${accuracy.toFixed(0)}%`;
+            }
+
+        } catch (error) {
+            console.error('Error updating today performance:', error);
+        }
+    }
+
+    /**
+     * Update recent games section
+     * Shows last 5 completed games
+     */
+    async updateRecentGames() {
+        try {
+            const user = this.getCurrentUser();
+
+            // Fetch recent games
+            const response = await fetch('/api/games');
+            if (!response.ok) return;
+
+            const allGames = await response.json();
+            const userGames = allGames
+                .filter(g => g.player === user.username && g.completed)
+                .sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at))
+                .slice(0, 5);
+
+            const gamesListEl = document.getElementById('recentGamesList');
+            if (!gamesListEl) return;
+
+            if (userGames.length === 0) {
+                // Show empty state
+                gamesListEl.innerHTML = `
+                    <div class="no-games">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <p>No games completed yet. Start playing!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render game items
+            gamesListEl.innerHTML = userGames.map(game => {
+                const time = game.time || 0;
+                const minutes = Math.floor(time / 60);
+                const seconds = time % 60;
+                const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                return `
+                    <div class="game-item">
+                        <div class="game-info">
+                            <span class="game-difficulty ${game.difficulty}">${game.difficulty}</span>
+                            <span class="game-date">${this.getTimeAgo(game.completed_at)}</span>
+                        </div>
+                        <div class="game-stats">
+                            <span><i class="fas fa-trophy"></i> ${(game.score || 0).toFixed(0)}</span>
+                            <span><i class="fas fa-clock"></i> ${timeStr}</span>
+                            <span><i class="fas fa-times-circle"></i> ${game.errors || 0}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (error) {
+            console.error('Error updating recent games:', error);
+        }
+    }
+
+    /**
+     * Update analytics user stats section
+     * Shows personal records and totals
+     */
+    async updateAnalyticsUserStats() {
+        try {
+            const user = this.getCurrentUser();
+
+            // Fetch all games
+            const response = await fetch('/api/games');
+            if (!response.ok) return;
+
+            const allGames = await response.json();
+            const userGames = allGames.filter(g => g.player === user.username && g.completed);
+
+            if (userGames.length === 0) {
+                return;
+            }
+
+            // Calculate stats
+            const gamesCompleted = userGames.length;
+            const totalPoints = userGames.reduce((sum, game) => sum + (game.score || 0), 0);
+            const avgScore = totalPoints / gamesCompleted;
+            const bestScore = Math.max(...userGames.map(g => g.score || 0));
+            const fastestTime = Math.min(...userGames.map(g => g.time || Infinity));
+            const perfectGames = userGames.filter(g => (g.errors || 0) === 0).length;
+
+            // Format fastest time
+            const fastMinutes = Math.floor(fastestTime / 60);
+            const fastSeconds = fastestTime % 60;
+            const fastTimeStr = fastestTime !== Infinity ? `${fastMinutes}:${fastSeconds.toString().padStart(2, '0')}` : '--';
+
+            // Update display
+            const updates = [
+                { id: 'userGamesCompleted', value: gamesCompleted },
+                { id: 'userAvgScore', value: avgScore.toFixed(1) },
+                { id: 'userTotalPoints', value: totalPoints.toFixed(0) },
+                { id: 'userBestScore', value: bestScore.toFixed(0) },
+                { id: 'userFastestTime', value: fastTimeStr },
+                { id: 'userPerfectGames', value: perfectGames }
+            ];
+
+            updates.forEach(({ id, value }) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            });
+
+        } catch (error) {
+            console.error('Error updating analytics user stats:', error);
         }
     }
 }
