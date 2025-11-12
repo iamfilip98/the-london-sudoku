@@ -5727,21 +5727,120 @@ class AchievementsManager {
     }
 
     async checkConsecutivePromotions(req) {
-        // TODO: Implement when consecutive promotion tracking is added
-        // Check X promotions in a row
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Sort by end_date ascending to check chronological order
+                const seasons = historyData.data.sort((a, b) =>
+                    new Date(a.end_date) - new Date(b.end_date)
+                );
+
+                let maxConsecutive = 0;
+                let currentStreak = 0;
+
+                for (const season of seasons) {
+                    if (season.outcome === 'promoted') {
+                        currentStreak++;
+                        maxConsecutive = Math.max(maxConsecutive, currentStreak);
+                    } else {
+                        currentStreak = 0;
+                    }
+                }
+
+                if (maxConsecutive >= req.count) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkClimbBronzeToLegend(req) {
-        // TODO: Implement when tier history tracking is added
-        // Check if player climbed from bronze to legend
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Check if player has history in both bronze and legend tiers
+                const hasBronze = historyData.data.some(season => season.league_tier === 'bronze');
+                const hasLegend = historyData.data.some(season => season.league_tier === 'legend');
+
+                // Verify they climbed (bronze came before legend chronologically)
+                if (hasBronze && hasLegend) {
+                    const seasons = historyData.data.sort((a, b) =>
+                        new Date(a.end_date) - new Date(b.end_date)
+                    );
+
+                    const firstBronze = seasons.findIndex(s => s.league_tier === 'bronze');
+                    const firstLegend = seasons.findIndex(s => s.league_tier === 'legend');
+
+                    if (firstBronze !== -1 && firstLegend !== -1 && firstBronze < firstLegend) {
+                        players.push(player);
+                    }
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkRapidPromotions(req) {
-        // TODO: Implement when weekly promotion tracking is added
-        // Check X promotions in Y weeks
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Sort by end_date ascending
+                const seasons = historyData.data.sort((a, b) =>
+                    new Date(a.end_date) - new Date(b.end_date)
+                );
+
+                // Find all promotions
+                const promotions = seasons.filter(s => s.outcome === 'promoted');
+
+                // Check if any sliding window of Y weeks contains X promotions
+                for (let i = 0; i < promotions.length; i++) {
+                    let count = 1; // Start with current promotion
+                    const startDate = new Date(promotions[i].end_date);
+
+                    for (let j = i + 1; j < promotions.length; j++) {
+                        const endDate = new Date(promotions[j].end_date);
+                        const weeksDiff = (endDate - startDate) / (1000 * 60 * 60 * 24 * 7);
+
+                        if (weeksDiff <= req.weeks) {
+                            count++;
+                            if (count >= req.count) {
+                                players.push(player);
+                                return players; // Early exit once achieved
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkDemotionsCount(req) {
@@ -5764,9 +5863,33 @@ class AchievementsManager {
     }
 
     async checkBounceBack(req) {
-        // TODO: Implement when consecutive season outcome tracking is added
-        // Check promoted immediately after demotion
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Sort by end_date ascending to check chronological order
+                const seasons = historyData.data.sort((a, b) =>
+                    new Date(a.end_date) - new Date(b.end_date)
+                );
+
+                // Check for demotion immediately followed by promotion
+                for (let i = 0; i < seasons.length - 1; i++) {
+                    if (seasons[i].outcome === 'demoted' && seasons[i + 1].outcome === 'promoted') {
+                        players.push(player);
+                        break; // Only need to find one instance
+                    }
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkDemotionEscapes(req) {
@@ -5776,9 +5899,63 @@ class AchievementsManager {
     }
 
     async checkPhoenixPattern(req) {
-        // TODO: Implement when season outcome pattern tracking is added
-        // Check demoted 2x then promoted 2x pattern
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Sort by end_date ascending to check chronological order
+                const seasons = historyData.data.sort((a, b) =>
+                    new Date(a.end_date) - new Date(b.end_date)
+                );
+
+                // Look for pattern: demoted, demoted, promoted, promoted (anywhere in history)
+                let demoteCount = 0;
+                let promoteCount = 0;
+                let foundPattern = false;
+
+                for (const season of seasons) {
+                    if (season.outcome === 'demoted') {
+                        if (promoteCount > 0) {
+                            // Reset if we see demotion after starting promotion streak
+                            demoteCount = 1;
+                            promoteCount = 0;
+                        } else {
+                            demoteCount++;
+                        }
+                    } else if (season.outcome === 'promoted') {
+                        if (demoteCount >= 2) {
+                            // We have 2+ demotions, now count promotions
+                            promoteCount++;
+                            if (promoteCount >= 2) {
+                                foundPattern = true;
+                                break;
+                            }
+                        } else {
+                            // Reset if promoted without 2 demotions first
+                            demoteCount = 0;
+                            promoteCount = 0;
+                        }
+                    } else {
+                        // 'stayed' breaks the pattern
+                        demoteCount = 0;
+                        promoteCount = 0;
+                    }
+                }
+
+                if (foundPattern) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkSeasonsCompleted(req) {
@@ -5801,9 +5978,46 @@ class AchievementsManager {
     }
 
     async checkSameTierStreak(req) {
-        // TODO: Implement when consecutive same-tier tracking is added
-        // Check stayed in same tier X consecutive seasons
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Sort by end_date ascending to check chronological order
+                const seasons = historyData.data.sort((a, b) =>
+                    new Date(a.end_date) - new Date(b.end_date)
+                );
+
+                let maxStreak = 0;
+                let currentStreak = 1;
+                let currentTier = null;
+
+                for (let i = 0; i < seasons.length; i++) {
+                    if (i === 0) {
+                        currentTier = seasons[i].league_tier;
+                        currentStreak = 1;
+                    } else if (seasons[i].league_tier === currentTier) {
+                        currentStreak++;
+                        maxStreak = Math.max(maxStreak, currentStreak);
+                    } else {
+                        currentTier = seasons[i].league_tier;
+                        currentStreak = 1;
+                    }
+                }
+
+                if (maxStreak >= req.count) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkSafeZoneFinishes(req) {
@@ -5829,9 +6043,41 @@ class AchievementsManager {
     }
 
     async checkNoDemotionsStreak(req) {
-        // TODO: Implement when consecutive no-demotion tracking is added
-        // Check X seasons without demotion
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Sort by end_date ascending to check chronological order
+                const seasons = historyData.data.sort((a, b) =>
+                    new Date(a.end_date) - new Date(b.end_date)
+                );
+
+                let maxStreak = 0;
+                let currentStreak = 0;
+
+                for (const season of seasons) {
+                    if (season.outcome !== 'demoted') {
+                        currentStreak++;
+                        maxStreak = Math.max(maxStreak, currentStreak);
+                    } else {
+                        currentStreak = 0;
+                    }
+                }
+
+                if (maxStreak >= req.count) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkSeasonsParticipated(req) {
@@ -5840,9 +6086,51 @@ class AchievementsManager {
     }
 
     async checkConsecutiveSeasons(req) {
-        // TODO: Implement when consecutive participation tracking is added
-        // Check participated in X consecutive seasons
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Sort by end_date ascending to check chronological order
+                const seasons = historyData.data.sort((a, b) =>
+                    new Date(a.end_date) - new Date(b.end_date)
+                );
+
+                if (seasons.length < req.count) continue;
+
+                // Check for consecutive weeks (seasons run Monday-Sunday, 7 days each)
+                let maxConsecutive = 1;
+                let currentStreak = 1;
+
+                for (let i = 1; i < seasons.length; i++) {
+                    const prevEnd = new Date(seasons[i - 1].end_date);
+                    const currStart = new Date(seasons[i].start_date);
+
+                    // Check if current season starts within 2 days of previous end
+                    // (allows for slight timing variations)
+                    const daysDiff = (currStart - prevEnd) / (1000 * 60 * 60 * 24);
+
+                    if (daysDiff <= 2) {
+                        currentStreak++;
+                        maxConsecutive = Math.max(maxConsecutive, currentStreak);
+                    } else {
+                        currentStreak = 1;
+                    }
+                }
+
+                if (maxConsecutive >= req.count) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkLifetimeLeaguePoints(req) {
@@ -5889,9 +6177,32 @@ class AchievementsManager {
     }
 
     async checkVisitedAllTiers(req) {
-        // TODO: Implement when tier history tracking is added
-        // Check if player has been in all 6 tiers
-        return [];
+        const players = [];
+        const allTiers = ['bronze', 'silver', 'gold', 'platinum', 'diamond', 'legend'];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Collect unique tiers from season history
+                const visitedTiers = new Set();
+                historyData.data.forEach(season => {
+                    visitedTiers.add(season.league_tier);
+                });
+
+                // Check if player has visited all 6 tiers
+                if (visitedTiers.size === 6 && allTiers.every(tier => visitedTiers.has(tier))) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkWinsInDifferentTiers(req) {

@@ -7,6 +7,59 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 6 Month 21: Advanced League Achievement Tracking** (November 12, 2025)
+- 🎯 **9 New Handler Implementations**: Completed advanced achievement tracking logic
+- ✅ **Consecutive Promotions Tracking**: `checkConsecutivePromotions` - Track X promotions in a row
+  - Analyzes season outcome history chronologically
+  - Counts consecutive 'promoted' outcomes
+  - Supports achievements like "Unstoppable Climb" (3 consecutive promotions)
+- ✅ **Bronze to Legend Climb**: `checkClimbBronzeToLegend` - Ultimate progression tracking
+  - Verifies player has history in both bronze and legend tiers
+  - Confirms chronological climb (bronze came before legend)
+  - Enables "Rags to Riches" achievement
+- ✅ **Rapid Promotions**: `checkRapidPromotions` - Time-based promotion tracking
+  - Sliding window algorithm checks X promotions in Y weeks
+  - Uses season end dates for accurate timing
+  - Powers "Rapid Ascent" achievement (3 promotions in 5 weeks)
+- ✅ **Bounce Back Recovery**: `checkBounceBack` - Immediate comeback tracking
+  - Detects demotion immediately followed by promotion
+  - Tracks resilience and recovery patterns
+  - Supports "Back from the Brink" achievement
+- ✅ **Phoenix Pattern**: `checkPhoenixPattern` - Complex outcome sequence tracking
+  - Identifies pattern: demoted 2x, then promoted 2x
+  - State machine approach for pattern detection
+  - Enables epic "Phoenix Rising" achievement
+- ✅ **Tier Loyalty**: `checkSameTierStreak` - Stability tracking
+  - Counts consecutive seasons in same tier
+  - Tracks maximum streak across career
+  - Powers "Tier Loyalty" achievement (10 seasons same tier)
+- ✅ **No Demotion Streaks**: `checkNoDemotionsStreak` - Consistency tracking
+  - Counts consecutive seasons without demotion
+  - Tracks promoted + stayed outcomes
+  - Supports "Unbreakable" achievement (15 seasons no demotion)
+- ✅ **Consecutive Seasons**: `checkConsecutiveSeasons` - Participation consistency
+  - Verifies week-to-week participation using season dates
+  - Allows 2-day buffer for timing variations
+  - Enables "Season Marathon" achievement (10 consecutive)
+- ✅ **League Explorer**: `checkVisitedAllTiers` - Complete tier exploration
+  - Tracks unique tiers visited across all seasons
+  - Requires all 6 tiers: bronze, silver, gold, platinum, diamond, legend
+  - Unlocks "League Explorer" achievement
+- 📊 **Handler Status Update**: 21/26 handlers fully implemented (81% complete)
+  - Previously: 12 core handlers
+  - Added: 9 advanced tracking handlers (Phase 6 Month 21)
+  - Remaining: 5 stub handlers requiring additional data infrastructure
+- 🔧 **Implementation Strategy**: Maximum use of existing data
+  - All 9 handlers use existing season history API
+  - No database schema changes required
+  - Zero infrastructure overhead
+  - Immediate availability for achievement unlocks
+- 🚧 **Remaining Stubs**: 5 handlers require future data enhancements
+  - Rank percentile tracking (top X% calculations)
+  - Maximum possible points tracking (perfect season detection)
+  - Full leaderboard data (winning margin calculations)
+  - Intra-season zone tracking (demotion escape monitoring)
+
 ### **Phase 6 Month 20: League-Specific Achievements** (November 12, 2025)
 - 🎯 **40 New League Achievements**: Comprehensive season and competition tracking
 - 🏅 **League Tier Achievements** (6 new):
@@ -46,14 +99,15 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
   - `seasons_completed`, `same_tier_streak`, `safe_zone_finishes`, `no_demotions_streak`
   - `seasons_participated`, `consecutive_seasons`, `lifetime_league_points`
   - `win_in_tier`, `visited_all_tiers`, `wins_in_different_tiers`, `total_season_wins`, `legend_wins`
-- ✅ **Fully Implemented Handlers**: 13 handlers with complete logic
-  - `checkSeasonRank`, `checkSeasonPoints`, `checkPromotionsCount`, `checkDemotionsCount`
-  - `checkSeasonsCompleted`, `checkSafeZoneFinishes`, `checkSeasonsParticipated`, `checkLifetimeLeaguePoints`
-  - `checkWinInTier`, `checkWinsInDifferentTiers`, `checkTotalSeasonWins`, `checkLegendWins`
-- 🚧 **Stub Handlers with TODOs**: 12 handlers ready for future enhancement
-  - Awaiting additional season tracking features (consecutive streaks, zone tracking, perfect seasons, etc.)
-  - Return empty arrays until data tracking is implemented
-  - Clear TODO comments for future development
+- ✅ **Fully Implemented Handlers**: 21 handlers with complete logic
+  - **Core Handlers** (12): `checkSeasonRank`, `checkSeasonPoints`, `checkPromotionsCount`, `checkDemotionsCount`, `checkSeasonsCompleted`, `checkSafeZoneFinishes`, `checkSeasonsParticipated`, `checkLifetimeLeaguePoints`, `checkWinInTier`, `checkWinsInDifferentTiers`, `checkTotalSeasonWins`, `checkLegendWins`
+  - **Phase 6 Month 21 - Advanced Tracking** (9 new): `checkConsecutivePromotions`, `checkClimbBronzeToLegend`, `checkRapidPromotions`, `checkBounceBack`, `checkPhoenixPattern`, `checkSameTierStreak`, `checkNoDemotionsStreak`, `checkConsecutiveSeasons`, `checkVisitedAllTiers`
+- 🚧 **Stub Handlers with TODOs**: 5 handlers awaiting additional data tracking
+  - `checkSeasonTopPercent`: Requires rank percentile calculation (top X% tracking)
+  - `checkSeasonPerfect`: Requires maximum possible points calculation
+  - `checkSeasonMargin`: Requires full leaderboard data to calculate winning margin
+  - `checkConsecutiveTopFinishes`: Requires rank percentile tracking across seasons
+  - `checkDemotionEscapes`: Requires intra-season zone tracking (bottom 30% avoidance)
 - 📊 **Achievement System Status**: 390/350 achievements (111% of original goal)
   - **Breakdown by Category**:
     - Social: 12 achievements (friends, leagues, leaderboards)
