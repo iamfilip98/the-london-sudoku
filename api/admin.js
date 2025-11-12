@@ -8,6 +8,7 @@ const stripeManager = require('../lib/stripe-manager');
 const { migrateBattlePass } = require('../lib/battle-pass-migration');
 const { migrateLeagues } = require('../lib/leagues-migration');
 const { migrateLeagueSeasons } = require('../lib/league-seasons-migration');
+const { migrateLeagueSeasonTracking } = require('../lib/league-season-tracking-migration');
 const { processSeasonEnd, createNewSeasons } = require('../lib/league-seasons');
 
 module.exports = async function handler(req, res) {
@@ -92,6 +93,9 @@ module.exports = async function handler(req, res) {
       case 'migrate-league-seasons':
         await handleMigrateLeagueSeasons(req, res);
         break;
+      case 'migrate-phase6-month22':
+        await handleMigratePhase6Month22(req, res);
+        break;
       case 'process-league-season':
         await handleProcessLeagueSeason(req, res);
         break;
@@ -116,7 +120,7 @@ module.exports = async function handler(req, res) {
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'migrate-leagues', 'migrate-league-seasons', 'process-league-season', 'create-new-seasons', 'cron-process-seasons', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'migrate-leagues', 'migrate-league-seasons', 'migrate-phase6-month22', 'process-league-season', 'create-new-seasons', 'cron-process-seasons', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
         });
     }
   } catch (error) {
@@ -986,6 +990,48 @@ async function handleMigrateLeagueSeasons(req, res) {
     console.error('League seasons migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
+      details: error.message
+    });
+  }
+}
+
+// Phase 6 Month 22: Advanced League Achievement Tracking migration
+async function handleMigratePhase6Month22(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Starting Phase 6 Month 22 migration (Advanced League Achievement Tracking)...');
+
+    // Run the migration
+    const result = await migrateLeagueSeasonTracking();
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        error: 'Phase 6 Month 22 migration failed'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Phase 6 Month 22 migration completed successfully',
+      features: [
+        'Rank percentile tracking (top X% achievements)',
+        'Winning margin calculation (victory margin achievements)',
+        'Maximum possible points tracking (perfect season detection)',
+        'Enhanced season statistics for achievements'
+      ],
+      columns: result.columns,
+      modifications: result.modifications
+    });
+  } catch (error) {
+    console.error('Phase 6 Month 22 migration error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Phase 6 Month 22 migration failed',
       details: error.message
     });
   }
