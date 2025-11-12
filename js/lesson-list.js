@@ -56,7 +56,7 @@ class LessonListManager {
 
     async loadUserProgress() {
         try {
-            const response = await fetch('/api/lessons/progress');
+            const response = await fetch('/api/stats?type=lesson-progress');
             if (response.ok) {
                 const progress = await response.json();
                 // Convert array to object for easy lookup

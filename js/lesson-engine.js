@@ -86,7 +86,7 @@ class LessonEngine {
             this.showLoadingState();
 
             // Fetch lesson content
-            const response = await fetch(`/api/lessons/${lessonId}`);
+            const response = await fetch(`/api/stats?type=lessons&id=${lessonId}`);
 
             if (!response.ok) {
                 throw new Error(`Failed to load lesson: ${response.status}`);
@@ -125,7 +125,7 @@ class LessonEngine {
      */
     async loadProgress(lessonId) {
         try {
-            const response = await fetch(`/api/lessons/${lessonId}/progress`);
+            const response = await fetch(`/api/stats?type=lesson-progress&lessonId=${lessonId}`);
 
             if (response.ok) {
                 this.lessonProgress = await response.json();
@@ -596,10 +596,14 @@ class LessonEngine {
         };
 
         try {
-            await fetch(`/api/lessons/${this.currentLesson.id}/progress`, {
+            await fetch(`/api/stats`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(progressData)
+                body: JSON.stringify({
+                    type: 'lesson-progress',
+                    lessonId: this.currentLesson.id,
+                    ...progressData
+                })
             });
         } catch (error) {
             console.error('Error saving progress:', error);
@@ -613,9 +617,14 @@ class LessonEngine {
         if (!this.userId || !this.currentLesson) return;
 
         try {
-            const response = await fetch(`/api/lessons/${this.currentLesson.id}/complete`, {
+            const response = await fetch(`/api/stats`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'lesson-complete',
+                    userId: this.userId,
+                    lessonId: this.currentLesson.id
+                })
             });
 
             if (response.ok) {
