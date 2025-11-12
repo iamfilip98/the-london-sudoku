@@ -5662,15 +5662,57 @@ class AchievementsManager {
     }
 
     async checkSeasonTopPercent(req) {
-        // TODO: Implement when season results tracking is fully integrated
-        // Check if player finished in top X% of a season
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Check if player has ever finished in top X% (using rank_percentile)
+                const hasTopPercentFinish = historyData.data.some(season =>
+                    season.rank_percentile >= req.percentile
+                );
+
+                if (hasTopPercentFinish) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkSeasonPerfect(req) {
-        // TODO: Implement when season tracking is fully integrated
-        // Check if player won season with maximum possible points
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Check if player won (rank 1) with maximum possible points
+                const hasPerfectSeason = historyData.data.some(season =>
+                    season.final_rank === 1 &&
+                    season.max_possible_points &&
+                    season.final_points === season.max_possible_points
+                );
+
+                if (hasPerfectSeason) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkSeasonPoints(req) {
@@ -5696,15 +5738,70 @@ class AchievementsManager {
     }
 
     async checkSeasonMargin(req) {
-        // TODO: Implement when season leaderboard tracking is fully integrated
-        // Check if player won by X point margin
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Check if player won with margin >= required margin
+                const hasMarginWin = historyData.data.some(season =>
+                    season.final_rank === 1 &&
+                    season.winning_margin &&
+                    season.winning_margin >= req.margin
+                );
+
+                if (hasMarginWin) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkConsecutiveTopFinishes(req) {
-        // TODO: Implement when season results tracking is fully integrated
-        // Check consecutive top 20% finishes
-        return [];
+        const players = [];
+
+        for (const player of ['faidao', 'filip']) {
+            const userId = await this.getUserId(player);
+            if (!userId) continue;
+
+            const seasonHistoryResponse = await fetch(`/api/stats?type=leagues-season-history&userId=${userId}&limit=100`);
+            if (!seasonHistoryResponse.ok) continue;
+
+            const historyData = await seasonHistoryResponse.json();
+            if (historyData.data && Array.isArray(historyData.data)) {
+                // Sort by end_date ascending to check chronological order
+                const seasons = historyData.data.sort((a, b) =>
+                    new Date(a.end_date) - new Date(b.end_date)
+                );
+
+                let maxConsecutive = 0;
+                let currentStreak = 0;
+
+                for (const season of seasons) {
+                    // Check if in top X% using rank_percentile
+                    if (season.rank_percentile && season.rank_percentile >= req.percentile) {
+                        currentStreak++;
+                        maxConsecutive = Math.max(maxConsecutive, currentStreak);
+                    } else {
+                        currentStreak = 0;
+                    }
+                }
+
+                if (maxConsecutive >= req.count) {
+                    players.push(player);
+                }
+            }
+        }
+
+        return players;
     }
 
     async checkPromotionsCount(req) {
