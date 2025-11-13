@@ -1,0 +1,1657 @@
+{
+  "version": "3.0",
+  "total_new_achievements": 110,
+  "target_total": 500,
+  "created": "2025-11-13",
+  "description": "110 new achievement definitions to expand from 390 to 500 total achievements",
+  "summary": {
+    "variant_mastery": 40,
+    "social_community": 20,
+    "consistency_dedication": 20,
+    "league_excellence": 15,
+    "battle_pass_mastery": 10,
+    "skill_performance": 5
+  },
+  "achievements": [
+    {
+      "id": "variant_antiknight_first",
+      "title": "Knight's Gambit",
+      "description": "Complete your first Anti-Knight Sudoku puzzle",
+      "icon": "fa-chess-knight",
+      "type": "variant",
+      "variant": "anti-knight",
+      "rarity": "common",
+      "xp": 10,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "anti-knight",
+        "count": 1
+      }
+    },
+    {
+      "id": "variant_antiknight_10",
+      "title": "Knight Slayer",
+      "description": "Complete 10 Anti-Knight Sudoku puzzles",
+      "icon": "fa-chess-knight",
+      "type": "variant",
+      "variant": "anti-knight",
+      "rarity": "common",
+      "xp": 15,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "anti-knight",
+        "count": 10
+      }
+    },
+    {
+      "id": "variant_antiknight_50",
+      "title": "Anti-Knight Tactician",
+      "description": "Complete 50 Anti-Knight Sudoku puzzles",
+      "icon": "fa-chess-knight",
+      "type": "variant",
+      "variant": "anti-knight",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "anti-knight",
+        "count": 50
+      }
+    },
+    {
+      "id": "variant_antiknight_100",
+      "title": "Anti-Knight Grandmaster",
+      "description": "Complete 100 Anti-Knight Sudoku puzzles",
+      "icon": "fa-chess-knight",
+      "type": "variant",
+      "variant": "anti-knight",
+      "rarity": "epic",
+      "xp": 40,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "anti-knight",
+        "count": 100
+      }
+    },
+    {
+      "id": "variant_antiknight_perfect_10",
+      "title": "Perfect Knight",
+      "description": "Complete 10 perfect Anti-Knight games in a row",
+      "icon": "fa-chess-knight",
+      "type": "variant",
+      "variant": "anti-knight",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "variant_perfect_streak",
+        "variant": "anti-knight",
+        "streak": 10
+      }
+    },
+    {
+      "id": "variant_hyper_first",
+      "title": "Hyper Active",
+      "description": "Complete your first Hyper Sudoku puzzle",
+      "icon": "fa-shapes",
+      "type": "variant",
+      "variant": "hyper-sudoku",
+      "rarity": "common",
+      "xp": 10,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "hyper-sudoku",
+        "count": 1
+      }
+    },
+    {
+      "id": "variant_hyper_10",
+      "title": "Hyper Focused",
+      "description": "Complete 10 Hyper Sudoku puzzles",
+      "icon": "fa-shapes",
+      "type": "variant",
+      "variant": "hyper-sudoku",
+      "rarity": "common",
+      "xp": 15,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "hyper-sudoku",
+        "count": 10
+      }
+    },
+    {
+      "id": "variant_hyper_50",
+      "title": "Hyper Master",
+      "description": "Complete 50 Hyper Sudoku puzzles",
+      "icon": "fa-shapes",
+      "type": "variant",
+      "variant": "hyper-sudoku",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "hyper-sudoku",
+        "count": 50
+      }
+    },
+    {
+      "id": "variant_hyper_100",
+      "title": "Hyper Legend",
+      "description": "Complete 100 Hyper Sudoku puzzles",
+      "icon": "fa-shapes",
+      "type": "variant",
+      "variant": "hyper-sudoku",
+      "rarity": "epic",
+      "xp": 40,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "hyper-sudoku",
+        "count": 100
+      }
+    },
+    {
+      "id": "variant_hyper_perfect_10",
+      "title": "Hyper Perfect",
+      "description": "Complete 10 perfect Hyper Sudoku games in a row",
+      "icon": "fa-shapes",
+      "type": "variant",
+      "variant": "hyper-sudoku",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "variant_perfect_streak",
+        "variant": "hyper-sudoku",
+        "streak": 10
+      }
+    },
+    {
+      "id": "variant_consecutive_first",
+      "title": "Consecutive Beginner",
+      "description": "Complete your first Consecutive Sudoku puzzle",
+      "icon": "fa-list-ol",
+      "type": "variant",
+      "variant": "consecutive-sudoku",
+      "rarity": "common",
+      "xp": 10,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "consecutive-sudoku",
+        "count": 1
+      }
+    },
+    {
+      "id": "variant_consecutive_10",
+      "title": "Consecutive Counter",
+      "description": "Complete 10 Consecutive Sudoku puzzles",
+      "icon": "fa-list-ol",
+      "type": "variant",
+      "variant": "consecutive-sudoku",
+      "rarity": "common",
+      "xp": 15,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "consecutive-sudoku",
+        "count": 10
+      }
+    },
+    {
+      "id": "variant_consecutive_50",
+      "title": "Consecutive Pro",
+      "description": "Complete 50 Consecutive Sudoku puzzles",
+      "icon": "fa-list-ol",
+      "type": "variant",
+      "variant": "consecutive-sudoku",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "consecutive-sudoku",
+        "count": 50
+      }
+    },
+    {
+      "id": "variant_consecutive_100",
+      "title": "Consecutive Champion",
+      "description": "Complete 100 Consecutive Sudoku puzzles",
+      "icon": "fa-list-ol",
+      "type": "variant",
+      "variant": "consecutive-sudoku",
+      "rarity": "epic",
+      "xp": 40,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "consecutive-sudoku",
+        "count": 100
+      }
+    },
+    {
+      "id": "variant_consecutive_perfect_10",
+      "title": "Perfect Sequence",
+      "description": "Complete 10 perfect Consecutive Sudoku games in a row",
+      "icon": "fa-list-ol",
+      "type": "variant",
+      "variant": "consecutive-sudoku",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "variant_perfect_streak",
+        "variant": "consecutive-sudoku",
+        "streak": 10
+      }
+    },
+    {
+      "id": "variant_thermo_first",
+      "title": "Thermo Initiate",
+      "description": "Complete your first Thermo Sudoku puzzle",
+      "icon": "fa-thermometer-half",
+      "type": "variant",
+      "variant": "thermo-sudoku",
+      "rarity": "common",
+      "xp": 10,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "thermo-sudoku",
+        "count": 1
+      }
+    },
+    {
+      "id": "variant_thermo_10",
+      "title": "Temperature Tamer",
+      "description": "Complete 10 Thermo Sudoku puzzles",
+      "icon": "fa-thermometer-half",
+      "type": "variant",
+      "variant": "thermo-sudoku",
+      "rarity": "common",
+      "xp": 15,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "thermo-sudoku",
+        "count": 10
+      }
+    },
+    {
+      "id": "variant_thermo_50",
+      "title": "Thermo Expert",
+      "description": "Complete 50 Thermo Sudoku puzzles",
+      "icon": "fa-thermometer-half",
+      "type": "variant",
+      "variant": "thermo-sudoku",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "thermo-sudoku",
+        "count": 50
+      }
+    },
+    {
+      "id": "variant_thermo_100",
+      "title": "Thermo Virtuoso",
+      "description": "Complete 100 Thermo Sudoku puzzles",
+      "icon": "fa-thermometer-half",
+      "type": "variant",
+      "variant": "thermo-sudoku",
+      "rarity": "epic",
+      "xp": 40,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "thermo-sudoku",
+        "count": 100
+      }
+    },
+    {
+      "id": "variant_thermo_perfect_10",
+      "title": "Perfect Temperature",
+      "description": "Complete 10 perfect Thermo Sudoku games in a row",
+      "icon": "fa-thermometer-half",
+      "type": "variant",
+      "variant": "thermo-sudoku",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "variant_perfect_streak",
+        "variant": "thermo-sudoku",
+        "streak": 10
+      }
+    },
+    {
+      "id": "classic_250",
+      "title": "Classic Veteran",
+      "description": "Complete 250 Classic Sudoku puzzles",
+      "icon": "fa-gem",
+      "type": "variant",
+      "variant": "classic",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "classic",
+        "count": 250
+      }
+    },
+    {
+      "id": "classic_500",
+      "title": "Classic Elite",
+      "description": "Complete 500 Classic Sudoku puzzles",
+      "icon": "fa-crown",
+      "type": "variant",
+      "variant": "classic",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "classic",
+        "count": 500
+      }
+    },
+    {
+      "id": "classic_1000",
+      "title": "Classic Master",
+      "description": "Complete 1,000 Classic Sudoku puzzles",
+      "icon": "fa-star",
+      "type": "variant",
+      "variant": "classic",
+      "rarity": "epic",
+      "xp": 75,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "classic",
+        "count": 1000
+      }
+    },
+    {
+      "id": "classic_2500",
+      "title": "Classic Legend",
+      "description": "Complete 2,500 Classic Sudoku puzzles",
+      "icon": "fa-trophy",
+      "type": "variant",
+      "variant": "classic",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "classic",
+        "count": 2500
+      }
+    },
+    {
+      "id": "classic_5000",
+      "title": "Classic Immortal",
+      "description": "Complete 5,000 Classic Sudoku puzzles",
+      "icon": "fa-infinity",
+      "type": "variant",
+      "variant": "classic",
+      "rarity": "legendary",
+      "xp": 150,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "classic",
+        "count": 5000
+      }
+    },
+    {
+      "id": "variant_daily_all_types",
+      "title": "Variant Explorer",
+      "description": "Complete daily puzzles in all 9 variants",
+      "icon": "fa-compass",
+      "type": "variant",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "unique_variants_daily",
+        "count": 9
+      }
+    },
+    {
+      "id": "variant_speed_runner",
+      "title": "Speed Variant Runner",
+      "description": "Complete each variant in under target time",
+      "icon": "fa-tachometer-alt",
+      "type": "variant",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "all_variants_speed",
+        "variants": 9
+      }
+    },
+    {
+      "id": "variant_perfect_all",
+      "title": "Universal Perfectionist",
+      "description": "Complete a perfect game in each variant",
+      "icon": "fa-star",
+      "type": "variant",
+      "rarity": "epic",
+      "xp": 60,
+      "requirement": {
+        "type": "perfect_all_variants",
+        "count": 9
+      }
+    },
+    {
+      "id": "variant_same_day",
+      "title": "Variety Day",
+      "description": "Complete puzzles from 5 different variants in one day",
+      "icon": "fa-calendar-day",
+      "type": "variant",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "variants_same_day",
+        "count": 5
+      }
+    },
+    {
+      "id": "variant_week_streak",
+      "title": "Variant Streak",
+      "description": "Complete a different variant each day for 7 days",
+      "icon": "fa-fire",
+      "type": "variant",
+      "rarity": "epic",
+      "xp": 40,
+      "requirement": {
+        "type": "variant_daily_streak",
+        "days": 7
+      }
+    },
+    {
+      "id": "mini_marathon",
+      "title": "Mini Marathon",
+      "description": "Complete 10 Mini puzzles in one session",
+      "icon": "fa-running",
+      "type": "variant",
+      "variant": "mini",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "variant_session_count",
+        "variant": "mini",
+        "count": 10
+      }
+    },
+    {
+      "id": "killer_cage_breaker",
+      "title": "Cage Breaker",
+      "description": "Complete 25 Killer Sudoku puzzles",
+      "icon": "fa-unlock",
+      "type": "variant",
+      "variant": "killer-sudoku",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "killer-sudoku",
+        "count": 25
+      }
+    },
+    {
+      "id": "jigsaw_puzzler",
+      "title": "Jigsaw Puzzler",
+      "description": "Complete 50 Jigsaw Sudoku puzzles",
+      "icon": "fa-puzzle-piece",
+      "type": "variant",
+      "variant": "jigsaw-sudoku",
+      "rarity": "epic",
+      "xp": 40,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "jigsaw-sudoku",
+        "count": 50
+      }
+    },
+    {
+      "id": "variant_hard_master",
+      "title": "Hard Variant Master",
+      "description": "Complete Hard difficulty in all 9 variants",
+      "icon": "fa-fire",
+      "type": "variant",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "all_variants_hard",
+        "count": 9
+      }
+    },
+    {
+      "id": "variant_no_hints_all",
+      "title": "Self-Sufficient Solver",
+      "description": "Complete each variant without using hints",
+      "icon": "fa-user-ninja",
+      "type": "variant",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "all_variants_no_hints",
+        "count": 9
+      }
+    },
+    {
+      "id": "xsudoku_250",
+      "title": "X-Sudoku Devotee",
+      "description": "Complete 250 X-Sudoku puzzles",
+      "icon": "fa-times",
+      "type": "variant",
+      "variant": "x-sudoku",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "variant_completions",
+        "variant": "x-sudoku",
+        "count": 250
+      }
+    },
+    {
+      "id": "mini_speed_master",
+      "title": "Mini Speed Master",
+      "description": "Complete 5 Mini puzzles in under 30 seconds each",
+      "icon": "fa-bolt",
+      "type": "variant",
+      "variant": "mini",
+      "rarity": "epic",
+      "xp": 40,
+      "requirement": {
+        "type": "variant_speed_count",
+        "variant": "mini",
+        "count": 5,
+        "time_under": 30
+      }
+    },
+    {
+      "id": "variant_triple_crown",
+      "title": "Triple Crown",
+      "description": "Complete Easy, Medium, and Hard in 3 different variants in one day",
+      "icon": "fa-crown",
+      "type": "variant",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "triple_difficulty_multi_variant",
+        "variants": 3
+      }
+    },
+    {
+      "id": "variant_monthly_master",
+      "title": "Monthly Variant Master",
+      "description": "Complete 10+ puzzles in each variant in a single month",
+      "icon": "fa-calendar-alt",
+      "type": "variant",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "monthly_all_variants",
+        "count_per_variant": 10,
+        "variants": 9
+      }
+    },
+    {
+      "id": "variant_efficiency",
+      "title": "Efficient Variant Solver",
+      "description": "Complete each variant with 90%+ accuracy",
+      "icon": "fa-bullseye",
+      "type": "variant",
+      "rarity": "epic",
+      "xp": 60,
+      "requirement": {
+        "type": "all_variants_accuracy",
+        "accuracy": 90,
+        "count": 9
+      }
+    },
+    {
+      "id": "friend_challenge_10",
+      "title": "Friendly Competition",
+      "description": "Complete 10 friend challenge puzzles",
+      "icon": "fa-handshake",
+      "type": "social",
+      "rarity": "common",
+      "xp": 15,
+      "requirement": {
+        "type": "friend_challenges",
+        "count": 10
+      }
+    },
+    {
+      "id": "friend_challenge_50",
+      "title": "Challenge Accepted",
+      "description": "Complete 50 friend challenge puzzles",
+      "icon": "fa-fist-raised",
+      "type": "social",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "friend_challenges",
+        "count": 50
+      }
+    },
+    {
+      "id": "friend_challenge_100",
+      "title": "Challenge Champion",
+      "description": "Complete 100 friend challenge puzzles",
+      "icon": "fa-trophy",
+      "type": "social",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "friend_challenges",
+        "count": 100
+      }
+    },
+    {
+      "id": "friend_win_10",
+      "title": "Friendly Victor",
+      "description": "Win 10 friend challenges",
+      "icon": "fa-medal",
+      "type": "social",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "friend_challenge_wins",
+        "count": 10
+      }
+    },
+    {
+      "id": "friend_win_50",
+      "title": "Social Dominator",
+      "description": "Win 50 friend challenges",
+      "icon": "fa-crown",
+      "type": "social",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "friend_challenge_wins",
+        "count": 50
+      }
+    },
+    {
+      "id": "league_bronze_top3",
+      "title": "Bronze Medalist",
+      "description": "Finish top 3 in Bronze League",
+      "icon": "fa-medal",
+      "type": "social",
+      "league": "bronze",
+      "rarity": "common",
+      "xp": 15,
+      "requirement": {
+        "type": "league_finish",
+        "league": "bronze",
+        "rank_max": 3
+      }
+    },
+    {
+      "id": "league_silver_top3",
+      "title": "Silver Medalist",
+      "description": "Finish top 3 in Silver League",
+      "icon": "fa-medal",
+      "type": "social",
+      "league": "silver",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "league_finish",
+        "league": "silver",
+        "rank_max": 3
+      }
+    },
+    {
+      "id": "league_gold_top3",
+      "title": "Gold Medalist",
+      "description": "Finish top 3 in Gold League",
+      "icon": "fa-medal",
+      "type": "social",
+      "league": "gold",
+      "rarity": "epic",
+      "xp": 40,
+      "requirement": {
+        "type": "league_finish",
+        "league": "gold",
+        "rank_max": 3
+      }
+    },
+    {
+      "id": "league_platinum_top3",
+      "title": "Platinum Medalist",
+      "description": "Finish top 3 in Platinum League",
+      "icon": "fa-medal",
+      "type": "social",
+      "league": "platinum",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "league_finish",
+        "league": "platinum",
+        "rank_max": 3
+      }
+    },
+    {
+      "id": "league_diamond_top3",
+      "title": "Diamond Medalist",
+      "description": "Finish top 3 in Diamond League",
+      "icon": "fa-gem",
+      "type": "social",
+      "league": "diamond",
+      "rarity": "legendary",
+      "xp": 75,
+      "requirement": {
+        "type": "league_finish",
+        "league": "diamond",
+        "rank_max": 3
+      }
+    },
+    {
+      "id": "league_legend_top3",
+      "title": "Legendary Finisher",
+      "description": "Finish top 3 in Legend League",
+      "icon": "fa-crown",
+      "type": "social",
+      "league": "legend",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "league_finish",
+        "league": "legend",
+        "rank_max": 3
+      }
+    },
+    {
+      "id": "league_promote_5",
+      "title": "Rising Star",
+      "description": "Get promoted 5 times in leagues",
+      "icon": "fa-arrow-up",
+      "type": "social",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "league_promotions",
+        "count": 5
+      }
+    },
+    {
+      "id": "league_promote_10",
+      "title": "League Climber",
+      "description": "Get promoted 10 times in leagues",
+      "icon": "fa-mountain",
+      "type": "social",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "league_promotions",
+        "count": 10
+      }
+    },
+    {
+      "id": "league_win_3",
+      "title": "Triple Champion",
+      "description": "Win 3 league seasons",
+      "icon": "fa-trophy",
+      "type": "social",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "league_season_wins",
+        "count": 3
+      }
+    },
+    {
+      "id": "league_win_10",
+      "title": "Dynasty Builder",
+      "description": "Win 10 league seasons",
+      "icon": "fa-crown",
+      "type": "social",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "league_season_wins",
+        "count": 10
+      }
+    },
+    {
+      "id": "share_achievement",
+      "title": "Achievement Sharer",
+      "description": "Share an achievement unlock on social media",
+      "icon": "fa-share-alt",
+      "type": "social",
+      "rarity": "common",
+      "xp": 10,
+      "requirement": {
+        "type": "share_achievement",
+        "count": 1
+      }
+    },
+    {
+      "id": "share_streak",
+      "title": "Streak Broadcaster",
+      "description": "Share your streak on social media",
+      "icon": "fa-fire",
+      "type": "social",
+      "rarity": "common",
+      "xp": 10,
+      "requirement": {
+        "type": "share_streak",
+        "count": 1
+      }
+    },
+    {
+      "id": "share_friend_battle",
+      "title": "Battle Announcer",
+      "description": "Share a friend challenge result",
+      "icon": "fa-bullhorn",
+      "type": "social",
+      "rarity": "common",
+      "xp": 10,
+      "requirement": {
+        "type": "share_friend_battle",
+        "count": 1
+      }
+    },
+    {
+      "id": "community_helper",
+      "title": "Community Helper",
+      "description": "Help 10 friends complete their first puzzle",
+      "icon": "fa-hands-helping",
+      "type": "social",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "friends_first_puzzle_helped",
+        "count": 10
+      }
+    },
+    {
+      "id": "social_butterfly_pro",
+      "title": "Social Butterfly Pro",
+      "description": "Have 100 active friends",
+      "icon": "fa-users",
+      "type": "social",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "friends_active",
+        "count": 100
+      }
+    },
+    {
+      "id": "streak_14",
+      "title": "Two Week Warrior",
+      "description": "Play puzzles for 14 consecutive days",
+      "icon": "fa-fire",
+      "type": "consistency",
+      "rarity": "common",
+      "xp": 15,
+      "requirement": {
+        "type": "daily_streak",
+        "days": 14
+      }
+    },
+    {
+      "id": "streak_60",
+      "title": "Two Month Master",
+      "description": "Play puzzles for 60 consecutive days",
+      "icon": "fa-fire",
+      "type": "consistency",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "daily_streak",
+        "days": 60
+      }
+    },
+    {
+      "id": "streak_180",
+      "title": "Half Year Hero",
+      "description": "Play puzzles for 180 consecutive days",
+      "icon": "fa-fire",
+      "type": "consistency",
+      "rarity": "epic",
+      "xp": 60,
+      "requirement": {
+        "type": "daily_streak",
+        "days": 180
+      }
+    },
+    {
+      "id": "streak_200",
+      "title": "Unstoppable",
+      "description": "Play puzzles for 200 consecutive days",
+      "icon": "fa-infinity",
+      "type": "consistency",
+      "rarity": "epic",
+      "xp": 75,
+      "requirement": {
+        "type": "daily_streak",
+        "days": 200
+      }
+    },
+    {
+      "id": "streak_500",
+      "title": "Eternal Solver",
+      "description": "Play puzzles for 500 consecutive days",
+      "icon": "fa-infinity",
+      "type": "consistency",
+      "rarity": "legendary",
+      "xp": 150,
+      "requirement": {
+        "type": "daily_streak",
+        "days": 500
+      }
+    },
+    {
+      "id": "complete_all_dailies_10",
+      "title": "Daily Triple",
+      "description": "Complete all 3 daily puzzles 10 times",
+      "icon": "fa-calendar-check",
+      "type": "consistency",
+      "rarity": "common",
+      "xp": 15,
+      "requirement": {
+        "type": "complete_all_dailies",
+        "count": 10
+      }
+    },
+    {
+      "id": "complete_all_dailies_50",
+      "title": "Triple Threat",
+      "description": "Complete all 3 daily puzzles 50 times",
+      "icon": "fa-calendar-check",
+      "type": "consistency",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "complete_all_dailies",
+        "count": 50
+      }
+    },
+    {
+      "id": "complete_all_dailies_100",
+      "title": "Daily Completionist",
+      "description": "Complete all 3 daily puzzles 100 times",
+      "icon": "fa-calendar-check",
+      "type": "consistency",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "complete_all_dailies",
+        "count": 100
+      }
+    },
+    {
+      "id": "complete_all_dailies_365",
+      "title": "Full Year Perfectionist",
+      "description": "Complete all 3 daily puzzles every day for a year",
+      "icon": "fa-calendar",
+      "type": "consistency",
+      "rarity": "legendary",
+      "xp": 150,
+      "requirement": {
+        "type": "complete_all_dailies",
+        "count": 365
+      }
+    },
+    {
+      "id": "weekly_consistent_12",
+      "title": "Quarter Year Consistent",
+      "description": "Play at least 5 days per week for 12 weeks",
+      "icon": "fa-calendar-week",
+      "type": "consistency",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "weekly_consistency",
+        "weeks": 12,
+        "days_per_week": 5
+      }
+    },
+    {
+      "id": "weekly_consistent_26",
+      "title": "Half Year Consistent",
+      "description": "Play at least 5 days per week for 26 weeks",
+      "icon": "fa-calendar-week",
+      "type": "consistency",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "weekly_consistency",
+        "weeks": 26,
+        "days_per_week": 5
+      }
+    },
+    {
+      "id": "weekly_consistent_52",
+      "title": "Full Year Consistent",
+      "description": "Play at least 5 days per week for 52 weeks",
+      "icon": "fa-calendar",
+      "type": "consistency",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "weekly_consistency",
+        "weeks": 52,
+        "days_per_week": 5
+      }
+    },
+    {
+      "id": "total_puzzles_1000",
+      "title": "Thousand Solver",
+      "description": "Complete 1,000 total puzzles (all modes)",
+      "icon": "fa-trophy",
+      "type": "consistency",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "total_puzzles",
+        "count": 1000
+      }
+    },
+    {
+      "id": "total_puzzles_5000",
+      "title": "Five Thousand Club",
+      "description": "Complete 5,000 total puzzles (all modes)",
+      "icon": "fa-star",
+      "type": "consistency",
+      "rarity": "epic",
+      "xp": 75,
+      "requirement": {
+        "type": "total_puzzles",
+        "count": 5000
+      }
+    },
+    {
+      "id": "total_puzzles_10000",
+      "title": "Ten Thousand Legend",
+      "description": "Complete 10,000 total puzzles (all modes)",
+      "icon": "fa-crown",
+      "type": "consistency",
+      "rarity": "legendary",
+      "xp": 150,
+      "requirement": {
+        "type": "total_puzzles",
+        "count": 10000
+      }
+    },
+    {
+      "id": "comeback_30",
+      "title": "Welcome Back",
+      "description": "Return after 30 days of absence",
+      "icon": "fa-door-open",
+      "type": "consistency",
+      "rarity": "common",
+      "xp": 10,
+      "requirement": {
+        "type": "return_after_absence",
+        "days": 30
+      }
+    },
+    {
+      "id": "comeback_100",
+      "title": "Long Time No See",
+      "description": "Return after 100 days of absence",
+      "icon": "fa-door-open",
+      "type": "consistency",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "return_after_absence",
+        "days": 100
+      }
+    },
+    {
+      "id": "morning_routine_30",
+      "title": "Morning Solver",
+      "description": "Complete a puzzle before 9 AM for 30 days",
+      "icon": "fa-coffee",
+      "type": "consistency",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "morning_puzzles",
+        "days": 30,
+        "before_hour": 9
+      }
+    },
+    {
+      "id": "night_owl_30",
+      "title": "Night Owl",
+      "description": "Complete a puzzle after 10 PM for 30 days",
+      "icon": "fa-moon",
+      "type": "consistency",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "night_puzzles",
+        "days": 30,
+        "after_hour": 22
+      }
+    },
+    {
+      "id": "weekend_warrior_26",
+      "title": "Weekend Warrior",
+      "description": "Complete puzzles every Saturday and Sunday for 26 weeks",
+      "icon": "fa-calendar-weekend",
+      "type": "consistency",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "weekend_consistency",
+        "weeks": 26
+      }
+    },
+    {
+      "id": "league_points_10k",
+      "title": "Point Collector",
+      "description": "Earn 10,000 total league points",
+      "icon": "fa-coins",
+      "type": "league",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "league_points_total",
+        "points": 10000
+      }
+    },
+    {
+      "id": "league_points_50k",
+      "title": "Point Master",
+      "description": "Earn 50,000 total league points",
+      "icon": "fa-coins",
+      "type": "league",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "league_points_total",
+        "points": 50000
+      }
+    },
+    {
+      "id": "league_points_100k",
+      "title": "Point Legend",
+      "description": "Earn 100,000 total league points",
+      "icon": "fa-coins",
+      "type": "league",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "league_points_total",
+        "points": 100000
+      }
+    },
+    {
+      "id": "league_never_demoted",
+      "title": "Safe Position",
+      "description": "Finish a season without being demoted",
+      "icon": "fa-shield-alt",
+      "type": "league",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "league_no_demotion",
+        "seasons": 1
+      }
+    },
+    {
+      "id": "league_never_demoted_5",
+      "title": "Consistent Performer",
+      "description": "Finish 5 seasons without being demoted",
+      "icon": "fa-shield",
+      "type": "league",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "league_no_demotion",
+        "seasons": 5
+      }
+    },
+    {
+      "id": "league_perfect_season",
+      "title": "Perfect Season",
+      "description": "Win every league match in a season",
+      "icon": "fa-trophy",
+      "type": "league",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "league_perfect_season",
+        "seasons": 1
+      }
+    },
+    {
+      "id": "league_comeback_win",
+      "title": "Comeback Kid",
+      "description": "Finish top 3 after being in bottom 3 mid-season",
+      "icon": "fa-arrow-up",
+      "type": "league",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "league_comeback",
+        "count": 1
+      }
+    },
+    {
+      "id": "league_bronze_to_gold",
+      "title": "Golden Journey",
+      "description": "Promote from Bronze to Gold League",
+      "icon": "fa-medal",
+      "type": "league",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "league_progression",
+        "from": "bronze",
+        "to": "gold"
+      }
+    },
+    {
+      "id": "league_bronze_to_legend",
+      "title": "Legendary Rise",
+      "description": "Promote from Bronze to Legend League",
+      "icon": "fa-crown",
+      "type": "league",
+      "rarity": "legendary",
+      "xp": 150,
+      "requirement": {
+        "type": "league_progression",
+        "from": "bronze",
+        "to": "legend"
+      }
+    },
+    {
+      "id": "league_top10_all",
+      "title": "Top 10 Everywhere",
+      "description": "Finish top 10 in each league tier",
+      "icon": "fa-medal",
+      "type": "league",
+      "rarity": "epic",
+      "xp": 60,
+      "requirement": {
+        "type": "league_top10_all_tiers",
+        "count": 6
+      }
+    },
+    {
+      "id": "league_win_first",
+      "title": "First Victory",
+      "description": "Win your first league season",
+      "icon": "fa-trophy",
+      "type": "league",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "league_season_wins",
+        "count": 1
+      }
+    },
+    {
+      "id": "league_participate_10",
+      "title": "League Veteran",
+      "description": "Participate in 10 league seasons",
+      "icon": "fa-calendar-alt",
+      "type": "league",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "league_seasons_participated",
+        "count": 10
+      }
+    },
+    {
+      "id": "league_participate_50",
+      "title": "League Stalwart",
+      "description": "Participate in 50 league seasons",
+      "icon": "fa-calendar",
+      "type": "league",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "league_seasons_participated",
+        "count": 50
+      }
+    },
+    {
+      "id": "league_mvp",
+      "title": "League MVP",
+      "description": "Earn the highest points in a league season",
+      "icon": "fa-star",
+      "type": "league",
+      "rarity": "epic",
+      "xp": 60,
+      "requirement": {
+        "type": "league_highest_points_season",
+        "rank": 1
+      }
+    },
+    {
+      "id": "league_domination",
+      "title": "League Domination",
+      "description": "Win 5 consecutive league seasons",
+      "icon": "fa-fire",
+      "type": "league",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "league_consecutive_wins",
+        "count": 5
+      }
+    },
+    {
+      "id": "bp_season_xp_10k",
+      "title": "Season Grinder",
+      "description": "Earn 10,000 XP in a single season",
+      "icon": "fa-star",
+      "type": "battle_pass",
+      "rarity": "rare",
+      "xp": 25,
+      "requirement": {
+        "type": "bp_season_xp",
+        "xp": 10000
+      }
+    },
+    {
+      "id": "bp_season_xp_25k",
+      "title": "Season Master",
+      "description": "Earn 25,000 XP in a single season",
+      "icon": "fa-gem",
+      "type": "battle_pass",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "bp_season_xp",
+        "xp": 25000
+      }
+    },
+    {
+      "id": "bp_season_xp_50k",
+      "title": "Season Legend",
+      "description": "Earn 50,000 XP in a single season",
+      "icon": "fa-crown",
+      "type": "battle_pass",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "bp_season_xp",
+        "xp": 50000
+      }
+    },
+    {
+      "id": "bp_week_one_tier_25",
+      "title": "Quick Starter",
+      "description": "Reach Tier 25 in the first week of a season",
+      "icon": "fa-rocket",
+      "type": "battle_pass",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "bp_week_one_tier",
+        "tier": 25
+      }
+    },
+    {
+      "id": "bp_free_complete",
+      "title": "Free Tier Master",
+      "description": "Complete all free Battle Pass rewards in a season",
+      "icon": "fa-trophy",
+      "type": "battle_pass",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "bp_free_rewards_complete",
+        "count": 1
+      }
+    },
+    {
+      "id": "bp_premium_complete",
+      "title": "Premium Completionist",
+      "description": "Complete all premium Battle Pass rewards in a season",
+      "icon": "fa-crown",
+      "type": "battle_pass",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "bp_premium_rewards_complete",
+        "count": 1
+      }
+    },
+    {
+      "id": "bp_3_seasons_max",
+      "title": "Triple Season Max",
+      "description": "Max out 3 Battle Pass seasons",
+      "icon": "fa-medal",
+      "type": "battle_pass",
+      "rarity": "epic",
+      "xp": 60,
+      "requirement": {
+        "type": "bp_seasons_maxed",
+        "count": 3
+      }
+    },
+    {
+      "id": "bp_10_seasons_max",
+      "title": "Battle Pass Immortal",
+      "description": "Max out 10 Battle Pass seasons",
+      "icon": "fa-infinity",
+      "type": "battle_pass",
+      "rarity": "legendary",
+      "xp": 150,
+      "requirement": {
+        "type": "bp_seasons_maxed",
+        "count": 10
+      }
+    },
+    {
+      "id": "bp_day_one_tier_10",
+      "title": "Day One Grinder",
+      "description": "Reach Tier 10 on the first day of a season",
+      "icon": "fa-fire",
+      "type": "battle_pass",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "bp_day_one_tier",
+        "tier": 10
+      }
+    },
+    {
+      "id": "bp_all_challenges",
+      "title": "Challenge Completionist",
+      "description": "Complete all weekly challenges in a season",
+      "icon": "fa-check-double",
+      "type": "battle_pass",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "bp_all_weekly_challenges",
+        "seasons": 1
+      }
+    },
+    {
+      "id": "error_free_streak_10",
+      "title": "Precision Streak",
+      "description": "Complete 10 puzzles in a row without errors",
+      "icon": "fa-bullseye",
+      "type": "skill",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "error_free_streak",
+        "count": 10
+      }
+    },
+    {
+      "id": "error_free_streak_25",
+      "title": "Flawless Master",
+      "description": "Complete 25 puzzles in a row without errors",
+      "icon": "fa-crosshairs",
+      "type": "skill",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "error_free_streak",
+        "count": 25
+      }
+    },
+    {
+      "id": "hint_efficiency_50",
+      "title": "Hint Efficient",
+      "description": "Complete 50 puzzles using max 1 hint each",
+      "icon": "fa-lightbulb",
+      "type": "skill",
+      "rarity": "rare",
+      "xp": 30,
+      "requirement": {
+        "type": "hint_efficiency",
+        "count": 50,
+        "max_hints": 1
+      }
+    },
+    {
+      "id": "personal_best_streak",
+      "title": "Consistent Improver",
+      "description": "Beat your personal best time 5 times in a row",
+      "icon": "fa-chart-line",
+      "type": "skill",
+      "rarity": "epic",
+      "xp": 50,
+      "requirement": {
+        "type": "personal_best_streak",
+        "count": 5
+      }
+    },
+    {
+      "id": "speed_improvement_50",
+      "title": "Speed Evolution",
+      "description": "Improve your average solve time by 50% over 30 days",
+      "icon": "fa-tachometer-alt",
+      "type": "skill",
+      "rarity": "legendary",
+      "xp": 100,
+      "requirement": {
+        "type": "speed_improvement",
+        "improvement_percent": 50,
+        "days": 30
+      }
+    }
+  ],
+  "statistics": {
+    "total_achievements": 110,
+    "total_xp_available": 5530,
+    "rarity_distribution": {
+      "common": 16,
+      "rare": 31,
+      "epic": 43,
+      "legendary": 20
+    },
+    "category_breakdown": {
+      "variant_mastery": {
+        "count": 40,
+        "xp": 2070,
+        "breakdown": {
+          "anti-knight": 5,
+          "hyper-sudoku": 5,
+          "consecutive-sudoku": 5,
+          "thermo-sudoku": 5,
+          "classic-milestones": 5,
+          "mixed-variant": 15
+        }
+      },
+      "social_community": {
+        "count": 20,
+        "xp": 800,
+        "breakdown": {
+          "friend_challenges": 5,
+          "league_achievements": 10,
+          "sharing": 3,
+          "community": 2
+        }
+      },
+      "consistency_dedication": {
+        "count": 20,
+        "xp": 920,
+        "breakdown": {
+          "streaks": 5,
+          "dailies": 4,
+          "weekly": 3,
+          "totals": 3,
+          "comebacks": 2,
+          "time-based": 3
+        }
+      },
+      "league_excellence": {
+        "count": 15,
+        "xp": 765,
+        "breakdown": {
+          "finish_positions": 6,
+          "promotions": 2,
+          "wins": 2,
+          "points": 3,
+          "participation": 2
+        }
+      },
+      "battle_pass_mastery": {
+        "count": 10,
+        "xp": 595,
+        "breakdown": {
+          "season_xp": 3,
+          "completions": 2,
+          "multi_season": 2,
+          "challenges": 3
+        }
+      },
+      "skill_performance": {
+        "count": 5,
+        "xp": 260,
+        "breakdown": {
+          "error_free": 2,
+          "hint_efficiency": 1,
+          "improvement": 2
+        }
+      }
+    }
+  },
+  "creative_highlights": [
+    {
+      "achievement": "variant_triple_crown",
+      "highlight": "Unique challenge requiring mastery across multiple variants and difficulties in a single day"
+    },
+    {
+      "achievement": "league_bronze_to_legend",
+      "highlight": "Epic journey achievement tracking long-term progression through all league tiers"
+    },
+    {
+      "achievement": "streak_500",
+      "highlight": "Ultimate dedication achievement - over 1 year of consecutive play"
+    },
+    {
+      "achievement": "speed_improvement_50",
+      "highlight": "Dynamic achievement measuring actual player skill improvement over time"
+    },
+    {
+      "achievement": "variant_monthly_master",
+      "highlight": "Comprehensive monthly challenge requiring balanced play across all 9 variants"
+    },
+    {
+      "achievement": "league_perfect_season",
+      "highlight": "Legendary competitive achievement requiring undefeated season performance"
+    }
+  ],
+  "implementation_notes": {
+    "database_tables": [
+      "user_achievements (existing)",
+      "lesson_achievements (existing)",
+      "league_tracking (existing)",
+      "battle_pass_progress (existing)"
+    ],
+    "tracking_requirements": [
+      "Variant completion counters per user",
+      "Perfect game streak tracking",
+      "League season history",
+      "Friend challenge win/loss records",
+      "Daily streak tracking with timestamps",
+      "Battle Pass XP per season",
+      "Error-free game streak counter",
+      "Personal best time tracking"
+    ],
+    "api_endpoints": [
+      "GET /api/achievements - Fetch user achievements",
+      "POST /api/achievements - Unlock achievement",
+      "GET /api/stats?type=achievements - Get achievement progress"
+    ],
+    "migration_sql": "Create migration to add new achievement definitions to achievements table"
+  }
+}
