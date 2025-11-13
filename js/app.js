@@ -2073,6 +2073,7 @@ class SudokuChampionship {
     async updateProgressSections(user) {
         try {
             await this.updateBattlePassPreview(user);
+            await this.updateLessonProgress(user);
             await this.updateRecentAchievements(user);
         } catch (error) {
             console.error('Error updating progress sections:', error);
@@ -2108,6 +2109,76 @@ class SudokuChampionship {
             }
         } catch (error) {
             console.error('Error updating battle pass preview:', error);
+        }
+    }
+
+    /**
+     * Update lesson progress widget (Phase 2)
+     */
+    async updateLessonProgress(user) {
+        try {
+            // Fetch lesson progress from API
+            const response = await fetch('/api/stats?type=lesson-progress');
+
+            if (response.ok) {
+                const progressData = await response.json();
+
+                // Calculate stats
+                const completedLessons = progressData.filter(p => p.status === 'completed').length;
+                const totalXP = progressData
+                    .filter(p => p.status === 'completed')
+                    .reduce((sum, lesson) => {
+                        // Parse lesson number from ID (e.g., "lesson-01-sudoku-basics" -> 1)
+                        const lessonNum = parseInt(lesson.lesson_id.match(/lesson-(\d+)/)[1]);
+                        // XP values based on lesson number (from lesson catalog)
+                        const xpMap = {
+                            1: 25, 2: 50, 3: 50, 4: 50, 5: 75, 6: 75,  // Beginner
+                            7: 100, 8: 100, 9: 100, 10: 150, 11: 150, 12: 150, 13: 150, 14: 200,  // Intermediate
+                            15: 150, 16: 150, 17: 150, 18: 150, 19: 150, 20: 200  // Variants
+                        };
+                        return sum + (xpMap[lessonNum] || 0);
+                    }, 0);
+
+                // Count progress per course
+                const beginnerComplete = progressData.filter(p =>
+                    p.status === 'completed' && p.lesson_id.match(/lesson-0[1-6]/)
+                ).length;
+                const intermediateComplete = progressData.filter(p =>
+                    p.status === 'completed' && p.lesson_id.match(/lesson-(0[7-9]|1[0-4])/)
+                ).length;
+                const variantsComplete = progressData.filter(p =>
+                    p.status === 'completed' && p.lesson_id.match(/lesson-(1[5-9]|20)/)
+                ).length;
+
+                // Update DOM elements
+                const completedDisplay = document.getElementById('completedLessonsDisplay');
+                if (completedDisplay) {
+                    completedDisplay.textContent = completedLessons;
+                }
+
+                const xpDisplay = document.getElementById('lessonXPDisplay');
+                if (xpDisplay) {
+                    xpDisplay.textContent = totalXP.toLocaleString();
+                }
+
+                const beginnerDisplay = document.getElementById('beginnerProgressDisplay');
+                if (beginnerDisplay) {
+                    beginnerDisplay.textContent = `${beginnerComplete}/6`;
+                }
+
+                const intermediateDisplay = document.getElementById('intermediateProgressDisplay');
+                if (intermediateDisplay) {
+                    intermediateDisplay.textContent = `${intermediateComplete}/8`;
+                }
+
+                const variantsDisplay = document.getElementById('variantsProgressDisplay');
+                if (variantsDisplay) {
+                    variantsDisplay.textContent = `${variantsComplete}/6`;
+                }
+            }
+        } catch (error) {
+            console.error('Error updating lesson progress:', error);
+            // Keep default 0 values on error
         }
     }
 
