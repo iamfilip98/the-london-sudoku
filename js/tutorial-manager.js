@@ -18,7 +18,6 @@ class TutorialManager {
         if (typeof TUTORIAL_CONTENT !== 'undefined') {
             this.tutorials = TUTORIAL_CONTENT;
         } else {
-            console.error('Tutorial content not loaded');
             this.tutorials = {};
         }
 
@@ -31,7 +30,6 @@ class TutorialManager {
      */
     startTutorial(variantId, resumeFromStep = 0) {
         if (!this.tutorials[variantId]) {
-            console.error(`Tutorial not found for variant: ${variantId}`);
             return false;
         }
 
@@ -597,14 +595,12 @@ class TutorialManager {
      */
     trackTutorialAchievement() {
         // Could integrate with achievement system
-        console.log(`Tutorial completed: ${this.currentTutorial}`);
 
         // Check if all tutorials completed
         const allTutorials = Object.keys(this.tutorials);
         const completedCount = [...this.completedTutorials].length;
 
         if (completedCount === allTutorials.length) {
-            console.log('🏆 All tutorials completed! Master achievement unlocked.');
         }
     }
 
@@ -672,7 +668,6 @@ class TutorialManager {
                 progress: this.tutorialProgress
             }));
         } catch (e) {
-            console.error('Failed to save tutorial progress:', e);
         }
     }
 
@@ -688,7 +683,6 @@ class TutorialManager {
                 this.tutorialProgress = data.progress || {};
             }
         } catch (e) {
-            console.error('Failed to load tutorial progress:', e);
             this.completedTutorials = new Set();
             this.tutorialProgress = {};
         }
@@ -704,7 +698,6 @@ class TutorialManager {
             this.completedTutorials.clear();
             this.tutorialProgress = {};
             this.saveProgress();
-            console.log('Tutorial progress reset');
         }
     }
 }

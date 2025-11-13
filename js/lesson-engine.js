@@ -30,7 +30,6 @@ class LessonEngine {
      * Initialize the lesson engine
      */
     async init() {
-        console.log('Lesson Engine: Initializing...');
 
         // Get user info from session
         this.userId = sessionStorage.getItem('clerk_user_id') || sessionStorage.getItem('currentPlayer');
@@ -71,7 +70,6 @@ class LessonEngine {
             this.loadLesson(lessonId);
         }
 
-        console.log('Lesson Engine: Initialized successfully');
     }
 
     /**
@@ -80,7 +78,6 @@ class LessonEngine {
      */
     async loadLesson(lessonId) {
         try {
-            console.log(`Loading lesson: ${lessonId}`);
 
             // Show loading state
             this.showLoadingState();
@@ -123,10 +120,8 @@ class LessonEngine {
                 });
             }
 
-            console.log(`Lesson loaded: ${lesson.title}`);
 
         } catch (error) {
-            console.error('Error loading lesson:', error);
             this.showError('Failed to load lesson. Please try again.');
         }
     }
@@ -153,7 +148,6 @@ class LessonEngine {
                 };
             }
         } catch (error) {
-            console.error('Error loading progress:', error);
             // Continue with empty progress
             this.lessonProgress = {
                 status: 'not_started',
@@ -259,7 +253,6 @@ class LessonEngine {
                 this.renderSummary(step);
                 break;
             default:
-                console.warn(`Unknown step type: ${step.type}`);
         }
 
         // Scroll to top
@@ -618,7 +611,6 @@ class LessonEngine {
                 })
             });
         } catch (error) {
-            console.error('Error saving progress:', error);
         }
     }
 
@@ -641,7 +633,6 @@ class LessonEngine {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log('Lesson completed:', result);
 
                 // Track lesson completion (PHASE 2: PostHog Analytics)
                 if (window.posthog) {
@@ -663,7 +654,6 @@ class LessonEngine {
                 }
             }
         } catch (error) {
-            console.error('Error marking lesson complete:', error);
         }
     }
 

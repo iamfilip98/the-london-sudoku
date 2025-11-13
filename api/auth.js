@@ -22,6 +22,7 @@ const { setCorsHeaders } = require('../lib/cors');
 const { loginSchema, validate, sanitizeHtml } = require('../lib/validators');
 const bcrypt = require('bcryptjs');
 const { getCached, invalidateCachePattern, CACHE_DURATIONS, CacheKeys } = require('../lib/cache');
+const { rateLimit } = require('../lib/rate-limit');
 
 // Ensure bio column exists in users table
 async function ensureUserSchema() {
@@ -32,7 +33,6 @@ async function ensureUserSchema() {
     `);
   } catch (error) {
     // Column might already exist, ignore error
-    console.log('Bio column check:', error.message);
   }
 }
 
@@ -43,6 +43,15 @@ module.exports = async function handler(req, res) {
   // ✅ SECURITY FIX: Proper CORS handling
   if (setCorsHeaders(req, res)) {
     return;  // Preflight request handled
+  }
+
+  // ✅ RATE LIMITING: 5 attempts per 15 minutes (critical security endpoint)
+  const limited = await rateLimit(req, 'auth');
+  if (limited) {
+    return res.status(429).json({
+      error: 'Too many login attempts. Please try again in 15 minutes.',
+      retryAfter: 900
+    });
   }
 
   // Handle different HTTP methods and actions
@@ -70,6 +79,14 @@ module.exports = async function handler(req, res) {
       return handleRemoveFriend(req, res);
     }
     // Default: handle login
+  } else if (req.method === 'DELETE') {
+    const { action } = req.query;
+    if (action === 'delete-account') {
+      return handleDeleteAccount(req, res);
+    } else {
+      res.status(400).json({ error: 'Invalid action for DELETE method' });
+      return;
+    }
   } else {
     res.status(405).json({ error: 'Method not allowed' });
     return;
@@ -122,7 +139,6 @@ module.exports = async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Authentication error:', error);
     res.status(500).json({
       success: false,
       error: 'Authentication failed'
@@ -233,7 +249,6 @@ async function handleGetProfile(req, res) {
       profile
     });
   } catch (error) {
-    console.error('Get profile error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to fetch profile'
@@ -339,7 +354,6 @@ async function handleUpdateProfile(req, res) {
       }
     });
   } catch (error) {
-    console.error('Update profile error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to update profile'
@@ -405,7 +419,6 @@ async function handleGetFriends(req, res, username) {
     });
 
   } catch (error) {
-    console.error('Get friends error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to get friends list'
@@ -465,7 +478,6 @@ async function handleGetFriendRequests(req, res, username) {
     });
 
   } catch (error) {
-    console.error('Get friend requests error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to get friend requests'
@@ -556,7 +568,6 @@ async function handleSendFriendRequest(req, res) {
     });
 
   } catch (error) {
-    console.error('Send friend request error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to send friend request'
@@ -608,7 +619,6 @@ async function handleAcceptFriendRequest(req, res) {
     });
 
   } catch (error) {
-    console.error('Accept friend request error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to accept friend request'
@@ -647,7 +657,6 @@ async function handleRejectFriendRequest(req, res) {
     });
 
   } catch (error) {
-    console.error('Reject friend request error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to reject friend request'
@@ -711,10 +720,135 @@ async function handleRemoveFriend(req, res) {
     });
 
   } catch (error) {
-    console.error('Remove friend error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to remove friend'
+    });
+  }
+}
+
+// =====================================================
+// ACCOUNT DELETION
+// =====================================================
+
+/**
+ * DELETE Account - Permanently delete user account and all associated data
+ * Body: { username }
+ */
+async function handleDeleteAccount(req, res) {
+  try {
+    const { username } = req.body;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Username is required'
+      });
+    }
+
+    // Get user ID first
+    const userResult = await pool.query(
+      'SELECT id FROM users WHERE username = $1',
+      [username]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    const userId = userResult.rows[0].id;
+
+    // Delete all user data in a transaction
+    // Order matters: delete child records before parent (users table last)
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // Delete achievements_unlocked
+      await client.query(
+        'DELETE FROM achievements_unlocked WHERE username = $1',
+        [username]
+      );
+
+      // Delete battle_pass_progress
+      await client.query(
+        'DELETE FROM battle_pass_progress WHERE username = $1',
+        [username]
+      );
+
+      // Delete league_memberships
+      await client.query(
+        'DELETE FROM league_memberships WHERE username = $1',
+        [username]
+      );
+
+      // Delete individual_games
+      await client.query(
+        'DELETE FROM individual_games WHERE player = $1',
+        [username]
+      );
+
+      // Delete streaks
+      await client.query(
+        'DELETE FROM streaks WHERE player = $1',
+        [username]
+      );
+
+      // Delete friendships (using user_id)
+      await client.query(
+        'DELETE FROM friendships WHERE user1_id = $1 OR user2_id = $1',
+        [userId]
+      );
+
+      // Delete friend_requests (both sent and received)
+      await client.query(
+        'DELETE FROM friend_requests WHERE requester_id = $1 OR recipient_id = $1',
+        [userId]
+      );
+
+      // Delete lesson_progress (if exists)
+      await client.query(
+        'DELETE FROM lesson_progress WHERE username = $1',
+        [username]
+      );
+
+      // Delete user_stats (if exists)
+      await client.query(
+        'DELETE FROM user_stats WHERE username = $1',
+        [username]
+      );
+
+      // Finally, delete from users table
+      const deleteResult = await client.query(
+        'DELETE FROM users WHERE username = $1 RETURNING username',
+        [username]
+      );
+
+      await client.query('COMMIT');
+
+      // Invalidate all caches for this user
+      await invalidateCachePattern(`user:${username}:*`);
+      await invalidateCachePattern(`*${username}*`);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Account deleted successfully'
+      });
+
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to delete account'
     });
   }
 }

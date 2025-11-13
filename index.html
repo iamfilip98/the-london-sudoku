@@ -8,6 +8,27 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Sudoku">
 
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Play daily Sudoku puzzles with 9 unique variants including Classic, X-Sudoku, Killer, and Jigsaw. Compete globally, track progress, earn 500+ achievements, and master advanced techniques through interactive lessons.">
+    <meta name="keywords" content="sudoku, puzzle game, daily sudoku, sudoku variants, x-sudoku, killer sudoku, jigsaw sudoku, sudoku championship, online sudoku, competitive sudoku">
+    <meta name="author" content="The London Sudoku">
+    <link rel="canonical" href="https://thelondonsudoku.com/">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="The London Sudoku - Championship Arena">
+    <meta property="og:description" content="Master 9 Sudoku variants. Compete globally, earn 500+ achievements, and improve your skills with interactive lessons. Free to play!">
+    <meta property="og:image" content="https://thelondonsudoku.com/icons/icon-512.png">
+    <meta property="og:url" content="https://thelondonsudoku.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="The London Sudoku">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The London Sudoku - Championship Arena">
+    <meta name="twitter:description" content="Master 9 Sudoku variants. Compete globally, earn 500+ achievements, and improve your skills with interactive lessons.">
+    <meta name="twitter:image" content="https://thelondonsudoku.com/icons/icon-512.png">
+
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
 
@@ -22,6 +43,7 @@
     <link rel="stylesheet" href="css/enhancements.css">
     <link rel="stylesheet" href="css/tutorial.css">
     <link rel="stylesheet" href="css/mobile-ux-enhancements.css">
+    <link rel="stylesheet" href="css/cookie-consent.css">
     <!-- Preconnect to Google Fonts for faster loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,9 +67,12 @@
     <script src="/lib/anonymous-session.js"></script>
 </head>
 <body>
+    <!-- Skip to Main Content Link -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
     <div class="app-container">
         <!-- Navigation -->
-        <nav class="main-nav">
+        <nav class="main-nav" aria-label="Main navigation">
             <div class="nav-brand" onclick="navigateToDashboard()" style="cursor: pointer;">
                 <div class="championship-logo">
                     <div class="logo-background">
@@ -135,20 +160,20 @@
         </nav>
 
         <!-- Achievement Notification -->
-        <div class="achievement-notification" id="achievementNotification">
+        <div class="achievement-notification" id="achievementNotification" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="achievement-content">
-                <i class="fas fa-trophy achievement-icon"></i>
+                <i class="fas fa-trophy achievement-icon" aria-hidden="true"></i>
                 <div class="achievement-text">
                     <h3>Achievement Unlocked!</h3>
                     <p id="achievementMessage"></p>
                 </div>
-                <button class="achievement-close">&times;</button>
+                <button class="achievement-close" aria-label="Close achievement notification">&times;</button>
             </div>
         </div>
 
 
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="main-content" id="main-content">
             <!-- Dashboard Page -->
             <div class="page active" id="dashboard">
                 <!-- Personal Dashboard Header -->
@@ -407,35 +432,35 @@
 
                     <!-- Desktop difficulty grid -->
                     <div class="difficulty-selection-grid desktop-only">
-                        <div class="difficulty-option easy" data-difficulty="easy">
-                            <div class="difficulty-icon">
+                        <div class="difficulty-option easy" data-difficulty="easy" role="button" tabindex="0" aria-label="Easy difficulty: Perfect for beginners with 42 clues">
+                            <div class="difficulty-icon" aria-hidden="true">
                                 <i class="fas fa-seedling"></i>
                             </div>
                             <h3>EASY</h3>
-                            <button class="play-button" onclick="startSudokuGame('easy')">
-                                <i class="fas fa-play"></i>
+                            <button class="play-button" onclick="startSudokuGame('easy')" aria-label="Start easy Sudoku puzzle">
+                                <i class="fas fa-play" aria-hidden="true"></i>
                                 Play Easy
                             </button>
                         </div>
 
-                        <div class="difficulty-option medium" data-difficulty="medium">
-                            <div class="difficulty-icon">
+                        <div class="difficulty-option medium" data-difficulty="medium" role="button" tabindex="0" aria-label="Medium difficulty: Requires strategic thinking with 28 clues">
+                            <div class="difficulty-icon" aria-hidden="true">
                                 <i class="fas fa-bolt"></i>
                             </div>
                             <h3>MEDIUM</h3>
-                            <button class="play-button" onclick="startSudokuGame('medium')">
-                                <i class="fas fa-play"></i>
+                            <button class="play-button" onclick="startSudokuGame('medium')" aria-label="Start medium Sudoku puzzle">
+                                <i class="fas fa-play" aria-hidden="true"></i>
                                 Play Medium
                             </button>
                         </div>
 
-                        <div class="difficulty-option hard" data-difficulty="hard">
-                            <div class="difficulty-icon">
+                        <div class="difficulty-option hard" data-difficulty="hard" role="button" tabindex="0" aria-label="Hard difficulty: Expert challenge with 25 clues">
+                            <div class="difficulty-icon" aria-hidden="true">
                                 <i class="fas fa-fire"></i>
                             </div>
                             <h3>HARD</h3>
-                            <button class="play-button" onclick="startSudokuGame('hard')">
-                                <i class="fas fa-play"></i>
+                            <button class="play-button" onclick="startSudokuGame('hard')" aria-label="Start hard Sudoku puzzle">
+                                <i class="fas fa-play" aria-hidden="true"></i>
                                 Play Hard
                             </button>
                         </div>
@@ -444,16 +469,16 @@
                     <!-- Mobile unified difficulty selector -->
                     <div class="mobile-difficulty-selector">
                         <div class="mobile-difficulty-buttons">
-                            <button class="mobile-play-button easy" onclick="startSudokuGame('easy')">
-                                <i class="fas fa-play"></i>
+                            <button class="mobile-play-button easy" onclick="startSudokuGame('easy')" aria-label="Play easy Sudoku puzzle">
+                                <i class="fas fa-play" aria-hidden="true"></i>
                                 <span>Play Easy</span>
                             </button>
-                            <button class="mobile-play-button medium" onclick="startSudokuGame('medium')">
+                            <button class="mobile-play-button medium" onclick="startSudokuGame('medium')" aria-label="Play medium Sudoku puzzle">
                                 <i class="fas fa-play"></i>
                                 <span>Play Medium</span>
                             </button>
-                            <button class="mobile-play-button hard" onclick="startSudokuGame('hard')">
-                                <i class="fas fa-play"></i>
+                            <button class="mobile-play-button hard" onclick="startSudokuGame('hard')" aria-label="Play hard Sudoku puzzle">
+                                <i class="fas fa-play" aria-hidden="true"></i>
                                 <span>Play Hard</span>
                             </button>
                         </div>
@@ -794,8 +819,9 @@
                     </div>
 
                     <div class="search-container">
-                        <input type="text" class="achievement-search" id="achievementSearch" placeholder="Search achievements...">
-                        <i class="fas fa-search search-icon"></i>
+                        <label for="achievementSearch" class="visually-hidden">Search achievements</label>
+                        <input type="text" class="achievement-search" id="achievementSearch" placeholder="Search achievements..." aria-label="Search achievements by name or description">
+                        <i class="fas fa-search search-icon" aria-hidden="true"></i>
                     </div>
                 </div>
 
@@ -860,11 +886,23 @@
                         <i class="fas fa-question-circle"></i>
                         FAQ & Guide
                     </a>
+                    <a href="privacy-policy.html" class="footer-link">
+                        <i class="fas fa-shield-alt"></i>
+                        Privacy Policy
+                    </a>
+                    <a href="terms-of-service.html" class="footer-link">
+                        <i class="fas fa-file-contract"></i>
+                        Terms of Service
+                    </a>
+                    <a href="cookie-policy.html" class="footer-link">
+                        <i class="fas fa-cookie-bite"></i>
+                        Cookie Policy
+                    </a>
                 </div>
                 <div class="footer-text">
-                    <span>Sudoku Championship Arena</span>
+                    <span>© 2025 The London Sudoku</span>
                     <span>•</span>
-                    <span>Built for Epic Battles</span>
+                    <span>Championship Arena</span>
                 </div>
             </div>
         </footer>
@@ -882,7 +920,7 @@
         if (!isAuthenticated && window.AnonymousSession) {
             // Create anonymous session for unauthenticated users
             const anonymousId = window.AnonymousSession.getOrCreateAnonymousSession();
-            console.log('🎮 Anonymous play enabled. Session ID:', anonymousId);
+            // Anonymous session initialized
         }
 
         // Display current player and add logout functionality
@@ -1050,7 +1088,6 @@
                     this.classList.add('active');
 
                     const variant = this.dataset.variant;
-                    console.log('Selected variant:', variant);
 
                     // Store selected variant
                     sessionStorage.setItem('selectedVariant', variant);
@@ -1093,7 +1130,7 @@
                     }
                 }
             } catch (error) {
-                console.error('Failed to update daily limit:', error);
+                // Failed to fetch daily limit
                 const limitElement = document.getElementById('classicLimit');
                 if (limitElement) {
                     limitElement.querySelector('.limit-text').textContent = '3 per day';
@@ -1123,7 +1160,7 @@
                     variant = activeVariant ? activeVariant.dataset.variant : 'classic';
                 }
 
-                console.log('Starting Sudoku game with difficulty:', difficulty, 'variant:', variant);
+                // Starting game with selected difficulty and variant
 
                 // Store both difficulty and variant for when the sudoku engine initializes
                 sessionStorage.setItem('selectedDifficulty', difficulty);
@@ -1166,16 +1203,14 @@
 
                 // The sudoku engine will pick up the stored difficulty when it initializes
                 // No need to call changeDifficulty since we stored it in sessionStorage
-                console.log('Difficulty stored for initialization:', difficulty);
             } catch (error) {
-                console.error('Error starting Sudoku game:', error);
+                // Error starting game
             }
         }
 
         // Function to navigate to dashboard when clicking on brand
         async function navigateToDashboard() {
             try {
-                console.log('Navigating to dashboard');
 
                 const navLinks = document.querySelectorAll('.nav-link');
                 const pages = document.querySelectorAll('.page');
@@ -1203,7 +1238,7 @@
                     await window.sudokuApp.updateDashboard();
                 }
             } catch (error) {
-                console.error('Error navigating to dashboard:', error);
+                // Navigation error
             }
         }
 
@@ -1406,95 +1441,35 @@
             }
         });
 
-        // Test function to validate hint penalties
+        // Test function to validate hint penalties (for development)
         function testHintPenalties() {
-            //console.log('🧪 Starting Hint Penalty Validation Test');
-            //console.log('========================================');
+            if (!window.sudokuEngine) return;
 
-            if (!window.sudokuEngine) {
-                //console.log('❌ No sudoku engine found. Please start a game first.');
-                return;
-            }
-
-            //console.log('Initial state:');
-            //console.log(`- Hint time penalty: ${window.sudokuEngine.hintTimePenalty} seconds`);
-            //console.log(`- Hints used: ${window.sudokuEngine.hints}`);
-            //console.log(`- Hint state: ${window.sudokuEngine.hintState}`);
-            //console.log('');
-
-            // Test 1: First hint (pointing) - should add 5 seconds
-            //console.log('Test 1: First hint click (pointing)');
             window.sudokuEngine.hintState = 'none';
             const penaltyBefore1 = window.sudokuEngine.hintTimePenalty;
 
-            // Simulate hint button click
             const hintBtn = document.getElementById('hintBtn');
             if (hintBtn) {
                 hintBtn.click();
                 setTimeout(() => {
                     const penaltyAfter1 = window.sudokuEngine.hintTimePenalty;
-                    const penaltyAdded1 = penaltyAfter1 - penaltyBefore1;
-
-                    //console.log(`- Penalty before: ${penaltyBefore1} seconds`);
-                    //console.log(`- Penalty after: ${penaltyAfter1} seconds`);
-                    //console.log(`- Penalty added: ${penaltyAdded1} seconds`);
-                    //console.log(`- Expected: 5 seconds`);
-                    //console.log(`- ✅ Test 1 ${penaltyAdded1 === 5 ? 'PASSED' : 'FAILED'}`);
-                    //console.log('');
-
-                    // Test 2: Second hint (revealing) - should add 10 more seconds
-                    //console.log('Test 2: Second hint click (revealing)');
                     const penaltyBefore2 = window.sudokuEngine.hintTimePenalty;
 
                     setTimeout(() => {
                         hintBtn.click();
                         setTimeout(() => {
                             const penaltyAfter2 = window.sudokuEngine.hintTimePenalty;
-                            const penaltyAdded2 = penaltyAfter2 - penaltyBefore2;
-
-                            //console.log(`- Penalty before: ${penaltyBefore2} seconds`);
-                            //console.log(`- Penalty after: ${penaltyAfter2} seconds`);
-                            //console.log(`- Penalty added: ${penaltyAdded2} seconds`);
-                            //console.log(`- Expected: 10 seconds`);
-                            //console.log(`- ✅ Test 2 ${penaltyAdded2 === 10 ? 'PASSED' : 'FAILED'}`);
-                            //console.log('');
-
-                            // Summary
                             const totalExpectedPenalty = penaltyBefore1 + 15;
                             const actualTotalPenalty = window.sudokuEngine.hintTimePenalty;
-
-                            //console.log('📊 Test Summary:');
-                            //console.log(`- Starting penalty: ${penaltyBefore1} seconds`);
-                            //console.log(`- Expected total penalty: ${totalExpectedPenalty} seconds`);
-                            //console.log(`- Actual total penalty: ${actualTotalPenalty} seconds`);
-                            //console.log(`- Overall result: ${actualTotalPenalty === totalExpectedPenalty ? '✅ ALL TESTS PASSED' : '❌ SOME TESTS FAILED'}`);
-
                         }, 100);
                     }, 100);
                 }, 100);
-            } else {
-                //console.log('❌ Hint button not found. Make sure you\'re on the sudoku game page.');
             }
         }
 
         // Alternative manual test function
         function manualHintPenaltyTest() {
-            //console.log('🔧 Manual Hint Penalty Test');
-            //console.log('===========================');
-
-            if (!window.sudokuEngine) {
-                //console.log('❌ No sudoku engine found. Please start a game first.');
-                return;
-            }
-
-            //console.log('Current hint penalty:', window.sudokuEngine.hintTimePenalty, 'seconds');
-            //console.log('Current hints used:', window.sudokuEngine.hints);
-            //console.log('Current hint state:', window.sudokuEngine.hintState);
-            //console.log('');
-            //console.log('Instructions:');
-            //console.log('1. Click the hint button once (should add 5 seconds)');
-            //console.log('2. Click the hint button again (should add 10 more seconds)');
-            //console.log('3. Run this function again to see the changes');
+            if (!window.sudokuEngine) return;
 
             return {
                 currentPenalty: window.sudokuEngine.hintTimePenalty,
@@ -1503,15 +1478,9 @@
             };
         }
 
-        // Settings Manager
-
         // Make functions available globally
         window.testHintPenalties = testHintPenalties;
         window.manualHintPenaltyTest = manualHintPenaltyTest;
-
-        //console.log('🎯 Hint penalty test functions loaded!');
-        //console.log('Run testHintPenalties() to automatically test hint penalties');
-        //console.log('Run manualHintPenaltyTest() for manual testing');
     </script>
 
     <!-- PHASE 1 MONTH 6: Ad Manager -->
@@ -1528,10 +1497,9 @@
                 if (adManager.adsEnabled) {
                     // Show banner ad on dashboard
                     adManager.showBannerAd('dashboardBannerAd');
-                    console.log('✅ Ad system initialized');
                 }
             } catch (error) {
-                console.error('Failed to initialize ad system:', error);
+                // Ad system initialization failed
             }
         }
 
@@ -1557,12 +1525,10 @@
             if (window.sudokuEngine) {
                 tutorialManager = new TutorialManager(window.sudokuEngine);
                 window.tutorialManager = tutorialManager;
-                console.log('✅ Tutorial system initialized');
 
                 // Add tutorial triggers to UI
                 addTutorialTriggers();
             } else {
-                console.warn('Sudoku engine not ready, retrying tutorial initialization...');
                 setTimeout(initializeTutorialSystem, 500);
             }
         }
@@ -1570,15 +1536,12 @@
         function addTutorialTriggers() {
             // Add "Learn How to Play" buttons for each variant
             // This will be called when the UI is ready
-            console.log('Tutorial triggers ready');
         }
 
         // Helper function to launch tutorial for a variant
         function launchTutorial(variantId) {
             if (window.tutorialManager) {
                 window.tutorialManager.startTutorial(variantId);
-            } else {
-                console.error('Tutorial manager not initialized');
             }
         }
 
@@ -1620,5 +1583,91 @@
             });
         }
     </script>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsentBanner" class="cookie-consent-banner">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <h3><i class="fas fa-cookie-bite"></i> We Value Your Privacy</h3>
+                <p>
+                    We use cookies to enhance your experience, analyze site traffic, and personalize content.
+                    By clicking "Accept All", you consent to our use of cookies.
+                    <a href="/cookie-policy.html">Learn more</a>
+                </p>
+            </div>
+            <div class="cookie-consent-actions">
+                <button class="cookie-consent-btn cookie-consent-btn-accept" onclick="window.cookieConsent.acceptAll()" aria-label="Accept all cookies">
+                    Accept All
+                </button>
+                <button class="cookie-consent-btn cookie-consent-btn-settings" onclick="window.cookieConsent.showSettings()" aria-label="Customize cookie settings">
+                    Settings
+                </button>
+                <button class="cookie-consent-btn cookie-consent-btn-decline" onclick="window.cookieConsent.declineAll()" aria-label="Decline optional cookies">
+                    Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Settings Modal -->
+    <div id="cookieSettingsModal" class="cookie-settings-modal" onclick="if(event.target === this) window.cookieConsent.hideSettings()">
+        <div class="cookie-settings-content">
+            <div class="cookie-settings-header">
+                <h2>Cookie Preferences</h2>
+                <button class="cookie-settings-close" onclick="window.cookieConsent.hideSettings()" aria-label="Close settings">&times;</button>
+            </div>
+
+            <div class="cookie-category">
+                <div class="cookie-category-header">
+                    <h3>Necessary Cookies</h3>
+                    <label class="cookie-toggle">
+                        <input type="checkbox" checked disabled aria-label="Necessary cookies always enabled">
+                        <span class="cookie-toggle-slider"></span>
+                    </label>
+                </div>
+                <p class="cookie-category-description">
+                    These cookies are essential for the website to function properly. They enable core functionality such as authentication and game saving.
+                </p>
+            </div>
+
+            <div class="cookie-category">
+                <div class="cookie-category-header">
+                    <h3>Analytics Cookies</h3>
+                    <label class="cookie-toggle">
+                        <input type="checkbox" id="analyticsToggle" aria-label="Enable analytics cookies">
+                        <span class="cookie-toggle-slider"></span>
+                    </label>
+                </div>
+                <p class="cookie-category-description">
+                    These cookies help us understand how visitors interact with our website, which helps us improve our service.
+                </p>
+            </div>
+
+            <div class="cookie-category">
+                <div class="cookie-category-header">
+                    <h3>Functional Cookies</h3>
+                    <label class="cookie-toggle">
+                        <input type="checkbox" id="functionalToggle" aria-label="Enable functional cookies">
+                        <span class="cookie-toggle-slider"></span>
+                    </label>
+                </div>
+                <p class="cookie-category-description">
+                    These cookies enable enhanced functionality and personalization, such as theme preferences and language settings.
+                </p>
+            </div>
+
+            <div class="cookie-settings-actions">
+                <button class="cookie-consent-btn cookie-consent-btn-accept" onclick="window.cookieConsent.saveSettings()">
+                    Save Preferences
+                </button>
+                <button class="cookie-consent-btn cookie-consent-btn-decline" onclick="window.cookieConsent.hideSettings()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Consent Script -->
+    <script src="/lib/cookie-consent.js"></script>
 </body>
 </html>

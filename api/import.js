@@ -45,7 +45,7 @@ async function getPlayerFromClerkId(clerkUserId) {
     return clerkUser.username || clerkUser.emailAddresses[0]?.emailAddress.split('@')[0] || clerkUserId.substring(0, 8);
 
   } catch (error) {
-    console.error('Error getting player from Clerk ID:', error);
+    // Error occurred
     // Fallback: use clerk ID substring as username
     return clerkUserId.substring(0, 16);
   }
@@ -117,7 +117,6 @@ async function importCompletion(player, date, difficulty, gameData) {
       updated_at = NOW()
   `, [player, date, difficulty, time, errors || 0, score || 0, hints || 0]);
 
-  console.log(`✅ Imported completion for ${player}: ${difficulty} on ${date}`);
 }
 
 /**
@@ -160,7 +159,6 @@ async function importAchievement(player, achievementId, unlockedAt) {
     DO NOTHING
   `, [player, achievementId, unlockedDate, entryDate]);
 
-  console.log(`✅ Imported achievement for ${player}: ${achievementId}`);
 }
 
 /**
@@ -241,7 +239,6 @@ module.exports = async function handler(req, res) {
     }
 
   } catch (error) {
-    console.error('Import error:', error);
     return res.status(500).json({
       error: 'Failed to import data',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined

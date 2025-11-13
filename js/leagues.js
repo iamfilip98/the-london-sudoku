@@ -12,7 +12,6 @@ let seasonHistory = [];
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Leagues page loaded');
 
     // Get current user
     const username = localStorage.getItem('username');
@@ -46,7 +45,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
     } catch (error) {
-        console.error('Failed to load leagues:', error);
         showError(error.message);
     }
 });
@@ -96,7 +94,6 @@ async function loadLeaguesData() {
         renderOfficialLeagues();
         renderCustomLeagues();
     } catch (error) {
-        console.error('Failed to load leagues data:', error);
         throw error;
     }
 }
@@ -534,7 +531,6 @@ async function handleJoinLeague(leagueId) {
         // Reload data
         await loadLeaguesData();
     } catch (error) {
-        console.error('Failed to join league:', error);
         alert(`Failed to join league: ${error.message}`);
     }
 }
@@ -572,7 +568,6 @@ async function handleLeaveLeague() {
         // Reload data
         await loadLeaguesData();
     } catch (error) {
-        console.error('Failed to leave league:', error);
         alert(`Failed to leave league: ${error.message}`);
     }
 }
@@ -638,7 +633,6 @@ async function viewLeagueRankings(leagueId, leagueName) {
             });
         }
     } catch (error) {
-        console.error('Failed to load rankings:', error);
         alert('Failed to load rankings');
     }
 }
@@ -714,7 +708,6 @@ async function handleCreateLeague(event) {
         // Switch to custom leagues tab
         document.querySelectorAll('.tab-btn')[1].click();
     } catch (error) {
-        console.error('Failed to create league:', error);
         alert(`Failed to create league: ${error.message}`);
     }
 }

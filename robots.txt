@@ -1,0 +1,23 @@
+# Robots.txt for The London Sudoku
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow admin and API endpoints
+Disallow: /api/
+Disallow: /lib/
+Disallow: /scripts/
+Disallow: /migrations/
+Disallow: /tests/
+
+# Disallow utility/admin HTML files
+Disallow: /force_cache_clear.html
+Disallow: /sync-ratings.html
+Disallow: /run-achievement-refresh.html
+
+# Sitemap
+Sitemap: https://thelondonsudoku.com/sitemap.xml
+
+# Crawl-delay (be respectful to server)
+Crawl-delay: 1

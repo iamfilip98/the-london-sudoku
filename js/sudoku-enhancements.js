@@ -350,7 +350,6 @@ class SudokuEnhancements {
                 }
             }
         } catch (e) {
-            console.error('Error checking for unfinished game:', e);
         }
 
         return null;

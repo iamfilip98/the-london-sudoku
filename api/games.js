@@ -8,6 +8,7 @@ const { setCorsHeaders } = require('../lib/cors');
 const { validateSaveGameRequest, validateDate } = require('../lib/validation');
 const { addXP, calculatePuzzleXP, getXPSourceName } = require('../lib/battle-pass-api');
 const { awardLeaguePoints } = require('../lib/leagues-api');
+const { rateLimit } = require('../lib/rate-limit');
 
 // Helper function to execute SQL queries using template literals
 async function sql(strings, ...values) {
@@ -70,7 +71,7 @@ async function initDatabase() {
 
     return true;
   } catch (error) {
-    console.error('Failed to initialize games database:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -112,7 +113,6 @@ async function checkDailyLimit(username, variant) {
     // Check limit (3 Classic dailies per day)
     return daily_classic_played < 3;
   } catch (error) {
-    console.error('Daily limit check error:', error);
     return true; // Fail open - don't block users if check fails
   }
 }
@@ -133,7 +133,7 @@ async function incrementDailyCount(username, variant) {
       WHERE username = $2
     `, [today, username]);
   } catch (error) {
-    console.error('Failed to increment daily count:', error);
+    // Error occurred
     // Don't throw - this is not critical
   }
 }
@@ -176,7 +176,7 @@ async function saveGame(player, date, difficulty, gameData, variant = 'classic')
 
     return true;
   } catch (error) {
-    console.error('Failed to save game:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -193,7 +193,7 @@ async function getGamesByDate(date) {
 
     return result.rows;
   } catch (error) {
-    console.error('Failed to get games by date:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -232,7 +232,7 @@ async function getTodayProgress(date) {
 
     return progress;
   } catch (error) {
-    console.error('Failed to get today progress:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -272,7 +272,7 @@ async function getAllGames(player) {
       completedAt: game.completed_at
     }));
   } catch (error) {
-    console.error('Failed to get all games:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -282,7 +282,6 @@ module.exports = async function handler(req, res) {
   try {
     await initDatabase();
   } catch (error) {
-    console.error('Database initialization failed:', error);
     return res.status(500).json({ error: 'Database initialization failed' });
   }
 
@@ -292,9 +291,19 @@ module.exports = async function handler(req, res) {
     return;  // Preflight request handled
   }
 
+  // ✅ RATE LIMITING: 100 requests per hour
+  const limited = await rateLimit(req, 'game_submit', { max: 100, window: 3600 });
+  if (limited) {
+    return res.status(429).json({
+      error: 'Too many game submissions. Please try again later.',
+      retryAfter: 3600
+    });
+  }
+
   try {
     switch (req.method) {
       case 'GET': {
+        // GET is read-only, allow anonymous access
         const { date, all, player } = req.query;
 
         // If 'all' parameter is present, return all games
@@ -317,6 +326,15 @@ module.exports = async function handler(req, res) {
 
       case 'POST': {
         const { player, date: gameDate, difficulty, variant, ...gameData } = req.body;
+
+        // ✅ SECURITY: Require authentication for POST operations
+        if (!player) {
+          return res.status(401).json({
+            error: 'Authentication required',
+            message: 'Player username is required to save games'
+          });
+        }
+
         const puzzleVariant = variant || 'classic';
 
         // Comprehensive validation
@@ -342,7 +360,7 @@ module.exports = async function handler(req, res) {
               });
             }
           } catch (limitError) {
-            console.error('Daily limit check failed:', limitError);
+            // Error occurred
             // Don't block game save if limit check fails - fail open
           }
         }
@@ -354,7 +372,7 @@ module.exports = async function handler(req, res) {
           try {
             await incrementDailyCount(player, puzzleVariant);
           } catch (incrementError) {
-            console.error('Failed to increment daily count:', incrementError);
+            // Error occurred
             // Don't fail the whole request if increment fails
           }
         }
@@ -399,7 +417,6 @@ module.exports = async function handler(req, res) {
 
             battlePassResult = await addXP(userId, xpBreakdown.total, source, `${gameDate}_${difficulty}`);
 
-            console.log(`Battle Pass XP awarded: ${xpBreakdown.total} XP to user ${player} (${userId})`);
 
             // PHASE 4 MONTH 15: Award league points
             try {
@@ -412,15 +429,14 @@ module.exports = async function handler(req, res) {
 
               const leagueResult = await awardLeaguePoints(userId, leaguePoints);
               if (leagueResult.awarded) {
-                console.log(`League points awarded: ${leaguePoints} pts to user ${player} (${userId})`);
               }
             } catch (leagueError) {
-              console.error('Failed to award league points:', leagueError);
+              // Error occurred
               // Don't fail the game save if league points award fails
             }
           }
         } catch (xpError) {
-          console.error('Failed to award battle pass XP:', xpError);
+          // Error occurred
           // Don't fail the game save if XP award fails
         }
 
@@ -432,22 +448,32 @@ module.exports = async function handler(req, res) {
       }
 
       case 'DELETE': {
-        // Delete all games for a specific date or all games
+        // ✅ SECURITY: Require authentication for DELETE operations
+        const deletePlayer = req.body?.player || req.query?.player;
+
+        if (!deletePlayer) {
+          return res.status(401).json({
+            error: 'Authentication required',
+            message: 'Player username is required to delete games'
+          });
+        }
+
+        // Delete games for a specific player and date, or all of player's games
         const { date: deleteDate, all } = req.query;
 
         if (all === 'true') {
-          // Delete ALL games
-          await sql`DELETE FROM individual_games`;
+          // Delete ALL games for this specific player only
+          await sql`DELETE FROM individual_games WHERE player = ${deletePlayer}`;
           return res.status(200).json({
             success: true,
-            message: 'All games deleted successfully'
+            message: `All games for ${deletePlayer} deleted successfully`
           });
         } else if (deleteDate) {
-          // Delete games for specific date
-          await sql`DELETE FROM individual_games WHERE date = ${deleteDate}`;
+          // Delete games for specific player and date
+          await sql`DELETE FROM individual_games WHERE player = ${deletePlayer} AND date = ${deleteDate}`;
           return res.status(200).json({
             success: true,
-            message: `Games for ${deleteDate} deleted successfully`
+            message: `Games for ${deletePlayer} on ${deleteDate} deleted successfully`
           });
         } else {
           return res.status(400).json({ error: 'Date parameter or all=true is required for deletion' });
@@ -459,7 +485,7 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ error: `Method ${req.method} not allowed` });
     }
   } catch (error) {
-    console.error('Games API Error:', error);
+    // Error occurred
     return res.status(500).json({
       error: 'Internal server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
