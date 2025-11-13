@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/enhanced-design-system.css">
     <link rel="stylesheet" href="css/enhancements.css">
     <link rel="stylesheet" href="css/tutorial.css">
+    <link rel="stylesheet" href="css/mobile-ux-enhancements.css">
     <!-- Preconnect to Google Fonts for faster loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1596,5 +1597,28 @@
 
     <!-- PWA Manager -->
     <script src="/lib/pwa-manager.js"></script>
+
+    <!-- Mobile Gesture Handler -->
+    <script src="/lib/mobile-gestures.js"></script>
+    <script>
+        // Initialize mobile gesture handler
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.gestureHandler = new MobileGestureHandler({
+                    enableSwipeNav: true,
+                    enablePullToRefresh: false, // Disabled to avoid conflicts
+                    minSwipeDistance: 80,
+                    maxSwipeTime: 400
+                });
+            });
+        } else {
+            window.gestureHandler = new MobileGestureHandler({
+                enableSwipeNav: true,
+                enablePullToRefresh: false,
+                minSwipeDistance: 80,
+                maxSwipeTime: 400
+            });
+        }
+    </script>
 </body>
 </html>

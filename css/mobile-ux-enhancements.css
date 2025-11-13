@@ -1,0 +1,511 @@
+/**
+ * Mobile UX Enhancements
+ *
+ * Improves mobile experience with:
+ * - Larger touch targets (44x44px minimum - Apple recommendation)
+ * - Better spacing between interactive elements
+ * - Enhanced Sudoku grid number input
+ * - Improved mobile keyboard layout
+ * - Touch-friendly buttons and controls
+ */
+
+/* ===== TOUCH TARGET IMPROVEMENTS ===== */
+
+/* Ensure all buttons meet minimum touch target size (44x44px) */
+@media (max-width: 768px) {
+  button,
+  .play-button,
+  .nav-link,
+  .achievement-card,
+  .variant-card,
+  .difficulty-option,
+  .mobile-play-button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 16px;
+  }
+
+  /* Number input buttons for Sudoku grid */
+  .number-btn {
+    min-width: 48px !important;
+    min-height: 48px !important;
+    font-size: 20px !important;
+    margin: 4px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    transition: transform 0.1s, background 0.1s !important;
+  }
+
+  .number-btn:active {
+    transform: scale(0.95);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  }
+
+  /* Sudoku cells - larger tap targets */
+  .sudoku-cell {
+    min-width: 40px !important;
+    min-height: 40px !important;
+    font-size: 18px !important;
+  }
+
+  /* Action buttons (Hint, Undo, Notes, etc.) */
+  .action-btn,
+  #hintBtn,
+  #undoBtn,
+  #notesBtn,
+  #eraseBtn,
+  #resetBtn {
+    min-width: 52px !important;
+    min-height: 52px !important;
+    font-size: 16px !important;
+    padding: 14px !important;
+    margin: 6px !important;
+  }
+
+  /* Mobile play buttons */
+  .mobile-play-button {
+    height: 56px !important;
+    font-size: 16px !important;
+    padding: 16px 24px !important;
+    margin: 8px 0 !important;
+  }
+
+  /* Nav links */
+  .nav-link {
+    padding: 16px 20px !important;
+    font-size: 16px !important;
+  }
+
+  .nav-link i {
+    font-size: 20px !important;
+    margin-right: 10px !important;
+  }
+
+  /* Variant cards - easier to tap */
+  .variant-card {
+    min-height: 120px !important;
+    padding: 20px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .variant-card h4 {
+    font-size: 18px !important;
+  }
+
+  /* Achievement cards */
+  .achievement-card {
+    min-height: 100px !important;
+    padding: 16px !important;
+  }
+
+  /* Filter tabs and selects */
+  .filter-tab,
+  .tab-btn {
+    min-height: 48px !important;
+    padding: 12px 20px !important;
+    font-size: 15px !important;
+  }
+
+  select.category-select,
+  select.rarity-select {
+    min-height: 48px !important;
+    font-size: 16px !important;
+    padding: 12px 16px !important;
+  }
+
+  /* Search input */
+  .achievement-search {
+    min-height: 48px !important;
+    font-size: 16px !important;
+    padding: 12px 20px !important;
+  }
+}
+
+/* ===== IMPROVED SPACING FOR MOBILE ===== */
+
+@media (max-width: 768px) {
+  /* Increase spacing between interactive elements */
+  .difficulty-selection-grid {
+    gap: 20px !important;
+  }
+
+  .variant-options {
+    gap: 16px !important;
+  }
+
+  .goals-grid,
+  .performance-grid {
+    gap: 16px !important;
+  }
+
+  /* Better spacing for button groups */
+  .mobile-difficulty-buttons {
+    gap: 12px !important;
+    padding: 16px !important;
+  }
+
+  /* Stats cards */
+  .stat-card {
+    padding: 20px !important;
+    margin-bottom: 16px !important;
+  }
+}
+
+/* ===== ENHANCED SUDOKU GRID NUMBER INPUT ===== */
+
+@media (max-width: 768px) {
+  /* Number input container */
+  .number-input-container,
+  .sudoku-numbers {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    padding: 16px;
+    background: rgba(15, 15, 30, 0.8);
+    border-radius: 16px;
+    margin: 16px 0;
+  }
+
+  /* Ensure 9 numbers + erase/notes buttons fit nicely */
+  .sudoku-numbers .number-btn:nth-child(n+10) {
+    grid-column: span 1;
+  }
+
+  /* Selected number highlight */
+  .number-btn.selected {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+    transform: scale(1.05) !important;
+  }
+
+  /* Haptic feedback visual */
+  .number-btn:active::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: inherit;
+    animation: ripple 0.4s ease-out;
+  }
+}
+
+@keyframes ripple {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  to {
+    width: 120%;
+    height: 120%;
+    opacity: 0;
+  }
+}
+
+/* ===== MOBILE KEYBOARD OPTIMIZATION ===== */
+
+@media (max-width: 768px) {
+  /* Fixed position keyboard at bottom */
+  .sudoku-keyboard,
+  .mobile-number-pad {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(15, 15, 30, 0.95) 0%, rgba(15, 15, 30, 1) 100%);
+    backdrop-filter: blur(10px);
+    padding: 16px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+
+  /* Keyboard buttons */
+  .sudoku-keyboard .number-btn,
+  .mobile-number-pad button {
+    height: 56px;
+    border-radius: 14px;
+    font-size: 22px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sudoku-keyboard .number-btn:active,
+  .mobile-number-pad button:active {
+    background: rgba(102, 126, 234, 0.8);
+    transform: scale(0.95);
+    border-color: rgba(118, 75, 162, 0.8);
+  }
+
+  /* Special action buttons (Erase, Notes, Hint) */
+  .sudoku-keyboard .action-btn,
+  .mobile-number-pad .action-btn {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+  }
+
+  .sudoku-keyboard .action-btn:active,
+  .mobile-number-pad .action-btn:active {
+    background: rgba(239, 68, 68, 0.6);
+  }
+
+  /* Keyboard slide-in animation */
+  @keyframes slideUpKeyboard {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .sudoku-keyboard,
+  .mobile-number-pad {
+    animation: slideUpKeyboard 0.3s ease-out;
+  }
+}
+
+/* ===== IMPROVED MOBILE GRID LAYOUT ===== */
+
+@media (max-width: 768px) {
+  /* Sudoku grid container */
+  .sudoku-grid-container {
+    width: 100%;
+    max-width: min(90vw, 90vh);
+    margin: 0 auto;
+    padding: 20px 10px;
+  }
+
+  /* Grid itself */
+  .sudoku-grid {
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 400px;
+    margin: 0 auto;
+    touch-action: none; /* Prevent accidental scrolling */
+  }
+
+  /* Cell highlighting - larger visual feedback */
+  .sudoku-cell.selected {
+    background: rgba(102, 126, 234, 0.4) !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3) !important;
+  }
+
+  .sudoku-cell.same-number {
+    background: rgba(102, 126, 234, 0.2) !important;
+  }
+
+  .sudoku-cell.conflict {
+    background: rgba(239, 68, 68, 0.3) !important;
+    border-color: #ef4444 !important;
+  }
+}
+
+/* ===== TOUCH-FRIENDLY SCROLLING ===== */
+
+@media (max-width: 768px) {
+  /* Smooth momentum scrolling */
+  .achievements-grid,
+  .leaderboard-cards,
+  .games-list,
+  .page {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent rubber-band effect on body */
+  body {
+    overscroll-behavior: contain;
+  }
+
+  /* Allow horizontal scrolling for variant cards on mobile */
+  .variant-options {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 16px;
+  }
+
+  .variant-card {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    width: 280px;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .variant-options::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .variant-options::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.5);
+    border-radius: 2px;
+  }
+}
+
+/* ===== MOBILE MODAL/POPUP IMPROVEMENTS ===== */
+
+@media (max-width: 768px) {
+  /* Full-screen modals on mobile */
+  .achievement-popup,
+  .modal-overlay {
+    padding: 0 !important;
+  }
+
+  .achievement-popup-content,
+  .modal-content {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    padding-bottom: max(20px, env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Close buttons - larger on mobile */
+  .achievement-popup-close,
+  .modal-close {
+    min-width: 48px !important;
+    min-height: 48px !important;
+    font-size: 28px !important;
+    top: 16px !important;
+    right: 16px !important;
+  }
+}
+
+/* ===== SAFE AREA INSETS (iPhone notch, etc.) ===== */
+
+@media (max-width: 768px) {
+  /* Main content padding for safe areas */
+  .main-content {
+    padding-left: max(20px, env(safe-area-inset-left)) !important;
+    padding-right: max(20px, env(safe-area-inset-right)) !important;
+    padding-bottom: max(20px, env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Navigation safe areas */
+  .main-nav {
+    padding-left: max(10px, env(safe-area-inset-left)) !important;
+    padding-right: max(10px, env(safe-area-inset-right)) !important;
+    padding-top: max(10px, env(safe-area-inset-top)) !important;
+  }
+
+  /* Footer safe area */
+  .app-footer {
+    padding-bottom: max(20px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* ===== HAPTIC FEEDBACK VISUAL INDICATORS ===== */
+
+@media (max-width: 768px) {
+  /* Button press animation */
+  button:active,
+  .play-button:active,
+  .nav-link:active,
+  .variant-card:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+
+  /* Touch ripple effect */
+  .ripple-effect {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ripple-effect::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+    opacity: 0;
+  }
+
+  .ripple-effect:active::after {
+    width: 200px;
+    height: 200px;
+    opacity: 1;
+  }
+}
+
+/* ===== ACCESSIBILITY - LARGER TAP TARGETS FOR SMALL UI ELEMENTS ===== */
+
+@media (max-width: 768px) {
+  /* Dropdown arrows, close buttons, icons */
+  .dropdown-toggle,
+  .close-btn,
+  .icon-btn {
+    padding: 12px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
+  /* Checkboxes and radio buttons */
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 24px;
+    height: 24px;
+    margin: 10px;
+  }
+
+  /* Links in text - larger tap area */
+  a {
+    padding: 8px 0;
+    display: inline-block;
+  }
+}
+
+/* ===== LANDSCAPE MODE OPTIMIZATIONS ===== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  /* Compact header in landscape */
+  .dashboard-header {
+    padding: 12px 16px !important;
+  }
+
+  .page-title {
+    font-size: 20px !important;
+  }
+
+  /* Sudoku grid - optimize for landscape */
+  .sudoku-grid-container {
+    max-width: min(50vh, 90vw);
+  }
+
+  /* Keyboard - more compact in landscape */
+  .sudoku-keyboard,
+  .mobile-number-pad {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .sudoku-keyboard .number-btn,
+  .mobile-number-pad button {
+    height: 48px;
+    font-size: 20px;
+  }
+}
