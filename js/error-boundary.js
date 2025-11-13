@@ -41,7 +41,6 @@ class ErrorBoundary {
    */
   handleError(error, context = {}) {
     // Log to console
-    console.error('Error caught by boundary:', error, context);
 
     // Track in PostHog
     if (window.Monitoring) {

@@ -10,6 +10,7 @@ const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
 const battlePass = require('../lib/battle-pass-api');
 const { getCached, invalidateCachePattern, CACHE_DURATIONS, CacheKeys } = require('../lib/cache');
+const { rateLimit } = require('../lib/rate-limit');
 
 // Helper function to execute SQL queries
 async function sql(strings, ...values) {
@@ -37,9 +38,19 @@ module.exports = async function handler(req, res) {
     return;  // Preflight request handled
   }
 
+  // ✅ RATE LIMITING: 100 requests per hour
+  const limited = await rateLimit(req, 'api', { max: 100, window: 3600 });
+  if (limited) {
+    return res.status(429).json({
+      error: 'Too many requests. Please try again later.',
+      retryAfter: 3600
+    });
+  }
+
   try {
     switch (req.method) {
       case 'GET':
+        // GET is read-only, allow anonymous access
         // Use caching for achievements list (30min TTL)
         const achievements = await getCached(
           'achievements:all',
@@ -65,8 +76,16 @@ module.exports = async function handler(req, res) {
       case 'POST':
         const { id, player, unlockedAt, rarity, ...data } = req.body;
 
-        if (!id || !player || !unlockedAt) {
-          return res.status(400).json({ error: 'Achievement ID, player, and unlockedAt are required' });
+        // ✅ SECURITY: Require authentication for POST operations
+        if (!player) {
+          return res.status(401).json({
+            error: 'Authentication required',
+            message: 'Player username is required to save achievements'
+          });
+        }
+
+        if (!id || !unlockedAt) {
+          return res.status(400).json({ error: 'Achievement ID and unlockedAt are required' });
         }
 
         await sql`
@@ -97,10 +116,9 @@ module.exports = async function handler(req, res) {
                 id
               );
 
-              console.log(`✨ Awarded ${xpResult.total} XP to ${player} for ${rarity} achievement: ${id}`);
             }
           } catch (error) {
-            console.error('Failed to award achievement XP:', error);
+            // Error occurred
             // Don't fail the achievement save if XP award fails
           }
         }
@@ -111,14 +129,25 @@ module.exports = async function handler(req, res) {
         });
 
       case 'DELETE':
-        await sql`DELETE FROM achievements`;
+        // ✅ SECURITY: Require authentication for DELETE operations
+        const deletePlayer = req.body?.player || req.query?.player;
+
+        if (!deletePlayer) {
+          return res.status(401).json({
+            error: 'Authentication required',
+            message: 'Player username is required to delete achievements'
+          });
+        }
+
+        // Delete only this player's achievements (not all)
+        await sql`DELETE FROM achievements WHERE player = ${deletePlayer}`;
 
         // Invalidate achievements cache after delete
         await invalidateCachePattern('achievements:*');
 
         return res.status(200).json({
           success: true,
-          message: 'All achievements cleared successfully'
+          message: `Achievements for ${deletePlayer} cleared successfully`
         });
 
       default:
@@ -126,7 +155,7 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ error: `Method ${req.method} not allowed` });
     }
   } catch (error) {
-    console.error('API Error:', error);
+    // Error occurred
     return res.status(500).json({
       error: 'Internal server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined

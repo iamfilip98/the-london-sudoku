@@ -76,7 +76,6 @@ class LessonListManager {
                 }, {});
             }
         } catch (error) {
-            console.error('Error loading progress:', error);
             // Continue without progress data
         }
     }

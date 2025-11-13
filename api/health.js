@@ -33,7 +33,6 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     // Database connection failed
-    console.error('Health check failed:', error);
 
     return res.status(503).json({
       status: 'unhealthy',

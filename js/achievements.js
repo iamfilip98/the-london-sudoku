@@ -3679,7 +3679,7 @@ class AchievementsManager {
                 this.needsInitialCleanup = false;
             }
         } catch (error) {
-            console.error('Failed to load achievements:', error);
+            // Failed to load achievements
             this.unlockedAchievements = [];
         }
     }
@@ -3695,7 +3695,7 @@ class AchievementsManager {
             }
 
         } catch (error) {
-            console.error('Failed to refresh achievements:', error);
+            // Failed to refresh achievements
             // Reset to empty array if database fails to ensure clean state
             this.unlockedAchievements = [];
         }
@@ -4133,7 +4133,7 @@ class AchievementsManager {
             const players = Object.keys(data.streaks || {});
             return players.length > 0 ? players : [];
         } catch (error) {
-            console.error('Failed to fetch all players:', error);
+            // Failed to fetch players
             return [];
         }
     }
@@ -4144,7 +4144,7 @@ class AchievementsManager {
             if (!response.ok) return [];
             return await response.json();
         } catch (error) {
-            console.error('Failed to fetch player games:', error);
+            // Failed to fetch games
             return [];
         }
     }
@@ -4751,7 +4751,7 @@ class AchievementsManager {
                 body: JSON.stringify(unlockWithRarity)
             });
         } catch (error) {
-            console.error('Failed to save achievement:', error);
+            // Failed to save achievement
         }
     }
 
@@ -5114,7 +5114,7 @@ class AchievementsManager {
             };
 
         } catch (error) {
-            console.error('❌ Achievement refresh failed:', error);
+            // Achievement refresh failed
             return {
                 success: false,
                 error: error.message
@@ -5182,7 +5182,7 @@ class AchievementsManager {
                 body: JSON.stringify(unlock)
             });
         } catch (error) {
-            console.error('Failed to save achievement:', error);
+            // Failed to save achievement
         }
     }
 
@@ -5211,7 +5211,7 @@ class AchievementsManager {
             }
 
         } catch (error) {
-            console.error('❌ Automatic cleanup failed:', error);
+            // Cleanup failed
             // Don't throw error to avoid breaking app initialization
         }
     }
@@ -5285,7 +5285,6 @@ class AchievementsManager {
                 message: 'All erroneous achievements have been removed and regenerated from game data'
             };
         } catch (error) {
-            console.error('❌ Achievement cleanup failed:', error);
             return {
                 success: false,
                 message: 'Cleanup failed: ' + error.message
@@ -5522,7 +5521,6 @@ class AchievementsManager {
             const bpData = await bpResponse.json();
             return bpData;
         } catch (error) {
-            console.error('Failed to fetch battle pass data:', error);
             return null;
         }
     }
@@ -6145,7 +6143,6 @@ class AchievementsManager {
                     players.push(player);
                 }
             } catch (error) {
-                console.error(`Error checking demotion escapes for ${player}:`, error);
             }
         }
 
@@ -6564,7 +6561,6 @@ class AchievementsManager {
             const authData = await authResponse.json();
             return authData.profile?.id || null;
         } catch (error) {
-            console.error('Failed to fetch user ID:', error);
             return null;
         }
     }
@@ -6592,7 +6588,6 @@ class AchievementPopup {
 
     initializePopup() {
         if (!this.popup || !this.closeBtn) {
-            console.log('Achievement popup elements not found:', {
                 popup: !!this.popup,
                 closeBtn: !!this.closeBtn
             });
@@ -6682,7 +6677,6 @@ window.refreshAchievements = async function() {
     if (result.success) {
         alert(`Achievement refresh completed!\n\nProcessed: ${result.processedEntries} game entries\nTotal achievements: ${result.totalAchievements}`);
     } else {
-        console.error('❌ Achievement refresh failed:', result.error);
         alert(`Achievement refresh failed: ${result.error}`);
     }
 

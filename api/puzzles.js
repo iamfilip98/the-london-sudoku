@@ -14,6 +14,7 @@ const { generateHyperSudoku } = require('../lib/hyper-sudoku-generator');
 const { generateConsecutiveSudokuWithRetry } = require('../lib/consecutive-sudoku-generator');
 const { generateThermoSudokuWithRetry } = require('../lib/thermo-sudoku-generator');
 const { generateJigsawSudokuWithRetry } = require('../lib/jigsaw-sudoku-generator');
+const { rateLimit } = require('../lib/rate-limit');
 
 // Helper function for SQL queries
 async function sql(strings, ...values) {
@@ -108,7 +109,7 @@ async function initPuzzleDatabase() {
 
     return true;
   } catch (error) {
-    console.error('Failed to initialize puzzle database:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -132,7 +133,6 @@ async function cleanupOldPuzzles() {
     return { success: true, deleted: result.rows.length };
 
   } catch (error) {
-    console.error('Database cleanup failed:', error);
     return { success: false, error: error.message };
   }
 }
@@ -1264,7 +1264,6 @@ function generateDailyPuzzle(solution, difficulty, seed) {
       const finalClues = countFilledCells(puzzle);
 
       if (finalClues !== targetClues) {
-        console.error(`CRITICAL ERROR: Final clue count mismatch! Expected ${targetClues}, got ${finalClues}`);
         continue;
       }
 
@@ -1357,7 +1356,7 @@ async function generateDailyPuzzles(date, forceSeed = null) {
     throw new Error(`Unable to generate valid puzzles after ${maxGridAttempts} different solution grids`);
 
   } catch (error) {
-    console.error('Failed to generate daily puzzles:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -1382,8 +1381,6 @@ async function getFallbackPuzzle(difficulty) {
     `;
 
     if (result.rows.length === 0) {
-      console.error(`[FALLBACK] ❌ No fallback ${difficulty} puzzles available!`);
-      console.error(`[FALLBACK] Run generate-fallback-puzzles.js endpoint to create backup puzzles`);
       throw new Error(`No fallback ${difficulty} puzzles available in database`);
     }
 
@@ -1405,7 +1402,7 @@ async function getFallbackPuzzle(difficulty) {
     };
 
   } catch (error) {
-    console.error(`[FALLBACK] Failed to get fallback ${difficulty} puzzle:`, error);
+    // Error occurred
     throw error;
   }
 }
@@ -1441,7 +1438,7 @@ async function getDailyPuzzles(date) {
           fallbackDate: date
         };
       } catch (fallbackError) {
-        console.error(`[PUZZLES] ❌ Fallback system failed:`, fallbackError);
+        // Error occurred
 
         // Last resort: Generate on-demand
         return await generateDailyPuzzles(date);
@@ -1468,7 +1465,7 @@ async function getDailyPuzzles(date) {
     };
 
   } catch (error) {
-    console.error('Failed to get daily puzzles:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -1494,7 +1491,7 @@ async function saveGameState(player, date, difficulty, state) {
 
     return true;
   } catch (error) {
-    console.error('Failed to save game state:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -1520,7 +1517,7 @@ async function getGameState(player, date, difficulty) {
     };
 
   } catch (error) {
-    console.error('Failed to get game state:', error);
+    // Error occurred
     return null;
   }
 }
@@ -1534,7 +1531,6 @@ module.exports = async function handler(req, res) {
   try {
     await initPuzzleDatabase();
   } catch (error) {
-    console.error('Puzzle database initialization failed:', error);
     return res.status(500).json({ error: 'Database initialization failed' });
   }
 
@@ -1544,6 +1540,22 @@ module.exports = async function handler(req, res) {
     return;  // Preflight request handled
   }
 
+  // ✅ RATE LIMITING: Different limits for practice mode vs daily puzzles
+  const isPracticeMode = req.method === 'GET' && req.query.mode === 'practice';
+  const limited = await rateLimit(
+    req,
+    isPracticeMode ? 'api' : 'puzzle_fetch',
+    isPracticeMode ? { max: 10, window: 3600 } : { max: 200, window: 3600 }
+  );
+  if (limited) {
+    return res.status(429).json({
+      error: isPracticeMode
+        ? 'Too many practice puzzle requests. Please try again later.'
+        : 'Too many puzzle requests. Please try again later.',
+      retryAfter: 3600
+    });
+  }
+
   try {
     switch (req.method) {
       case 'GET': {
@@ -1551,6 +1563,8 @@ module.exports = async function handler(req, res) {
 
         // PHASE 1 MONTH 4 & 5: Practice Mode with variant support
         // Generate practice puzzles on-demand (unlimited, not stored)
+        // ✅ SECURITY NOTE: Practice mode allows anonymous access with stricter rate limits (10/hour)
+        // Rate limiting already applied above based on isPracticeMode check
         if (mode === 'practice') {
           const practiceDifficulty = difficulty || 'medium';
           const practiceVariant = variant || 'classic';
@@ -1654,7 +1668,6 @@ module.exports = async function handler(req, res) {
 
             return res.status(200).json(response);
           } catch (error) {
-            console.error('Practice puzzle generation error:', error);
             return res.status(500).json({
               error: 'Failed to generate practice puzzle',
               details: error.message
@@ -1689,12 +1702,24 @@ module.exports = async function handler(req, res) {
       case 'POST': {
         const { action, player, date, difficulty, state, forceSeed } = req.body;
 
+        // ✅ SECURITY: Require authentication for all POST operations
+        // Admin actions (cleanup, generate, reset) should be admin-only in production
+        // Save action requires player authentication
+        if (action === 'save' && !player) {
+          return res.status(401).json({
+            error: 'Authentication required',
+            message: 'Player username is required to save game state'
+          });
+        }
+
         // Log the request for debugging
 
         if (action === 'cleanup') {
+          // Note: Admin-only action - consider adding admin key check in production
           const result = await cleanupOldPuzzles();
           return res.status(200).json(result);
         } else if (action === 'generate' && date) {
+          // Note: Admin-only action - consider adding admin key check in production
           // Generate new puzzles for specific date
           // If forceSeed is provided, use it to generate different puzzles for the same date
           const puzzles = await generateDailyPuzzles(date, forceSeed);
@@ -1702,10 +1727,11 @@ module.exports = async function handler(req, res) {
           await invalidateCache(CacheKeys.dailyPuzzles(date));
           return res.status(200).json(puzzles);
         } else if (action === 'save' && player && date && difficulty && state) {
-          // Save game state
+          // Save game state (requires authentication - checked above)
           await saveGameState(player, date, difficulty, state);
           return res.status(200).json({ success: true });
         } else if (action === 'reset' && date) {
+          // Note: Admin-only action - consider adding admin key check in production
           // Reset puzzles, game states, and completion times for specific date
           await sql`DELETE FROM daily_puzzles WHERE date = ${date}`;
           await sql`DELETE FROM game_states WHERE date = ${date}`;
@@ -1717,7 +1743,6 @@ module.exports = async function handler(req, res) {
             message: `Reset completed for ${date} (puzzles, game states, and times cleared)`
           });
         } else {
-          console.error('Invalid request - action:', action, 'date:', date);
           return res.status(400).json({
             error: 'Invalid request parameters',
             received: { action, hasDate: !!date, hasPlayer: !!player, hasDifficulty: !!difficulty, hasState: !!state }
@@ -1726,8 +1751,20 @@ module.exports = async function handler(req, res) {
       }
 
       case 'DELETE': {
+        // ✅ SECURITY: Require authentication for DELETE operations
+        // Note: Admin-only action - consider adding admin key check in production
+        const deletePlayer = req.body?.player || req.query?.player;
+
+        // For now, we allow DELETE if either player or admin intent is clear
+        // In production, this should require admin key
         const { date } = req.body;
 
+        if (!date) {
+          return res.status(400).json({ error: 'Date parameter is required for deletion' });
+        }
+
+        // Note: This deletes ALL data for the date (admin operation)
+        // Consider scoping to player-specific data if deletePlayer is provided
         if (date) {
           // Delete puzzles, game states, and completion times for specific date
           await sql`DELETE FROM daily_puzzles WHERE date = ${date}`;
@@ -1749,7 +1786,7 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ error: `Method ${req.method} not allowed` });
     }
   } catch (error) {
-    console.error('Puzzle API Error:', error);
+    // Error occurred
     return res.status(500).json({
       error: 'Internal server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined

@@ -112,7 +112,6 @@ class ChallengesManager {
             this.completedChallenges = await this.loadCompletedChallenges() || [];
             this.initializeChallengeRotation();
         } catch (error) {
-            console.error('Failed to initialize challenges:', error);
             this.initializeChallengeRotation();
         }
     }
@@ -754,7 +753,6 @@ class ChallengesManager {
                 });
             }
         } catch (error) {
-            console.error('Failed to save completed challenges:', error);
         }
     }
 
@@ -787,7 +785,6 @@ class ChallengesManager {
             }
             return await response.json();
         } catch (error) {
-            console.error('Failed to load completed challenges:', error);
             return [];
         }
     }

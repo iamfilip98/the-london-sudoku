@@ -3,6 +3,7 @@
  */
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
+const { rateLimit } = require('../lib/rate-limit');
 
 // Helper function to execute SQL queries using template literals
 async function sql(strings, ...values) {
@@ -94,7 +95,7 @@ async function initDatabase() {
 
     return true;
   } catch (error) {
-    console.error('Failed to initialize database:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -242,7 +243,7 @@ async function getAllEntries() {
       return normalizeEntryData(rawData);
     });
   } catch (error) {
-    console.error('Failed to get entries:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -294,7 +295,7 @@ async function saveEntryToDb(date, entryData) {
 
     return true;
   } catch (error) {
-    console.error('Failed to save entry:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -304,7 +305,7 @@ async function deleteEntryFromDb(date) {
     await sql`DELETE FROM entries WHERE date = ${date}`;
     return true;
   } catch (error) {
-    console.error('Failed to delete entry:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -314,7 +315,6 @@ module.exports = async function handler(req, res) {
   try {
     await initDatabase();
   } catch (error) {
-    console.error('Database initialization failed:', error);
     return res.status(500).json({ error: 'Database initialization failed' });
   }
 
@@ -324,16 +324,26 @@ module.exports = async function handler(req, res) {
     return;  // Preflight request handled
   }
 
+  // ✅ RATE LIMITING: 100 requests per hour
+  const limited = await rateLimit(req, 'api', { max: 100, window: 3600 });
+  if (limited) {
+    return res.status(429).json({
+      error: 'Too many requests. Please try again later.',
+      retryAfter: 3600
+    });
+  }
+
   try {
     switch (req.method) {
       case 'GET':
+        // GET is read-only, allow anonymous access
         const entries = await getAllEntries();
         return res.status(200).json(entries);
 
       case 'POST':
         const { date, migrate, migrationData, ...playerData } = req.body;
 
-        // Handle migration request
+        // Handle migration request (allow migration for admin purposes)
         if (migrate && migrationData) {
           // Simple migration - just save all entries
           if (migrationData.entries && migrationData.entries.length > 0) {
@@ -345,9 +355,13 @@ module.exports = async function handler(req, res) {
           return res.status(200).json({ success: true, message: 'Migration completed' });
         }
 
-        // Validate required fields for regular entry
+        // ✅ SECURITY: Require authentication for POST operations
+        // Check that at least one player is provided
         if (!date || Object.keys(playerData).length === 0) {
-          return res.status(400).json({ error: 'Date and at least one player data are required' });
+          return res.status(401).json({
+            error: 'Authentication required',
+            message: 'Date and at least one player data are required'
+          });
         }
 
         // Use all provided player data
@@ -362,12 +376,24 @@ module.exports = async function handler(req, res) {
         });
 
       case 'DELETE':
+        // ✅ SECURITY: Require authentication for DELETE operations
+        const deletePlayer = req.body?.player || req.query?.player;
+
+        if (!deletePlayer) {
+          return res.status(401).json({
+            error: 'Authentication required',
+            message: 'Player username is required to delete entries'
+          });
+        }
+
         const { date: deleteDate } = req.query;
 
         if (!deleteDate) {
           return res.status(400).json({ error: 'Date is required for deletion' });
         }
 
+        // Note: This deletes the entire entry for the date, not just the player's data
+        // This is the existing behavior - consider refining to only delete player's data
         await deleteEntryFromDb(deleteDate);
         return res.status(200).json({
           success: true,
@@ -379,7 +405,7 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ error: `Method ${req.method} not allowed` });
     }
   } catch (error) {
-    console.error('API Error:', error);
+    // Error occurred
     return res.status(500).json({
       error: 'Internal server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined

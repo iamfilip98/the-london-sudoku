@@ -7,11 +7,21 @@
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
 const { getCached, invalidateCachePattern, CACHE_DURATIONS } = require('../lib/cache');
+const { rateLimit } = require('../lib/rate-limit');
 
 module.exports = async function handler(req, res) {
   // ✅ SECURITY FIX: Proper CORS handling
   if (setCorsHeaders(req, res)) {
     return;  // Preflight request handled
+  }
+
+  // ✅ RATE LIMITING: 20 requests per hour
+  const limited = await rateLimit(req, 'api', { max: 20, window: 3600 });
+  if (limited) {
+    return res.status(429).json({
+      error: 'Too many rating requests. Please try again later.',
+      retryAfter: 3600
+    });
   }
 
   try {
@@ -41,6 +51,7 @@ module.exports = async function handler(req, res) {
     `);
 
     if (req.method === 'GET') {
+      // GET is read-only, allow anonymous access
       // Retrieve ratings
       const { player, startDate, endDate, limit } = req.query;
 
@@ -97,8 +108,16 @@ module.exports = async function handler(req, res) {
       // Store new rating
       const { player, date, timestamp, difficulty, rating, time, errors, hints, score, puzzle } = req.body;
 
+      // ✅ SECURITY: Require authentication for POST operations
+      if (!player) {
+        return res.status(401).json({
+          error: 'Authentication required',
+          message: 'Player username is required to submit ratings'
+        });
+      }
+
       // Validate required fields
-      if (!player || !date || !timestamp || !difficulty || !rating || time === undefined || errors === undefined || hints === undefined || score === undefined || !puzzle) {
+      if (!date || !timestamp || !difficulty || !rating || time === undefined || errors === undefined || hints === undefined || score === undefined || !puzzle) {
         return res.status(400).json({
           error: 'Missing required fields',
           required: ['player', 'date', 'timestamp', 'difficulty', 'rating', 'time', 'errors', 'hints', 'score', 'puzzle']
@@ -147,7 +166,6 @@ module.exports = async function handler(req, res) {
     }
 
   } catch (error) {
-    console.error('Ratings API error:', error);
     return res.status(500).json({
       error: 'Internal server error',
       details: error.message

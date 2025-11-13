@@ -552,7 +552,7 @@ class SudokuChampionship {
             await this.updateStreaks();
 
         } catch (error) {
-            console.error('Failed to load data:', error);
+            // Failed to load data
         }
     }
 
@@ -686,7 +686,6 @@ class SudokuChampionship {
 
             // REMOVED: updateProgressNotifications() call - function no longer exists
         } catch (error) {
-            console.error('Dashboard update failed:', error);
             // Continue execution even if dashboard update fails
         }
     }
@@ -827,7 +826,6 @@ class SudokuChampionship {
                 await this.updateStreaks();
                 await this.updateDashboard();
             } catch (error) {
-                console.error('Failed to delete entry:', error);
                 alert('Failed to delete entry. Please try again.');
             }
         }
@@ -1127,7 +1125,7 @@ class SudokuChampionship {
             this.cache.data = null;
             this.cache.lastUpdate = null;
         } catch (error) {
-            console.error('Failed to save to database:', error);
+            // Failed to save to database
         }
     }
 
@@ -1139,7 +1137,6 @@ class SudokuChampionship {
             }
             return await response.json();
         } catch (error) {
-            console.error('Failed to load from database:', error);
             return [];
         }
     }
@@ -1157,7 +1154,7 @@ class SudokuChampionship {
                 })
             });
         } catch (error) {
-            console.error('Failed to save streaks:', error);
+            // Failed to save streaks
         }
     }
 
@@ -1169,7 +1166,6 @@ class SudokuChampionship {
             }
             return await response.json();
         } catch (error) {
-            console.error('Failed to load streaks:', error);
             return null;
         }
     }
@@ -1195,7 +1191,7 @@ class SudokuChampionship {
                 });
             }
         } catch (error) {
-            console.error('Failed to save achievements:', error);
+            // Failed to save achievements
         }
     }
 
@@ -1207,7 +1203,6 @@ class SudokuChampionship {
             }
             return await response.json();
         } catch (error) {
-            console.error('Failed to load achievements:', error);
             // Return empty array as fallback - achievements will still show as locked
             return [];
         }
@@ -1228,7 +1223,7 @@ class SudokuChampionship {
                 });
             }
         } catch (error) {
-            console.error('Failed to save challenges:', error);
+            // Failed to save challenges
         }
     }
 
@@ -1240,7 +1235,6 @@ class SudokuChampionship {
             }
             return await response.json();
         } catch (error) {
-            console.error('Failed to load challenges:', error);
             return [];
         }
     }
@@ -1267,7 +1261,6 @@ class SudokuChampionship {
 
             return data;
         } catch (error) {
-            console.error('Failed to load bulk data:', error);
             // TRANSFORMED: User-centric default data
             return {
                 streaks: { current: 0, best: 0 },
@@ -1310,7 +1303,7 @@ class SudokuChampionship {
                 this.todayProgressCache.date = today;
             }
         } catch (error) {
-            console.error('Failed to fetch today\'s progress:', error);
+            // Failed to fetch today's progress
         }
 
         // Always render, even if dbProgress is null (will check localStorage fallback)
@@ -1482,7 +1475,6 @@ class SudokuChampionship {
 
             return true;
         } catch (error) {
-            console.error('❌ Failed to reset daily puzzles:', error);
             return false;
         }
     }
@@ -1576,7 +1568,7 @@ class SudokuChampionship {
                     }
                 }
             } catch (error) {
-                console.error(`❌ ${endpoint} - Error:`, error.message);
+                // Endpoint test failed
             }
         }
     }
@@ -1743,7 +1735,7 @@ class SudokuChampionship {
             await this.updateProgressSections(user);
 
         } catch (error) {
-            console.error('Error updating modern dashboard:', error);
+            // Dashboard update error
         }
     }
 
@@ -1791,7 +1783,7 @@ class SudokuChampionship {
             this.userStats.bestStreak = userStreak.best;
 
         } catch (error) {
-            console.error('Error updating streak badge:', error);
+            // Streak badge update error
         }
     }
 
@@ -1813,7 +1805,7 @@ class SudokuChampionship {
             await this.updateLeagueTierCard(user);
 
         } catch (error) {
-            console.error('Error updating quick stats:', error);
+            // Quick stats update error
         }
     }
 
@@ -1833,7 +1825,7 @@ class SudokuChampionship {
                 }
             }
         } catch (error) {
-            console.error('Error updating XP card:', error);
+            // XP card update error
         }
     }
 
@@ -1858,7 +1850,7 @@ class SudokuChampionship {
                 }
             }
         } catch (error) {
-            console.error('Error updating rank card:', error);
+            // Rank card update error
         }
     }
 
@@ -1880,7 +1872,7 @@ class SudokuChampionship {
                 }
             }
         } catch (error) {
-            console.error('Error updating achievements card:', error);
+            // Achievements card update error
         }
     }
 
@@ -1897,7 +1889,7 @@ class SudokuChampionship {
                 this.userStats.leagueTier = 'Bronze III';
             }
         } catch (error) {
-            console.error('Error updating league tier card:', error);
+            // League tier card update error
         }
     }
 
@@ -1910,7 +1902,7 @@ class SudokuChampionship {
             await this.updateLessonProgress(user);
             await this.updateRecentAchievements(user);
         } catch (error) {
-            console.error('Error updating progress sections:', error);
+            // Progress sections update error
         }
     }
 
@@ -1942,7 +1934,7 @@ class SudokuChampionship {
                 }
             }
         } catch (error) {
-            console.error('Error updating battle pass preview:', error);
+            // Battle pass preview update error
         }
     }
 
@@ -1959,7 +1951,6 @@ class SudokuChampionship {
 
                 // Validate response data
                 if (!Array.isArray(progressData)) {
-                    console.warn('Invalid lesson progress data: expected array');
                     return;
                 }
 
@@ -1974,7 +1965,6 @@ class SudokuChampionship {
                         // Parse lesson number from ID with validation
                         const match = lesson.lesson_id.match(/lesson-(\d+)/);
                         if (!match || !match[1]) {
-                            console.warn(`Invalid lesson ID format: ${lesson.lesson_id}`);
                             return sum;
                         }
 
@@ -1982,7 +1972,6 @@ class SudokuChampionship {
 
                         // Validate lesson number is in expected range (1-20)
                         if (isNaN(lessonNum) || lessonNum < 1 || lessonNum > 20) {
-                            console.warn(`Lesson number out of range: ${lessonNum}`);
                             return sum;
                         }
 
@@ -2036,7 +2025,6 @@ class SudokuChampionship {
                 }
             }
         } catch (error) {
-            console.error('Error updating lesson progress:', error);
             // Keep default 0 values on error
         }
     }
@@ -2072,7 +2060,7 @@ class SudokuChampionship {
                 }
             }
         } catch (error) {
-            console.error('Error updating recent achievements:', error);
+            // Recent achievements update error
         }
     }
 
@@ -2147,7 +2135,7 @@ class SudokuChampionship {
             }
 
         } catch (error) {
-            console.error('Error updating achievement summary:', error);
+            // Achievement summary update error
         }
     }
 
@@ -2198,7 +2186,7 @@ class SudokuChampionship {
             });
 
         } catch (error) {
-            console.error('Error updating daily goals:', error);
+            // Daily goals update error
         }
     }
 
@@ -2254,7 +2242,7 @@ class SudokuChampionship {
             }
 
         } catch (error) {
-            console.error('Error updating today performance:', error);
+            // Today performance update error
         }
     }
 
@@ -2313,7 +2301,7 @@ class SudokuChampionship {
             }).join('');
 
         } catch (error) {
-            console.error('Error updating recent games:', error);
+            // Recent games update error
         }
     }
 
@@ -2365,7 +2353,7 @@ class SudokuChampionship {
             });
 
         } catch (error) {
-            console.error('Error updating analytics user stats:', error);
+            // Analytics user stats update error
         }
     }
 }
