@@ -74,12 +74,8 @@ async function initDatabase() {
       )
     `;
 
-    // Initialize default streak records for both players
-    await sql`
-      INSERT INTO streaks (player, current_streak, best_streak)
-      VALUES ('faidao', 0, 0), ('filip', 0, 0)
-      ON CONFLICT (player) DO NOTHING
-    `;
+    // Streaks table is initialized on-demand per user
+    // No need to pre-populate specific users
 
     return true;
   } catch (error) {

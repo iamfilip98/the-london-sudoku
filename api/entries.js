@@ -89,12 +89,8 @@ async function initDatabase() {
       )
     `;
 
-    // Initialize default streak records for both players
-    await sql`
-      INSERT INTO streaks (player, current_streak, best_streak)
-      VALUES ('faidao', 0, 0), ('filip', 0, 0)
-      ON CONFLICT (player) DO NOTHING
-    `;
+    // Streaks table is initialized on-demand per user
+    // No need to pre-populate specific users
 
     return true;
   } catch (error) {
@@ -106,7 +102,8 @@ async function initDatabase() {
 function normalizeEntryData(data) {
   const normalized = { date: data.date };
 
-  ['faidao', 'filip'].forEach(player => {
+  // Iterate over all player keys (generic, not hardcoded)
+  Object.keys(data).filter(key => key !== 'date').forEach(player => {
     const playerData = data[player];
     if (!playerData) return;
 
@@ -265,7 +262,8 @@ async function saveEntryToDb(date, entryData) {
       finalData = { ...existingData, ...entryData };
 
       // Special handling: only update player data if it has meaningful scores
-      for (const player of ['faidao', 'filip']) {
+      const playerKeys = Object.keys(entryData).filter(key => typeof entryData[key] === 'object');
+      for (const player of playerKeys) {
         if (entryData[player] && existingData[player]) {
           // If the new data has scores but existing data also has scores, preserve higher total
           const newTotal = entryData[player].scores?.total || 0;
@@ -333,31 +331,27 @@ module.exports = async function handler(req, res) {
         return res.status(200).json(entries);
 
       case 'POST':
-        const { date, faidao, filip, migrate, migrationData } = req.body;
+        const { date, migrate, migrationData, ...playerData } = req.body;
 
         // Handle migration request
         if (migrate && migrationData) {
           // Simple migration - just save all entries
           if (migrationData.entries && migrationData.entries.length > 0) {
             for (const entry of migrationData.entries) {
-              await saveEntryToDb(entry.date, {
-                faidao: entry.faidao,
-                filip: entry.filip
-              });
+              const { date: entryDate, ...entryPlayers } = entry;
+              await saveEntryToDb(entryDate, entryPlayers);
             }
           }
           return res.status(200).json({ success: true, message: 'Migration completed' });
         }
 
         // Validate required fields for regular entry
-        if (!date || (!faidao && !filip)) {
+        if (!date || Object.keys(playerData).length === 0) {
           return res.status(400).json({ error: 'Date and at least one player data are required' });
         }
 
-        // Only include provided player data
-        const entryData = {};
-        if (faidao) entryData.faidao = faidao;
-        if (filip) entryData.filip = filip;
+        // Use all provided player data
+        const entryData = playerData;
 
         await saveEntryToDb(date, entryData);
 
