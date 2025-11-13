@@ -12,6 +12,7 @@ const { migrateLeagueSeasonTracking } = require('../lib/league-season-tracking-m
 const { migrateLeagueZoneTracking } = require('../lib/league-zone-tracking-migration');
 const { processSeasonEnd, createNewSeasons } = require('../lib/league-seasons');
 const { takeLeagueSnapshots } = require('../lib/league-zone-snapshots');
+const { migrateLessons } = require('../lib/lesson-migration');
 
 module.exports = async function handler(req, res) {
   // Handle CORS
@@ -101,6 +102,9 @@ module.exports = async function handler(req, res) {
       case 'migrate-phase6-month23':
         await handleMigratePhase6Month23(req, res);
         break;
+      case 'migrate-phase2-lessons':
+        await handleMigrateLessons(req, res);
+        break;
       case 'take-league-snapshots':
         await handleTakeLeagueSnapshots(req, res);
         break;
@@ -128,7 +132,7 @@ module.exports = async function handler(req, res) {
       default:
         res.status(400).json({
           error: 'Invalid action',
-          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'migrate-leagues', 'migrate-league-seasons', 'migrate-phase6-month22', 'migrate-phase6-month23', 'take-league-snapshots', 'process-league-season', 'create-new-seasons', 'cron-process-seasons', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
+          validActions: ['clear-all', 'clear-old-puzzles', 'generate-fallback', 'init-db', 'migrate-phase1-month5', 'migrate-phase2-month7', 'mark-founders', 'migrate-phase2-month8', 'migrate-battle-pass', 'migrate-leagues', 'migrate-league-seasons', 'migrate-phase6-month22', 'migrate-phase6-month23', 'migrate-phase2-lessons', 'take-league-snapshots', 'process-league-season', 'create-new-seasons', 'cron-process-seasons', 'create-checkout', 'create-portal', 'webhook', 'subscription-status']
         });
     }
   } catch (error) {
@@ -1076,6 +1080,62 @@ async function handleMigratePhase6Month23(req, res) {
     res.status(500).json({
       success: false,
       error: 'Phase 6 Month 23 migration failed',
+      details: error.message
+    });
+  }
+}
+
+// Phase 2: Tutorial Lesson System migration
+async function handleMigrateLessons(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    console.log('Starting Phase 2 Lesson System migration...');
+
+    // Run the migration
+    const result = await migrateLessons();
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        error: 'Lesson System migration failed'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Lesson System migration completed successfully',
+      features: [
+        'Lesson progress tracking (20 lessons across 3 courses)',
+        'Practice puzzle attempts tracking',
+        'Quiz performance tracking',
+        'Automatic achievement awards via database triggers',
+        '25 lesson achievements (individual + course + master)',
+        'PostgreSQL functions and triggers for lesson completion',
+        'XP rewards: 3,725 total XP available'
+      ],
+      tables: [
+        'lesson_progress',
+        'lesson_practice_attempts',
+        'lesson_quiz_attempts',
+        'lesson_achievements',
+        'user_lesson_achievements'
+      ],
+      courses: {
+        beginner: { lessons: 6, xp: 425, access: 'FREE' },
+        intermediate: { lessons: 8, xp: 1300, access: '3 FREE + 5 PREMIUM' },
+        variants: { lessons: 6, xp: 1300, access: 'ALL PREMIUM' },
+        bonuses: { courseCompletions: 600, masterAchievement: 500 }
+      }
+    });
+
+  } catch (error) {
+    console.error('Lesson System migration failed:', error);
+    res.status(500).json({
+      error: 'Migration failed',
       details: error.message
     });
   }
