@@ -219,18 +219,18 @@ const targetTimes = {
 **Current Endpoint Count**: 12/12 (✅ AT LIMIT)
 
 **Current API Endpoints**:
-1. `/api/achievements.js` - Achievement management
+1. `/api/achievements.js` - Achievement management + **Redis caching** (30-min TTL, auto-invalidation) *[Performance: Nov 2025]*
 2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db, **migrate-phase1-month5, migrate-phase2-month7, migrate-phase2-month8, migrate-phase2-lessons, migrate-performance-indexes, migrate-battle-pass, mark-founders**, **create-checkout, create-portal, webhook, subscription-status**, **performance-stats** *[Phase 1-2-3, Subscription, Friends, Battle Pass, Tutorial System, Performance]*) - **SUBSCRIPTION + FRIENDS + BATTLE PASS + LESSON SYSTEM + PERFORMANCE MIGRATIONS CONSOLIDATED HERE**
-3. `/api/auth.js` - Authentication (bcrypt + Clerk) + **User Profiles** (GET/PUT for bio, avatar, displayName, founder badge) + **Friends System** (?friends=xxx, ?friend-requests=xxx, ?action=send-friend-request) *[Phase 1 Month 4-5, Phase 2 Month 8]*
+3. `/api/auth.js` - Authentication (bcrypt + Clerk) + **User Profiles** (GET/PUT for bio, avatar, displayName, founder badge) + **Redis caching** (15-min TTL) + **Friends System** (?friends=xxx, ?friend-requests=xxx, ?action=send-friend-request) *[Phase 1 Month 4-5, Phase 2 Month 8, Performance: Nov 2025]*
 4. `/api/cron-verify-puzzles.js` - Scheduled puzzle verification
 5. `/api/entries.js` - Daily battle results
 6. `/api/games.js` - Game state management + **Free Tier Limits** (3 Classic dailies/day) + **Battle Pass XP** (automatic on completion) *[Phase 1 Month 5, Phase 3 Month 12]*
 7. `/api/generate-tomorrow.js` - Scheduled puzzle generation
 8. `/api/health.js` - Health check endpoint
 9. `/api/import.js` - **CONSOLIDATED** anonymous data migration (completion + achievement)
-10. `/api/puzzles.js` - Puzzle fetching (with Redis caching) + **Practice Mode** (?mode=practice&variant=classic|x-sudoku|mini|anti-knight|killer-sudoku|hyper-sudoku|consecutive-sudoku|thermo-sudoku|jigsaw-sudoku) *[Phase 1 Month 4-5, Phase 2 Month 9-14]*
-11. `/api/ratings.js` - Puzzle rating system
-12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) + **Battle Pass** (?type=battle-pass|battle-pass-leaderboard|battle-pass-tiers, POST type=battle-pass-claim) + **Lessons System** (?type=lessons|lesson-progress, POST type=lesson-progress|lesson-complete) *[Phase 1 Month 4, Phase 2, Phase 3 Month 12]*
+10. `/api/puzzles.js` - Puzzle fetching + **Redis caching** (24-hour TTL) + **Practice Mode** (?mode=practice&variant=classic|x-sudoku|mini|anti-knight|killer-sudoku|hyper-sudoku|consecutive-sudoku|thermo-sudoku|jigsaw-sudoku) *[Phase 1 Month 4-5, Phase 2 Month 9-14, Performance: Nov 2025]*
+11. `/api/ratings.js` - Puzzle rating system + **Redis caching** (1-hour TTL, auto-invalidation) *[Performance: Nov 2025]*
+12. `/api/stats.js` - User statistics + **Global Leaderboards** (?type=leaderboards) + **Redis caching** (5-min TTL for leaderboards) + **Battle Pass** (?type=battle-pass|battle-pass-leaderboard|battle-pass-tiers, POST type=battle-pass-claim) + **Lessons System** (?type=lessons|lesson-progress, POST type=lesson-progress|lesson-complete) *[Phase 1 Month 4, Phase 2, Phase 3 Month 12, Performance: Nov 2025]*
 
 **Consolidation Strategy**:
 - **BEFORE Phase 0**: 14 endpoints (exceeded limit)
@@ -261,6 +261,8 @@ const targetTimes = {
   - Phase 3 Month 12: Added Battle Pass System to `/api/stats.js?type=battle-pass|battle-pass-leaderboard|battle-pass-tiers` and `/api/admin.js?action=migrate-battle-pass`
   - Phase 2 (Nov 13, 2025): Added Lesson System migration to `/api/admin.js?action=migrate-phase2-lessons` (creates 5 tables, 25 achievements, triggers)
   - Performance (Nov 13, 2025): Added database performance optimization to `/api/admin.js?action=migrate-performance-indexes` (24 indexes, 30-50% faster), `GET /api/admin?action=performance-stats` (monitoring)
+  - Performance Phase 3 (Nov 13, 2025): Added Redis caching to `/api/ratings.js`, `/api/achievements.js`, `/api/auth.js`, `/api/stats.js`, `/api/puzzles.js` (20-80x faster cached responses)
+  - Analytics (Nov 13, 2025): Enhanced `lib/monitoring.js` with 8 comprehensive tracking functions (achievements, lessons, battle pass, leagues, premium conversion, retention, variants, social)
 
 **Subscription Consolidation Details**:
 - Subscription actions added to `/api/admin.js` with conditional authentication

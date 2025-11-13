@@ -1,8 +1,12 @@
 /**
  * Ratings API - SECURITY FIXES (November 2025)
+ * PERFORMANCE (November 2025):
+ * - Redis caching for ratings queries (1-hour TTL)
+ * - Auto-invalidation on new rating submission
  */
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
+const { getCached, invalidateCachePattern, CACHE_DURATIONS } = require('../lib/cache');
 
 module.exports = async function handler(req, res) {
   // ✅ SECURITY FIX: Proper CORS handling
@@ -40,42 +44,54 @@ module.exports = async function handler(req, res) {
       // Retrieve ratings
       const { player, startDate, endDate, limit } = req.query;
 
-      let query = 'SELECT * FROM puzzle_ratings WHERE 1=1';
-      const params = [];
-      let paramIndex = 1;
+      // Build cache key from query parameters
+      const cacheKey = `ratings:${player || 'all'}:${startDate || 'start'}:${endDate || 'end'}:${limit || 'all'}`;
 
-      if (player) {
-        query += ` AND player = $${paramIndex}`;
-        params.push(player);
-        paramIndex++;
-      }
+      // Use caching for ratings queries (1-hour TTL)
+      const ratings = await getCached(
+        cacheKey,
+        async () => {
+          let query = 'SELECT * FROM puzzle_ratings WHERE 1=1';
+          const params = [];
+          let paramIndex = 1;
 
-      if (startDate) {
-        query += ` AND date >= $${paramIndex}`;
-        params.push(startDate);
-        paramIndex++;
-      }
+          if (player) {
+            query += ` AND player = $${paramIndex}`;
+            params.push(player);
+            paramIndex++;
+          }
 
-      if (endDate) {
-        query += ` AND date <= $${paramIndex}`;
-        params.push(endDate);
-        paramIndex++;
-      }
+          if (startDate) {
+            query += ` AND date >= $${paramIndex}`;
+            params.push(startDate);
+            paramIndex++;
+          }
 
-      query += ' ORDER BY timestamp DESC';
+          if (endDate) {
+            query += ` AND date <= $${paramIndex}`;
+            params.push(endDate);
+            paramIndex++;
+          }
 
-      if (limit) {
-        query += ` LIMIT $${paramIndex}`;
-        params.push(parseInt(limit));
-      }
+          query += ' ORDER BY timestamp DESC';
 
-      const result = await pool.query(query, params);
+          if (limit) {
+            query += ` LIMIT $${paramIndex}`;
+            params.push(parseInt(limit));
+          }
 
-      return res.status(200).json({
-        success: true,
-        ratings: result.rows,
-        count: result.rows.length
-      });
+          const result = await pool.query(query, params);
+
+          return {
+            success: true,
+            ratings: result.rows,
+            count: result.rows.length
+          };
+        },
+        CACHE_DURATIONS.PUZZLE_RATING // 1 hour
+      );
+
+      return res.status(200).json(ratings);
 
     } else if (req.method === 'POST') {
       // Store new rating
@@ -116,6 +132,9 @@ module.exports = async function handler(req, res) {
         puzzle.grid,
         puzzle.solution
       ]);
+
+      // Invalidate ratings cache after new rating
+      await invalidateCachePattern('ratings:*');
 
       return res.status(201).json({
         success: true,
