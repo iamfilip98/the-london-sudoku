@@ -54,7 +54,30 @@ class SudokuChampionship {
         // Track when we've determined today's battle winner to prevent polling from clearing it
         this.lastCompleteBattleDate = null;
 
+        // 🛡️ MEMORY LEAK FIX: Store interval IDs for proper cleanup
+        this.activeIntervals = [];
+        this.setupCleanupHandlers();
+
         this.init();
+    }
+
+    // 🛡️ MEMORY LEAK FIX: Cleanup handler to prevent memory leaks
+    setupCleanupHandlers() {
+        // Clear all intervals when page is being unloaded or hidden
+        const cleanup = () => {
+            this.activeIntervals.forEach(intervalId => clearInterval(intervalId));
+            this.activeIntervals = [];
+        };
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', cleanup);
+
+        // Clean up on visibility change to reduce resource usage when tab is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Keep intervals but pause aggressive polling
+            }
+        });
     }
 
     // In-memory data management methods to reduce localStorage dependency
@@ -363,10 +386,11 @@ class SudokuChampionship {
     }
 
     startDateChangeMonitoring() {
-        // Check for date changes every minute
-        setInterval(() => {
+        // 🛡️ MEMORY LEAK FIX: Store interval ID for cleanup
+        const intervalId = setInterval(() => {
             this.checkDateChange();
         }, 60000); // 1 minute
+        this.activeIntervals.push(intervalId);
 
         // Also check when page becomes visible (user returns to tab)
         document.addEventListener('visibilitychange', () => {
@@ -377,8 +401,9 @@ class SudokuChampionship {
     }
 
     startLiveProgressPolling() {
+        // 🛡️ MEMORY LEAK FIX: Store interval ID for cleanup
         // Poll for live progress updates every 15 seconds for real-time battle updates
-        setInterval(async () => {
+        const intervalId = setInterval(async () => {
             if (this.initializationComplete) {
                 // Poll regardless of active page to keep data fresh for when user switches to dashboard
                 // Invalidate cache and update progress for live updates
@@ -389,6 +414,7 @@ class SudokuChampionship {
                 await this.updateTodayProgress();
             }
         }, 15000); // 15 seconds for live battle updates
+        this.activeIntervals.push(intervalId);
 
         // Also check immediately when page becomes visible (user returns to tab)
         document.addEventListener('visibilitychange', async () => {

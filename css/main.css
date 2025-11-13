@@ -221,8 +221,8 @@ body {
 }
 
 .main-nav {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(24px);
+    /* 🚀 PERFORMANCE FIX: Removed backdrop-filter blur (was causing GPU overload) */
+    background: rgba(22, 33, 62, 0.95);
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     padding: 1rem 2rem;
     display: flex;
@@ -234,6 +234,9 @@ body {
     box-shadow: var(--shadow-glass);
     transition: var(--transition);
     overflow: visible;
+    /* Ensure all nav items are visible with proper wrapping */
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .nav-brand {
@@ -247,66 +250,33 @@ body {
     transition: all 0.3s ease;
 }
 
+/* 🚀 PERFORMANCE FIX: Simplified hover effects - no animation-duration changes */
 .nav-brand:hover {
+    transform: scale(1.02); /* Reduced from 1.05 for smoother performance */
+}
+
+/* Championship Logo Hover Effects - Simplified */
+.nav-brand:hover .badge-outer {
+    border-color: rgba(0, 255, 255, 0.8);
     transform: scale(1.05);
 }
 
-.nav-brand:hover .puzzle-piece.active {
-    animation-duration: 1.5s;
-    transform: scale(1.15);
-}
-
-
-/* Championship Logo Hover Effects */
-.nav-brand:hover .badge-outer {
-    animation-duration: 4s;
-    border-color: rgba(0, 255, 255, 1);
-    background: linear-gradient(135deg,
-        rgba(0, 255, 255, 0.5) 0%,
-        rgba(255, 20, 147, 0.5) 50%,
-        rgba(79, 172, 254, 0.5) 100%);
-}
-
 .nav-brand:hover .badge-middle {
-    animation-duration: 3s;
-    border-color: rgba(255, 20, 147, 0.9);
+    border-color: rgba(255, 20, 147, 0.8);
 }
 
 .nav-brand:hover .main-title {
-    animation-duration: 2s;
-    background-size: 400% 100%;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))
-            drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
-    text-shadow:
-        0 0 10px rgba(255, 255, 255, 0.7),
-        0 0 20px rgba(255, 255, 255, 0.5),
-        0 0 30px rgba(255, 255, 255, 0.3);
+    /* Removed heavy drop-shadow filters and multiple text-shadows */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .nav-brand:hover .sub-title {
-    animation-duration: 2s;
-    text-shadow:
-        0 0 10px rgba(0, 0, 0, 1),
-        0 0 20px rgba(0, 0, 0, 0.8),
-        0 1px 2px rgba(0, 0, 0, 0.8);
-}
-
-.nav-brand:hover .geometric-top,
-.nav-brand:hover .geometric-center,
-.nav-brand:hover .geometric-bottom {
-    animation-duration: 1.5s;
-    transform: scale(1.4);
     opacity: 1;
 }
 
-.nav-brand:hover .bokeh-light {
-    animation-duration: 3s;
+.nav-brand:hover .geometric-center {
+    transform: scale(1.2);
     opacity: 1;
-    transform: scale(1.5);
-}
-
-.nav-brand:hover .particle {
-    animation-duration: 3.5s;
 }
 
 /* Championship Arena Logo */
@@ -330,14 +300,15 @@ body {
     pointer-events: none;
 }
 
-/* Bokeh light effects */
+/* 🚀 PERFORMANCE FIX: Bokeh light effects - animations disabled */
 .bokeh-light {
     position: absolute;
     border-radius: 50%;
     pointer-events: none;
     filter: blur(2px);
-    opacity: 1;
-    animation: bokehFloat 3s ease-in-out infinite;
+    opacity: 0.5;
+    /* animation: bokehFloat 3s ease-in-out infinite; - DISABLED for performance */
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .bokeh-light:nth-child(1) {
@@ -414,7 +385,8 @@ body {
         rgba(79, 172, 254, 0.5) 100%);
     border: 2px solid rgba(0, 255, 255, 1);
     border-radius: 50% 10px 50% 10px;
-    animation: badgeRotate 4s linear infinite;
+    /* 🚀 PERFORMANCE FIX: animation: badgeRotate 4s linear infinite; - DISABLED */
+    transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
 .badge-middle {
@@ -428,7 +400,8 @@ body {
         rgba(26, 26, 46, 0.9) 100%);
     border: 1px solid rgba(255, 20, 147, 0.9);
     border-radius: 50% 8px 50% 8px;
-    animation: badgeRotate 3s linear infinite reverse;
+    /* 🚀 PERFORMANCE FIX: animation: badgeRotate 3s linear infinite reverse; - DISABLED */
+    transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
 .badge-inner {
@@ -457,14 +430,16 @@ body {
     }
 }
 
-/* Geometric elements inside badge */
+/* 🚀 PERFORMANCE FIX: Geometric elements inside badge - animations disabled */
 .geometric-top {
     width: 8px;
     height: 4px;
     background: linear-gradient(45deg, rgba(255, 20, 147, 0.9) 0%, rgba(79, 172, 254, 0.9) 100%);
     border-radius: 2px;
     margin-bottom: 1px;
-    animation: geometricPulse 1.5s ease-in-out infinite;
+    opacity: 0.8;
+    /* animation: geometricPulse 1.5s ease-in-out infinite; - DISABLED */
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .geometric-center {
@@ -473,7 +448,9 @@ body {
     background: linear-gradient(45deg, rgba(0, 255, 255, 0.9) 0%, rgba(255, 20, 147, 0.9) 100%);
     border-radius: 1px;
     margin-bottom: 1px;
-    animation: geometricPulse 1.5s ease-in-out infinite 0.5s;
+    opacity: 0.8;
+    /* animation: geometricPulse 1.5s ease-in-out infinite 0.5s; - DISABLED */
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .geometric-bottom {
@@ -481,7 +458,9 @@ body {
     height: 4px;
     background: linear-gradient(45deg, rgba(79, 172, 254, 0.9) 0%, rgba(138, 43, 226, 0.9) 100%);
     border-radius: 2px;
-    animation: geometricPulse 1.5s ease-in-out infinite 1s;
+    opacity: 0.8;
+    /* animation: geometricPulse 1.5s ease-in-out infinite 1s; - DISABLED */
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 @keyframes geometricPulse {
@@ -518,12 +497,11 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     -webkit-text-stroke: 1px rgba(0, 0, 0, 0.8);
-    animation: neonShimmer 4s ease-in-out infinite;
-    text-shadow:
-        0 0 6px rgba(255, 255, 255, 0.5),
-        0 0 12px rgba(255, 255, 255, 0.3),
-        0 0 18px rgba(255, 255, 255, 0.2);
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+    /* 🚀 PERFORMANCE FIX: animation: neonShimmer 4s ease-in-out infinite; - DISABLED */
+    /* 🚀 PERFORMANCE FIX: Reduced text-shadow complexity */
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+    /* 🚀 PERFORMANCE FIX: Removed drop-shadow filter (GPU intensive) */
+    transition: filter 0.3s ease;
 }
 
 .sub-title {
@@ -534,10 +512,10 @@ body {
     text-transform: uppercase;
     margin-top: -0.2rem;
     -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.7);
-    text-shadow:
-        0 0 5px rgba(0, 0, 0, 0.8),
-        0 1px 2px rgba(0, 0, 0, 0.8);
-    animation: subtitleGlow 3s ease-in-out infinite;
+    /* 🚀 PERFORMANCE FIX: Simplified text-shadow */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    /* 🚀 PERFORMANCE FIX: animation: subtitleGlow 3s ease-in-out infinite; - DISABLED */
+    transition: opacity 0.3s ease;
 }
 
 @keyframes neonShimmer {
@@ -567,7 +545,10 @@ body {
 
 .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 1rem; /* 🚀 PERFORMANCE FIX: Reduced gap for better fit */
+    flex-wrap: wrap; /* 🚀 PERFORMANCE FIX: Allow wrapping on smaller screens */
+    align-items: center;
+    justify-content: center;
 }
 
 .nav-link {
@@ -603,13 +584,14 @@ body {
     left: 100%;
 }
 
+/* 🚀 PERFORMANCE FIX: Optimized nav-link hover effects */
 .nav-link:hover,
 .nav-link.active {
-    background: var(--card-bg);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
     color: var(--text-primary);
-    transform: translateY(-2px);
+    transform: translateY(-2px); /* Reduced from -8px for smoother performance */
     box-shadow: var(--shadow-md);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(79, 172, 254, 0.5);
 }
 
 .nav-link:focus {
@@ -636,27 +618,14 @@ body {
     width: 85%;
 }
 
-.nav-link:hover,
-.nav-link.active {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
-    color: var(--text-primary);
-    transform: translateY(-8px) scale(1.03);
-    box-shadow:
-        var(--shadow-xl),
-        0 0 30px rgba(79, 172, 254, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border-color: rgba(79, 172, 254, 0.5);
-    animation: none;
-}
-
 .nav-link i {
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: all 0.3s ease;
 }
 
 .nav-link:hover i {
-    transform: scale(1.15) rotate(8deg);
+    transform: scale(1.1); /* Reduced from 1.15 rotate(8deg) */
     color: var(--accent-blue);
-    filter: drop-shadow(0 0 8px rgba(79, 172, 254, 0.5));
+    /* Removed drop-shadow filter for performance */
 }
 
 .nav-mobile-toggle {
