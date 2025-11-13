@@ -290,24 +290,32 @@ async function handleInitDb(req, res) {
       )
     `);
 
-    // Initialize users with passwords from environment variables
-    const faidaoPassword = (process.env.FAIDAO_PASSWORD || 'sudoku2024').trim();
-    const filipPassword = (process.env.FILIP_PASSWORD || 'sudoku2024').trim();
+    // Initialize founder users with passwords from environment variables (if provided)
+    // This is optional - system works without pre-creating users
+    const foundersToInit = [];
 
-    const faidaoHash = await bcrypt.hash(faidaoPassword, 10);
-    const filipHash = await bcrypt.hash(filipPassword, 10);
+    if (process.env.FAIDAO_PASSWORD) {
+      const faidaoHash = await bcrypt.hash(process.env.FAIDAO_PASSWORD.trim(), 10);
+      foundersToInit.push(['faidao', faidaoHash, 'Faidao - The Queen', null]);
+    }
 
-    await pool.query(`
-      INSERT INTO users (username, password_hash, display_name, avatar)
-      VALUES
-        ('faidao', $1, 'Faidao - The Queen', NULL),
-        ('filip', $2, 'Filip - The Champion', NULL)
-      ON CONFLICT (username)
-      DO UPDATE SET
-        password_hash = EXCLUDED.password_hash,
-        display_name = EXCLUDED.display_name,
-        updated_at = NOW()
-    `, [faidaoHash, filipHash]);
+    if (process.env.FILIP_PASSWORD) {
+      const filipHash = await bcrypt.hash(process.env.FILIP_PASSWORD.trim(), 10);
+      foundersToInit.push(['filip', filipHash, 'Filip - The Champion', null]);
+    }
+
+    // Insert founder users if passwords are configured
+    for (const [username, hash, displayName, avatar] of foundersToInit) {
+      await pool.query(`
+        INSERT INTO users (username, password_hash, display_name, avatar)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (username)
+        DO UPDATE SET
+          password_hash = EXCLUDED.password_hash,
+          display_name = EXCLUDED.display_name,
+          updated_at = NOW()
+      `, [username, hash, displayName, avatar]);
+    }
 
     // Create entries table
     await pool.query(`
@@ -345,18 +353,13 @@ async function handleInitDb(req, res) {
       )
     `);
 
-    // Initialize default streak records for both players
-    await pool.query(`
-      INSERT INTO streaks (player, current_streak, best_streak)
-      VALUES ('faidao', 0, 0), ('filip', 0, 0)
-      ON CONFLICT (player) DO NOTHING
-    `);
+    // Streaks are initialized on-demand per user, no pre-population needed
 
     res.status(200).json({
       success: true,
-      message: 'Database and users initialized successfully',
+      message: 'Database initialized successfully',
       tables: ['users', 'entries', 'achievements', 'streaks'],
-      users: ['faidao', 'filip']
+      foundersInitialized: foundersToInit.map(f => f[0])
     });
 
   } catch (error) {

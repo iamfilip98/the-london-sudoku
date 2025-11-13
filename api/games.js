@@ -209,14 +209,16 @@ async function getTodayProgress(date) {
     `;
 
     // Transform to the format expected by the frontend
-    const progress = {
-      faidao: { easy: null, medium: null, hard: null },
-      filip: { easy: null, medium: null, hard: null }
-    };
+    // Build progress object dynamically for all players
+    const progress = {};
 
     result.rows.forEach(game => {
-      if (progress[game.player]) {
-        progress[game.player][game.difficulty] = {
+      // Initialize player object if it doesn't exist
+      if (!progress[game.player]) {
+        progress[game.player] = { easy: null, medium: null, hard: null };
+      }
+
+      progress[game.player][game.difficulty] = {
           time: game.time,
           errors: game.errors,
           score: game.score,
@@ -226,7 +228,6 @@ async function getTodayProgress(date) {
           hintLevel3Count: game.hint_level3_count,
           bonusType: game.bonus_type
         };
-      }
     });
 
     return progress;

@@ -3852,12 +3852,7 @@ class AchievementsManager {
                 return this.checkZeroErrors(req, newEntry);
 
             case 'total_days':
-                // Return all players who have participated in enough entries
-                const participatingPlayers = new Set();
-                allEntries.forEach(entry => {
-                    Object.keys(entry).filter(k => typeof entry[k] === 'object' && entry[k].times).forEach(p => participatingPlayers.add(p));
-                });
-                return allEntries.length >= req.value ? Array.from(participatingPlayers) : [];
+                return allEntries.length >= req.value ? ['faidao', 'filip'] : [];
 
             case 'daily_score':
                 return this.checkDailyScore(req.value, newEntry);
@@ -4121,23 +4116,6 @@ class AchievementsManager {
         }
     }
 
-    async getAllPlayers() {
-        // Get all unique players from the database
-        // This queries the achievements/games tables to find all registered players
-        try {
-            const response = await fetch('/api/stats?type=all');
-            if (!response.ok) return [];
-            const data = await response.json();
-
-            // Extract unique player names from streaks
-            const players = Object.keys(data.streaks || {});
-            return players.length > 0 ? players : [];
-        } catch (error) {
-            console.error('Failed to fetch all players:', error);
-            return [];
-        }
-    }
-
     async fetchPlayerGames(player) {
         try {
             const response = await fetch(`/api/games?all=true&player=${player}`);
@@ -4153,9 +4131,7 @@ class AchievementsManager {
     async checkFlawlessBonus(req, allEntries) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const hasFlawless = games.some(game =>
                 game.bonusType === 'flawless' &&
@@ -4174,9 +4150,7 @@ class AchievementsManager {
     async checkPerfectBonus(req, allEntries) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const hasPerfect = games.some(game =>
                 game.bonusType === 'perfect' &&
@@ -4195,9 +4169,7 @@ class AchievementsManager {
     async checkScoreMilestone(req, allEntries) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const hasMilestone = games.some(game =>
                 game.score >= req.value &&
@@ -4216,9 +4188,7 @@ class AchievementsManager {
     async checkFlawlessStreak(req, allEntries) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
 
             // Group games by date and check for consecutive flawless days
@@ -4274,9 +4244,7 @@ class AchievementsManager {
     async checkPerfectBonusCount(req, allEntries) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const perfectCount = games.filter(game => game.bonusType === 'perfect').length;
 
@@ -4292,9 +4260,7 @@ class AchievementsManager {
     async checkFlawlessBonusCount(req, allEntries) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const flawlessCount = games.filter(game => game.bonusType === 'flawless').length;
 
@@ -4308,10 +4274,8 @@ class AchievementsManager {
 
     checkWinStreak(requiredStreak, streaks) {
         const players = [];
-        // Check streaks for all players
-        Object.keys(streaks).forEach(player => {
-            if ((streaks[player]?.current || 0) >= requiredStreak) players.push(player);
-        });
+        if ((streaks.faidao?.current || 0) >= requiredStreak) players.push('faidao');
+        if ((streaks.filip?.current || 0) >= requiredStreak) players.push('filip');
         return players;
     }
 
@@ -4337,16 +4301,11 @@ class AchievementsManager {
             }
 
             if (isConsecutive) {
-                // For personal milestones, check if user completed all weekend puzzles
-                const playerCompletions = {};
-                weekEntries.forEach(e => {
-                    Object.keys(e).filter(k => typeof e[k] === 'object' && e[k].scores).forEach(player => {
-                        playerCompletions[player] = (playerCompletions[player] || 0) + 1;
-                    });
-                });
+                const faidaoWins = weekEntries.filter(e => e.faidao.scores.total > e.filip.scores.total).length;
+                const filipWins = weekEntries.filter(e => e.filip.scores.total > e.faidao.scores.total).length;
 
-                // Return players who completed all 7 days
-                return Object.keys(playerCompletions).filter(p => playerCompletions[p] === 7);
+                if (faidaoWins === 7) return ['faidao'];
+                if (filipWins === 7) return ['filip'];
             }
         }
 
@@ -4354,8 +4313,7 @@ class AchievementsManager {
     }
 
     checkTimeUnder(req, entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
 
         return players.filter(player => {
             const time = entry[player].times[req.difficulty];
@@ -4371,8 +4329,7 @@ class AchievementsManager {
     }
 
     checkZeroErrorsDay(entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
         const difficulties = ['easy', 'medium', 'hard'];
 
         return players.filter(player => {
@@ -4384,8 +4341,7 @@ class AchievementsManager {
     }
 
     checkZeroErrors(req, entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
 
         return players.filter(player => {
             const errors = entry[player].errors[req.difficulty];
@@ -4396,10 +4352,8 @@ class AchievementsManager {
 
     checkDailyScore(requiredScore, entry) {
         const players = [];
-        // Check score for all players in entry
-        Object.keys(entry).forEach(player => {
-            if (entry[player]?.scores?.total >= requiredScore) players.push(player);
-        });
+        if (entry.faidao.scores.total >= requiredScore) players.push('faidao');
+        if (entry.filip.scores.total >= requiredScore) players.push('filip');
         return players;
     }
 
@@ -4409,32 +4363,27 @@ class AchievementsManager {
         const sortedEntries = [...allEntries].sort((a, b) => new Date(a.date) - new Date(b.date));
         const recentEntries = sortedEntries.slice(-lossStreak - 1);
 
-        // For personal milestones: check if player had low scores and then achieved high score
+        // Check if the latest entry is a win
         const latestEntry = recentEntries[recentEntries.length - 1];
+        const latestFaidaoWon = latestEntry.faidao.scores.total > latestEntry.filip.scores.total;
+        const latestFilipWon = latestEntry.filip.scores.total > latestEntry.faidao.scores.total;
+
+        if (!latestFaidaoWon && !latestFilipWon) return []; // Tie doesn't count
+
+        // Check if the previous entries were losses for the winner
         const previousEntries = recentEntries.slice(0, -1);
-        const players = [];
 
-        // Check each player for comeback pattern (low scores → high score)
-        Object.keys(latestEntry).filter(k => typeof latestEntry[k] === 'object').forEach(player => {
-            // Did this player have consistently low scores before?
-            const hadLowScores = previousEntries.every(entry => {
-                return entry[player]?.scores?.total && entry[player].scores.total < 500;
-            });
-
-            // Did they achieve a high score in the latest entry?
-            const hasHighScore = latestEntry[player]?.scores?.total > 1000;
-
-            if (hadLowScores && hasHighScore) {
-                players.push(player);
-            }
-        });
-
-        return players;
+        if (latestFaidaoWon) {
+            const hasLossStreak = previousEntries.every(entry => entry.filip.scores.total > entry.faidao.scores.total);
+            return hasLossStreak ? ['faidao'] : [];
+        } else {
+            const hasLossStreak = previousEntries.every(entry => entry.faidao.scores.total > entry.filip.scores.total);
+            return hasLossStreak ? ['filip'] : [];
+        }
     }
 
     checkTimeOver(req, entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
 
         return players.filter(player => {
             const time = entry[player].times[req.difficulty];
@@ -4444,8 +4393,7 @@ class AchievementsManager {
     }
 
     checkTotalTimeUnder(req, entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
         const difficulties = ['easy', 'medium', 'hard'];
 
         return players.filter(player => {
@@ -4462,8 +4410,7 @@ class AchievementsManager {
     }
 
     checkTotalErrorsOver(req, entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
         const difficulties = ['easy', 'medium', 'hard'];
 
         return players.filter(player => {
@@ -4475,8 +4422,7 @@ class AchievementsManager {
     }
 
     checkSubmissionTime(req, entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
         const submissionTime = new Date().getHours();
 
         // Check if this is a late or early submission
@@ -4511,43 +4457,40 @@ class AchievementsManager {
         if (!saturdayEntry || !sundayEntry) return [];
 
         const players = [];
-        // Check if player completed both weekend days
-        Object.keys(saturdayEntry).filter(k => typeof saturdayEntry[k] === 'object').forEach(player => {
-            const completedSat = saturdayEntry[player]?.scores?.total > 0;
-            const completedSun = sundayEntry[player]?.scores?.total > 0;
-            if (completedSat && completedSun) {
-                players.push(player);
-            }
-        });
+        if (saturdayEntry.faidao.scores.total > saturdayEntry.filip.scores.total &&
+            sundayEntry.faidao.scores.total > sundayEntry.filip.scores.total) {
+            players.push('faidao');
+        }
+        if (saturdayEntry.filip.scores.total > saturdayEntry.faidao.scores.total &&
+            sundayEntry.filip.scores.total > sundayEntry.faidao.scores.total) {
+            players.push('filip');
+        }
 
         return players;
     }
 
     checkCloseWin(req, entry) {
-        // For personal milestones, check if user hit exact score threshold
-        const players = [];
-        Object.keys(entry).filter(k => typeof entry[k] === 'object').forEach(player => {
-            if (entry[player]?.scores?.total === req.value) {
-                players.push(player);
-            }
-        });
-        return players;
+        const scoreDiff = Math.abs(entry.faidao.scores.total - entry.filip.scores.total);
+        if (scoreDiff === req.value) {
+            if (entry.faidao.scores.total > entry.filip.scores.total) return ['faidao'];
+            if (entry.filip.scores.total > entry.faidao.scores.total) return ['filip'];
+        }
+        return [];
     }
 
     checkDominatingWin(req, entry) {
         const players = [];
-        // Check if player achieved dominating score (high threshold)
-        Object.keys(entry).filter(k => typeof entry[k] === 'object').forEach(player => {
-            if (entry[player]?.scores?.total >= req.value * 1000) { // High score threshold
-                players.push(player);
-            }
-        });
+        if (entry.faidao.scores.total >= entry.filip.scores.total * req.value) {
+            players.push('faidao');
+        }
+        if (entry.filip.scores.total >= entry.faidao.scores.total * req.value) {
+            players.push('filip');
+        }
         return players;
     }
 
     checkBalancedTimes(req, entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
         const difficulties = ['easy', 'medium', 'hard'];
 
         return players.filter(player => {
@@ -4563,14 +4506,12 @@ class AchievementsManager {
     }
 
     checkWinWithDnf(req, entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
         const difficulties = ['easy', 'medium', 'hard'];
 
         return players.filter(player => {
             const hasDnf = difficulties.some(diff => entry[player].dnf[diff]);
-            // For personal milestones, check if completed all puzzles
-            const completedAll = ['easy', 'medium', 'hard'].every(d => entry[player].times[d] !== null);
+            const isWinner = entry[player].scores.total > entry[player === 'faidao' ? 'filip' : 'faidao'].scores.total;
             return hasDnf && isWinner;
         });
     }
@@ -4598,8 +4539,7 @@ class AchievementsManager {
             }
 
             if (isConsecutive) {
-                // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+                const players = ['faidao', 'filip'];
                 const qualifyingPlayers = [];
 
                 players.forEach(player => {
@@ -4639,8 +4579,7 @@ class AchievementsManager {
             }
 
             if (isConsecutive) {
-                // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+                const players = ['faidao', 'filip'];
                 const qualifyingPlayers = [];
 
                 players.forEach(player => {
@@ -4658,8 +4597,7 @@ class AchievementsManager {
     }
 
     checkTriplePerfectDay(entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
         const difficulties = ['easy', 'medium', 'hard'];
 
         return players.filter(player => {
@@ -4676,8 +4614,7 @@ class AchievementsManager {
 
         const sortedEntries = [...allEntries].sort((a, b) => new Date(a.date) - new Date(b.date));
         const difficulties = ['easy', 'medium', 'hard'];
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
         const qualifyingPlayers = [];
 
         players.forEach(player => {
@@ -4708,16 +4645,14 @@ class AchievementsManager {
     }
 
     checkWinWithErrors(minErrors, entry) {
-        // Check all players in entry dynamically
-        const players = Object.keys(entry).filter(key => typeof entry[key] === 'object' && entry[key].times);
+        const players = ['faidao', 'filip'];
         const difficulties = ['easy', 'medium', 'hard'];
 
         return players.filter(player => {
             const totalErrors = difficulties.reduce((sum, diff) => {
                 return sum + (entry[player].errors[diff] || 0);
             }, 0);
-            // For personal milestones, check if completed all puzzles
-            const completedAll = ['easy', 'medium', 'hard'].every(d => entry[player].times[d] !== null);
+            const isWinner = entry[player].scores.total > entry[player === 'faidao' ? 'filip' : 'faidao'].scores.total;
             return totalErrors >= minErrors && isWinner;
         });
     }
@@ -5221,7 +5156,8 @@ class AchievementsManager {
 
         // Count achievements per player
         const playerCounts = {
-            // Dynamic player counts
+            faidao: 0,
+            filip: 0
         };
 
         // Count unique achievements per player (not individual unlocks)
@@ -5237,14 +5173,13 @@ class AchievementsManager {
         });
 
         // Update DOM elements
-        // Update achievement counts for all players dynamically
+        const faidaoCountEl = document.getElementById('faidaoAchievementCount');
+        const filipCountEl = document.getElementById('filipAchievementCount');
         const totalUnlockedEl = document.getElementById('totalAchievementsUnlocked');
         const totalAchievementsEl = document.getElementById('totalAchievements');
 
-        Object.keys(playerCounts).forEach(player => {
-            const countEl = document.getElementById(player + 'AchievementCount');
-            if (countEl) countEl.textContent = playerCounts[player];
-        });
+        if (faidaoCountEl) faidaoCountEl.textContent = playerCounts.faidao;
+        if (filipCountEl) filipCountEl.textContent = playerCounts.filip;
         if (totalUnlockedEl) {
             // Count unique achievements unlocked (not per player)
             const uniqueAchievementsUnlocked = new Set();
@@ -5297,9 +5232,7 @@ class AchievementsManager {
     async checkVariantCount(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const variantGames = games.filter(game => game.variant === req.variant);
 
@@ -5314,9 +5247,7 @@ class AchievementsManager {
     async checkVariantPerfect(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const hasPerfect = games.some(game =>
                 game.variant === req.variant &&
@@ -5335,9 +5266,7 @@ class AchievementsManager {
     async checkVariantPerfectStreak(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const variantGames = games.filter(game => game.variant === req.variant);
 
@@ -5367,9 +5296,7 @@ class AchievementsManager {
         const requiredVariants = ['classic', 'x-sudoku', 'mini', 'anti-knight', 'killer-sudoku',
                                    'hyper-sudoku', 'consecutive-sudoku', 'thermo-sudoku', 'jigsaw-sudoku'];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const triedVariants = new Set(games.map(game => game.variant));
 
@@ -5385,9 +5312,7 @@ class AchievementsManager {
     async checkBPTierReached(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const bpData = await this.fetchBattlePassData(player);
             if (bpData && bpData.currentTier >= req.value) {
                 players.push(player);
@@ -5400,9 +5325,7 @@ class AchievementsManager {
     async checkBPTotalXP(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const bpData = await this.fetchBattlePassData(player);
             if (bpData && bpData.totalXP >= req.value) {
                 players.push(player);
@@ -5415,9 +5338,7 @@ class AchievementsManager {
     async checkBPAllFreeClaimed(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const bpData = await this.fetchBattlePassData(player);
             if (bpData && bpData.allFreeClaimedThisSeason) {
                 players.push(player);
@@ -5430,9 +5351,7 @@ class AchievementsManager {
     async checkBPAllPremiumClaimed(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const bpData = await this.fetchBattlePassData(player);
             if (bpData && bpData.allPremiumClaimedThisSeason) {
                 players.push(player);
@@ -5445,9 +5364,7 @@ class AchievementsManager {
     async checkBPDailyStreak(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const bpData = await this.fetchBattlePassData(player);
             if (bpData && bpData.dailyXPStreak >= req.value) {
                 players.push(player);
@@ -5460,9 +5377,7 @@ class AchievementsManager {
     async checkBPWeeklyXP(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const bpData = await this.fetchBattlePassData(player);
             if (bpData && bpData.weeklyXP >= req.value) {
                 players.push(player);
@@ -5475,9 +5390,7 @@ class AchievementsManager {
     async checkBPFastCompletion(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const bpData = await this.fetchBattlePassData(player);
             if (bpData && bpData.tier100ReachedInDays && bpData.tier100ReachedInDays <= req.value) {
                 players.push(player);
@@ -5490,9 +5403,7 @@ class AchievementsManager {
     async checkBPSeasonComplete(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const bpData = await this.fetchBattlePassData(player);
             if (bpData &&
                 bpData.seasonNumber === req.season &&
@@ -5531,9 +5442,7 @@ class AchievementsManager {
     async checkFriendsCount(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5554,9 +5463,7 @@ class AchievementsManager {
     async checkLeagueJoined(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5575,9 +5482,7 @@ class AchievementsManager {
     async checkLeagueTier(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5596,9 +5501,7 @@ class AchievementsManager {
     async checkLeaderboardRank(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const leaderboardResponse = await fetch(`/api/stats?type=leaderboards&period=${req.period}&limit=100`);
             if (!leaderboardResponse.ok) continue;
 
@@ -5617,9 +5520,7 @@ class AchievementsManager {
     async checkPerfectGamesCount(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const perfectGames = games.filter(game =>
                 game.errors === 0 &&
@@ -5640,9 +5541,7 @@ class AchievementsManager {
     async checkSpeedRecord(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const fastGames = games.filter(game =>
                 game.difficulty === req.difficulty &&
@@ -5660,9 +5559,7 @@ class AchievementsManager {
     async checkNoHintsCount(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const noHintGames = games.filter(game =>
                 (game.hints === 0 || !game.hints) &&
@@ -5682,9 +5579,7 @@ class AchievementsManager {
     async checkStreakCount(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const streaksResponse = await fetch(`/api/stats?type=streaks`);
             if (!streaksResponse.ok) continue;
 
@@ -5703,9 +5598,7 @@ class AchievementsManager {
     async checkTotalPuzzles(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             if (games.length >= req.value) {
                 players.push(player);
@@ -5718,9 +5611,7 @@ class AchievementsManager {
     async checkTotalHours(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const games = await this.fetchPlayerGames(player);
             const totalSeconds = games.reduce((sum, game) => sum + (game.time || 0), 0);
             const totalHours = totalSeconds / 3600;
@@ -5736,9 +5627,7 @@ class AchievementsManager {
     async checkAchievementsUnlocked(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const achievements = await sudokuApp.loadAchievements(player);
             if (achievements && achievements.length >= req.value) {
                 players.push(player);
@@ -5753,9 +5642,7 @@ class AchievementsManager {
     async checkSeasonRank(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5777,9 +5664,7 @@ class AchievementsManager {
     async checkSeasonTopPercent(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5805,9 +5690,7 @@ class AchievementsManager {
     async checkSeasonPerfect(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5835,9 +5718,7 @@ class AchievementsManager {
     async checkSeasonPoints(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5859,9 +5740,7 @@ class AchievementsManager {
     async checkSeasonMargin(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5889,9 +5768,7 @@ class AchievementsManager {
     async checkConsecutiveTopFinishes(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5930,9 +5807,7 @@ class AchievementsManager {
     async checkPromotionsCount(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5951,9 +5826,7 @@ class AchievementsManager {
     async checkConsecutivePromotions(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -5991,9 +5864,7 @@ class AchievementsManager {
     async checkClimbBronzeToLegend(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6028,9 +5899,7 @@ class AchievementsManager {
     async checkRapidPromotions(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6074,9 +5943,7 @@ class AchievementsManager {
     async checkDemotionsCount(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6095,9 +5962,7 @@ class AchievementsManager {
     async checkBounceBack(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6127,9 +5992,7 @@ class AchievementsManager {
     async checkDemotionEscapes(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6155,9 +6018,7 @@ class AchievementsManager {
     async checkPhoenixPattern(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6217,9 +6078,7 @@ class AchievementsManager {
     async checkSeasonsCompleted(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6238,9 +6097,7 @@ class AchievementsManager {
     async checkSameTierStreak(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6283,9 +6140,7 @@ class AchievementsManager {
     async checkSafeZoneFinishes(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6307,9 +6162,7 @@ class AchievementsManager {
     async checkNoDemotionsStreak(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6352,9 +6205,7 @@ class AchievementsManager {
     async checkConsecutiveSeasons(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6402,9 +6253,7 @@ class AchievementsManager {
     async checkLifetimeLeaguePoints(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6423,9 +6272,7 @@ class AchievementsManager {
     async checkWinInTier(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6450,9 +6297,7 @@ class AchievementsManager {
         const players = [];
         const allTiers = ['bronze', 'silver', 'gold', 'platinum', 'diamond', 'legend'];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6480,9 +6325,7 @@ class AchievementsManager {
     async checkWinsInDifferentTiers(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6509,9 +6352,7 @@ class AchievementsManager {
     async checkTotalSeasonWins(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
@@ -6533,9 +6374,7 @@ class AchievementsManager {
     async checkLegendWins(req) {
         const players = [];
 
-        // Check all players dynamically
-        const allPlayers = await this.getAllPlayers();
-        for (const player of allPlayers) {
+        for (const player of ['faidao', 'filip']) {
             const userId = await this.getUserId(player);
             if (!userId) continue;
 
