@@ -2123,57 +2123,82 @@ class SudokuChampionship {
             if (response.ok) {
                 const progressData = await response.json();
 
-                // Calculate stats
-                const completedLessons = progressData.filter(p => p.status === 'completed').length;
+                // Validate response data
+                if (!Array.isArray(progressData)) {
+                    console.warn('Invalid lesson progress data: expected array');
+                    return;
+                }
+
+                // Calculate stats with proper null/undefined checks
+                const completedLessons = progressData.filter(p =>
+                    p && p.status === 'completed'
+                ).length;
+
                 const totalXP = progressData
-                    .filter(p => p.status === 'completed')
+                    .filter(p => p && p.status === 'completed' && p.lesson_id)
                     .reduce((sum, lesson) => {
-                        // Parse lesson number from ID (e.g., "lesson-01-sudoku-basics" -> 1)
-                        const lessonNum = parseInt(lesson.lesson_id.match(/lesson-(\d+)/)[1]);
+                        // Parse lesson number from ID with validation
+                        const match = lesson.lesson_id.match(/lesson-(\d+)/);
+                        if (!match || !match[1]) {
+                            console.warn(`Invalid lesson ID format: ${lesson.lesson_id}`);
+                            return sum;
+                        }
+
+                        const lessonNum = parseInt(match[1], 10);
+
+                        // Validate lesson number is in expected range (1-20)
+                        if (isNaN(lessonNum) || lessonNum < 1 || lessonNum > 20) {
+                            console.warn(`Lesson number out of range: ${lessonNum}`);
+                            return sum;
+                        }
+
                         // XP values based on lesson number (from lesson catalog)
                         const xpMap = {
                             1: 25, 2: 50, 3: 50, 4: 50, 5: 75, 6: 75,  // Beginner
                             7: 100, 8: 100, 9: 100, 10: 150, 11: 150, 12: 150, 13: 150, 14: 200,  // Intermediate
                             15: 150, 16: 150, 17: 150, 18: 150, 19: 150, 20: 200  // Variants
                         };
+
                         return sum + (xpMap[lessonNum] || 0);
                     }, 0);
 
-                // Count progress per course
+                // Count progress per course with validation
                 const beginnerComplete = progressData.filter(p =>
-                    p.status === 'completed' && p.lesson_id.match(/lesson-0[1-6]/)
-                ).length;
-                const intermediateComplete = progressData.filter(p =>
-                    p.status === 'completed' && p.lesson_id.match(/lesson-(0[7-9]|1[0-4])/)
-                ).length;
-                const variantsComplete = progressData.filter(p =>
-                    p.status === 'completed' && p.lesson_id.match(/lesson-(1[5-9]|20)/)
+                    p && p.status === 'completed' && p.lesson_id && p.lesson_id.match(/^lesson-0[1-6]/)
                 ).length;
 
-                // Update DOM elements
+                const intermediateComplete = progressData.filter(p =>
+                    p && p.status === 'completed' && p.lesson_id && p.lesson_id.match(/^lesson-(0[7-9]|1[0-4])/)
+                ).length;
+
+                const variantsComplete = progressData.filter(p =>
+                    p && p.status === 'completed' && p.lesson_id && p.lesson_id.match(/^lesson-(1[5-9]|20)/)
+                ).length;
+
+                // Update DOM elements safely
                 const completedDisplay = document.getElementById('completedLessonsDisplay');
                 if (completedDisplay) {
-                    completedDisplay.textContent = completedLessons;
+                    completedDisplay.textContent = Math.max(0, completedLessons);
                 }
 
                 const xpDisplay = document.getElementById('lessonXPDisplay');
                 if (xpDisplay) {
-                    xpDisplay.textContent = totalXP.toLocaleString();
+                    xpDisplay.textContent = Math.max(0, totalXP).toLocaleString();
                 }
 
                 const beginnerDisplay = document.getElementById('beginnerProgressDisplay');
                 if (beginnerDisplay) {
-                    beginnerDisplay.textContent = `${beginnerComplete}/6`;
+                    beginnerDisplay.textContent = `${Math.max(0, beginnerComplete)}/6`;
                 }
 
                 const intermediateDisplay = document.getElementById('intermediateProgressDisplay');
                 if (intermediateDisplay) {
-                    intermediateDisplay.textContent = `${intermediateComplete}/8`;
+                    intermediateDisplay.textContent = `${Math.max(0, intermediateComplete)}/8`;
                 }
 
                 const variantsDisplay = document.getElementById('variantsProgressDisplay');
                 if (variantsDisplay) {
-                    variantsDisplay.textContent = `${variantsComplete}/6`;
+                    variantsDisplay.textContent = `${Math.max(0, variantsComplete)}/6`;
                 }
             }
         } catch (error) {
