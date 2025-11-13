@@ -111,6 +111,18 @@ class LessonEngine {
             // Render the lesson
             this.renderLesson();
 
+            // Track lesson start (PHASE 2: PostHog Analytics)
+            if (window.posthog) {
+                window.posthog.capture('lesson_started', {
+                    lesson_id: lesson.id,
+                    lesson_number: lesson.number,
+                    lesson_title: lesson.title,
+                    course: lesson.course,
+                    premium: lesson.premium,
+                    duration_estimate: lesson.duration
+                });
+            }
+
             console.log(`Lesson loaded: ${lesson.title}`);
 
         } catch (error) {
@@ -630,6 +642,20 @@ class LessonEngine {
             if (response.ok) {
                 const result = await response.json();
                 console.log('Lesson completed:', result);
+
+                // Track lesson completion (PHASE 2: PostHog Analytics)
+                if (window.posthog) {
+                    const timeSpent = Math.floor((Date.now() - this.startTime) / 1000);
+                    window.posthog.capture('lesson_completed', {
+                        lesson_id: this.currentLesson.id,
+                        lesson_number: this.currentLesson.number,
+                        lesson_title: this.currentLesson.title,
+                        course: this.currentLesson.course,
+                        xp_earned: result.xp_earned || this.currentLesson.xp_reward,
+                        time_spent_seconds: timeSpent,
+                        achievement_unlocked: !!result.achievement_unlocked
+                    });
+                }
 
                 // Show achievement notification if earned
                 if (result.achievement_unlocked) {

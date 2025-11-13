@@ -7,6 +7,59 @@ A sophisticated full-stack web application that transforms daily Sudoku solving 
 
 ## 🆕 Recent Updates (November 2025)
 
+### **Phase 2: Interactive Tutorial System - Complete Learning Platform** (November 13, 2025)
+- 🎓 **20 Interactive Lessons**: Comprehensive tutorial system from basics to advanced techniques
+  - **Beginner Course (6 lessons)**: Sudoku Basics, Naked Singles, Hidden Singles, Scanning Techniques, Naked Pairs, Hidden Pairs
+  - **Intermediate Course (8 lessons)**: Naked Triples, Hidden Triples, Box/Line Reduction, X-Wing, Swordfish, XY-Wing, XYZ-Wing, Simple Coloring
+  - **Variant Course (6 lessons)**: X-Sudoku, Killer Sudoku, Anti-Knight, Thermo Sudoku, Jigsaw Sudoku, Advanced Combinations
+- 📚 **5-Step Lesson Format**: Introduction → Explanation → Practice → Quiz → Summary
+  - Interactive practice puzzles with hints and instant feedback
+  - Quizzes with passing scores required (2/3 correct)
+  - Time tracking and progress auto-save
+  - Success criteria validation
+- ✅ **3,725 Total XP Available**: Comprehensive reward system
+  - Individual lesson XP: 25-200 XP per lesson
+  - Course completion bonuses: +100 XP (Beginner), +200 XP (Intermediate), +300 XP (Variants)
+  - Master achievement: +500 XP ("Sudoku Sensei" - legendary rarity)
+- 🏆 **25 Lesson Achievements**: Auto-awarded via database triggers
+  - 20 individual lesson achievements
+  - 3 course completion achievements (Beginner Master, Intermediate Expert, Variant Master)
+  - 1 master achievement (all 20 lessons complete)
+  - PostgreSQL triggers automatically award achievements on lesson completion
+- 🗄️ **5 New Database Tables**: Complete progress tracking infrastructure
+  - `lesson_progress`: User progress through lessons (status, current step, quiz scores, time spent)
+  - `lesson_practice_attempts`: Individual practice puzzle attempts with success tracking
+  - `lesson_quiz_attempts`: Quiz performance history
+  - `lesson_achievements`: Achievement definitions (25 pre-populated)
+  - `user_lesson_achievements`: User achievement records
+- 🎨 **Premium Glassmorphism UI**: Consistent with dashboard design
+  - Lesson list page (`lessons.html`): Course tabs, progress summary, lesson cards
+  - Lesson viewer page (`lesson-viewer.html`): Step navigation, progress bar, content renderer
+  - LessonEngine class: 800+ lines, handles all lesson logic
+  - LessonListManager class: Progress loading, filtering, premium checks
+- 💎 **Premium Content Strategy**: 9 FREE + 11 PREMIUM lessons
+  - FREE: Lessons 1-9 (all beginner + 3 intermediate)
+  - PREMIUM: Lessons 10-20 (5 intermediate + 6 variants)
+  - Premium paywall integrated with existing subscription system
+- 📊 **502 Minutes of Content**: ~8.4 hours of educational material
+  - 60+ practice puzzles with progressive difficulty
+  - 60 quiz questions with detailed explanations
+  - All content stored as JSON files for easy updates
+- 🚀 **API Integration**: Consolidated into `/api/stats.js` (respects 12-endpoint limit)
+  - `GET /api/stats?type=lessons` → List all lessons
+  - `GET /api/stats?type=lessons&id=X` → Get lesson content
+  - `GET /api/stats?type=lesson-progress` → Get user progress
+  - `POST /api/stats` (type=lesson-progress) → Update progress
+  - `POST /api/stats` (type=lesson-complete) → Mark complete, award XP
+- 📱 **Dashboard Integration**: Lesson progress widget on main dashboard
+  - Displays: Completed lessons, XP earned, course progress (Beginner 0/6, Intermediate 0/8, Variants 0/6)
+  - Quick navigation to lessons page
+  - Real-time progress updates
+- 🔗 **Navigation Integration**: Added "Lessons" link to main navigation
+  - Icon: 🎓 (graduation cap)
+  - Positioned between "Achievements" and "Battle Pass"
+  - Accessible from all pages
+
 ### **Phase 6 Month 23: Achievement System 100% Complete - Intra-Season Zone Tracking** (November 12, 2025)
 - 🎯 **Achievement System 100% Complete**: 26/26 handlers fully implemented ✅
 - 🗄️ **Zone Tracking Infrastructure Added**: Daily position snapshots for demotion escape detection
