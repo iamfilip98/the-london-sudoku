@@ -2,10 +2,14 @@
  * Achievements API - SECURITY FIXES (November 2025)
  * PHASE 3 MONTH 13 (November 2025):
  * - Battle pass XP integration for achievement unlocks
+ * PERFORMANCE (November 2025):
+ * - Redis caching for achievements list (30min TTL)
+ * - Auto-invalidation on achievement unlock/delete
  */
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
 const battlePass = require('../lib/battle-pass-api');
+const { getCached, invalidateCachePattern, CACHE_DURATIONS, CacheKeys } = require('../lib/cache');
 
 // Helper function to execute SQL queries
 async function sql(strings, ...values) {
@@ -36,18 +40,25 @@ module.exports = async function handler(req, res) {
   try {
     switch (req.method) {
       case 'GET':
-        const result = await sql`
-          SELECT achievement_id, player, unlocked_at, data
-          FROM achievements
-          ORDER BY unlocked_at DESC
-        `;
+        // Use caching for achievements list (30min TTL)
+        const achievements = await getCached(
+          'achievements:all',
+          async () => {
+            const result = await sql`
+              SELECT achievement_id, player, unlocked_at, data
+              FROM achievements
+              ORDER BY unlocked_at DESC
+            `;
 
-        const achievements = result.rows.map(row => ({
-          id: row.achievement_id,
-          player: row.player,
-          unlockedAt: row.unlocked_at.toISOString(),
-          ...row.data
-        }));
+            return result.rows.map(row => ({
+              id: row.achievement_id,
+              player: row.player,
+              unlockedAt: row.unlocked_at.toISOString(),
+              ...row.data
+            }));
+          },
+          CACHE_DURATIONS.ACHIEVEMENTS // 30 minutes
+        );
 
         return res.status(200).json(achievements);
 
@@ -63,6 +74,9 @@ module.exports = async function handler(req, res) {
           VALUES (${id}, ${player}, ${unlockedAt}, ${JSON.stringify(data)})
           ON CONFLICT (achievement_id, player, unlocked_at) DO NOTHING
         `;
+
+        // Invalidate achievements cache after new achievement
+        await invalidateCachePattern('achievements:*');
 
         // PHASE 3 MONTH 13: Award Battle Pass XP for achievement unlock
         if (rarity) {
@@ -98,6 +112,9 @@ module.exports = async function handler(req, res) {
 
       case 'DELETE':
         await sql`DELETE FROM achievements`;
+
+        // Invalidate achievements cache after delete
+        await invalidateCachePattern('achievements:*');
 
         return res.status(200).json({
           success: true,
