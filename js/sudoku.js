@@ -3255,7 +3255,6 @@ class SudokuEngine {
             this.playSound('complete');
             this.incrementStreak();
 
-            const score = this.calculateFinalScore();
             const isPersonalBest = this.checkPersonalBest();
 
             // Check for theme-specific achievements
@@ -4268,12 +4267,8 @@ class SudokuEngine {
     }
 
     getOpponentDataForDate(date, currentPlayer) {
-        const opponent = currentPlayer === 'faidao' ? 'filip' : 'faidao';
-        const completed = [];
-
-        // NOTE: We can't see opponent data from sessionStorage (different sessions)
-        // This function should now load from the database instead
-        // Return null to force database loading
+        // No opponent mode - single player only
+        // This function is deprecated and returns null
         return null;
     }
 
@@ -4285,18 +4280,28 @@ class SudokuEngine {
     async saveToExistingSystem(date, playerData, opponentData) {
         try {
             const currentPlayer = sessionStorage.getItem('currentPlayer');
-            const opponent = currentPlayer === 'faidao' ? 'filip' : 'faidao';
 
-            // Create entry in existing system format - only include current player data
+            // Create entry with current player data (no opponent data)
             const entryData = {
-                [currentPlayer]: playerData
+                times: {},
+                scores: {},
+                errors: {},
+                hints: {},
+                dnf: {}
             };
 
-            // Only include opponent data if it exists and has meaningful scores
-            if (opponentData && opponentData.scores && opponentData.scores.total > 0) {
-                entryData[opponent] = opponentData;
+            // Populate from playerData
+            if (playerData) {
+                ['easy', 'medium', 'hard'].forEach(diff => {
+                    if (playerData[diff]) {
+                        entryData.times[diff] = playerData[diff].time;
+                        entryData.scores[diff] = playerData[diff].score;
+                        entryData.errors[diff] = playerData[diff].errors;
+                        entryData.hints[diff] = playerData[diff].hints;
+                        entryData.dnf[diff] = playerData[diff].dnf || false;
+                    }
+                });
             }
-            // Don't create empty opponent data - let the API merge handle this
 
             // Save to database using existing API
             const response = await fetch('/api/entries', {
@@ -4306,8 +4311,7 @@ class SudokuEngine {
                 },
                 body: JSON.stringify({
                     date: date,
-                    [currentPlayer]: entryData[currentPlayer],
-                    [opponent]: entryData[opponent]
+                    ...entryData
                 })
             });
 
@@ -4319,19 +4323,19 @@ class SudokuEngine {
                     await window.sudokuApp.loadData();
                     await window.sudokuApp.updateDashboard();
 
-                    // Check for achievements only when all 6 games are completed
+                    // Check for achievements when all 3 puzzles are completed
                     const entries = window.sudokuApp.entries;
                     const latestEntry = entries.find(entry => entry.date === date);
                     if (latestEntry && window.sudokuApp.isEntryComplete(latestEntry)) {
                         await window.sudokuApp.checkAchievements(latestEntry);
-                        debugLog('✅ Achievements checked for completed daily battle (all 6 games)');
+                        debugLog('✅ Achievements checked for completed daily puzzles (all 3)');
                     } else if (latestEntry) {
-                        debugLog('⏳ Daily battle incomplete, achievements check skipped');
+                        debugLog('⏳ Daily puzzles incomplete, achievements check skipped');
                     }
 
-                    // Ensure Today's Battle results are updated immediately
-                    window.sudokuApp.updateTodaysBattleResults();
-                    debugLog('✅ Today\'s Battle results updated');
+                    // Ensure Today's Progress is updated immediately
+                    window.sudokuApp.updateTodayProgress();
+                    debugLog('✅ Today\'s Progress updated');
                 }
             }
 
@@ -4393,28 +4397,9 @@ class SudokuEngine {
     }
 
     notifyOpponentProgress(gameData) {
-        // Store progress notification for opponent
-        const currentPlayer = sessionStorage.getItem('currentPlayer');
-        const opponent = currentPlayer === 'faidao' ? 'filip' : 'faidao';
-
-        const notification = {
-            from: currentPlayer,
-            difficulty: gameData.difficulty,
-            score: gameData.score,
-            time: gameData.time,
-            errors: gameData.errors,
-            hints: gameData.hints,
-            timestamp: Date.now()
-        };
-
-        const key = `opponent_progress_${opponent}_${this.getTodayDateString()}`;
-        const existing = localStorage.getItem(key);
-        const notifications = existing ? JSON.parse(existing) : [];
-
-        notifications.push(notification);
-        localStorage.setItem(key, JSON.stringify(notifications));
-
-        debugLog('Notified opponent of progress:', notification);
+        // No opponent mode - this function is deprecated
+        // Kept for backward compatibility but does nothing
+        return;
     }
 
     getTodayDateString() {

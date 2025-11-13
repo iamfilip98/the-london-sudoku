@@ -433,56 +433,21 @@ class SudokuChampionship {
         return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
     }
 
+    // TRANSFORMED: Single-user entry completion check
     isEntryComplete(entry) {
-        return ['faidao', 'filip'].every(player => {
-            if (!entry[player] || !entry[player].times) return false;
+        // Check if entry has required data for current user
+        if (!entry || !entry.times) return false;
 
-            return ['easy', 'medium', 'hard'].every(difficulty => {
-                const time = entry[player].times[difficulty];
-                const dnf = entry[player].dnf?.[difficulty] || false;
+        return ['easy', 'medium', 'hard'].every(difficulty => {
+            const time = entry.times?.[difficulty];
+            const dnf = entry.dnf?.[difficulty] || false;
 
-                // Complete if either DNF'd or has a time
-                return dnf || time !== null;
-            });
+            // Complete if either DNF'd or has a time
+            return dnf || time !== null;
         });
     }
 
-
-    updateBattleResults(scores) {
-        const faidaoTotal = scores.faidao.total;
-        const filipTotal = scores.filip.total;
-        const winnerElement = document.getElementById('winnerAnnouncement');
-        const faidaoBar = document.getElementById('faidaoScoreBar');
-        const filipBar = document.getElementById('filipScoreBar');
-        const faidaoText = document.getElementById('faidaoScoreText');
-        const filipText = document.getElementById('filipScoreText');
-
-        // Determine winner
-        let winner = 'tie';
-        let winnerText = "It's a tie!";
-
-        if (faidaoTotal > filipTotal && faidaoTotal > 0) {
-            winner = 'faidao';
-            winnerText = '🏆 Faidao Wins!';
-        } else if (filipTotal > faidaoTotal && filipTotal > 0) {
-            winner = 'filip';
-            winnerText = '🏆 Filip Wins!';
-        } else {
-            winnerText = "It's a tie!";
-        }
-
-        winnerElement.querySelector('.winner-text').textContent = winnerText;
-
-        // Update score bars
-        const maxScore = Math.max(faidaoTotal, filipTotal, 1);
-        const faidaoWidth = (faidaoTotal / maxScore) * 100;
-        const filipWidth = (filipTotal / maxScore) * 100;
-
-        faidaoBar.style.width = `${faidaoWidth}%`;
-        filipBar.style.width = `${filipWidth}%`;
-        faidaoText.textContent = faidaoTotal.toFixed(0);
-        filipText.textContent = filipTotal.toFixed(0);
-    }
+    // REMOVED: updateBattleResults() - Dead code, battle UI elements no longer exist in HTML
 
     async loadData() {
         try {
@@ -576,7 +541,8 @@ class SudokuChampionship {
 
             this.entries = entries;
             this.achievements = bulkData.achievements || [];
-            this.streaks = bulkData.streaks || { faidao: { current: 0, best: 0 }, filip: { current: 0, best: 0 } };
+            // TRANSFORMED: User-centric streaks (completion streaks, not win/loss)
+            this.streaks = bulkData.streaks || { current: 0, best: 0 };
             this.challenges = bulkData.challenges || [];
 
             // Calculate records from entries
@@ -590,135 +556,117 @@ class SudokuChampionship {
         }
     }
 
+    // TRANSFORMED: User-centric personal records
     calculateRecords() {
-        const records = { faidao: {}, filip: {} };
+        const records = {};
 
         this.entries.forEach(entry => {
-            ['faidao', 'filip'].forEach(player => {
-                if (!records[player]) records[player] = {};
+            // Track only current user's personal bests
+            ['easy', 'medium', 'hard'].forEach(difficulty => {
+                // Add null/undefined checks to prevent errors
+                if (!entry || !entry.times || !entry.errors || !entry.dnf) {
+                    return; // Skip this entry if data is incomplete
+                }
 
-                ['easy', 'medium', 'hard'].forEach(difficulty => {
-                    // Add null/undefined checks to prevent errors
-                    if (!entry[player] || !entry[player].times || !entry[player].errors || !entry[player].dnf) {
-                        return; // Skip this entry if data is incomplete
+                const time = entry.times?.[difficulty];
+                const errors = entry.errors?.[difficulty];
+                const dnf = entry.dnf?.[difficulty];
+
+                if (!dnf && time !== null && time !== undefined) {
+                    // Update fastest time record
+                    if (!records[`${difficulty}_fastest`] ||
+                        time < records[`${difficulty}_fastest`]) {
+                        records[`${difficulty}_fastest`] = time;
                     }
 
-                    const time = entry[player].times[difficulty];
-                    const errors = entry[player].errors[difficulty];
-                    const dnf = entry[player].dnf[difficulty];
-
-                    if (!dnf && time !== null) {
-                        // Update fastest time record
-                        if (!records[player][`${difficulty}_fastest`] ||
-                            time < records[player][`${difficulty}_fastest`]) {
-                            records[player][`${difficulty}_fastest`] = time;
-                        }
-
-                        // Update perfect game record (0 errors)
-                        if (errors === 0) {
-                            if (!records[player][`${difficulty}_perfect`] ||
-                                time < records[player][`${difficulty}_perfect`]) {
-                                records[player][`${difficulty}_perfect`] = time;
-                            }
+                    // Update perfect game record (0 errors)
+                    if (errors === 0) {
+                        if (!records[`${difficulty}_perfect`] ||
+                            time < records[`${difficulty}_perfect`]) {
+                            records[`${difficulty}_perfect`] = time;
                         }
                     }
-                });
+                }
             });
         });
+
+        // Add aggregate statistics
+        const completedEntries = this.entries.filter(e => this.isEntryComplete(e));
+        records.totalCompleted = completedEntries.length;
+        records.perfectGames = completedEntries.filter(e =>
+            (e.errors?.easy || 0) + (e.errors?.medium || 0) + (e.errors?.hard || 0) === 0
+        ).length;
 
         return records;
     }
 
+    // TRANSFORMED: Completion streaks (not win/loss streaks)
     async updateStreaks() {
         if (this.entries.length === 0) {
             // If no entries exist, streaks should be 0
             this.streaks = {
-                faidao: { current: 0, best: this.streaks.faidao?.best || 0 },
-                filip: { current: 0, best: this.streaks.filip?.best || 0 }
+                current: 0,
+                best: this.streaks?.best || 0
             };
             await this.saveStreaks();
             return;
         }
 
         // Sort entries by date (oldest first) for streak calculation
-        // Only consider entries where all 6 times are submitted
-        const completeEntries = this.entries.filter(entry => this.isEntryComplete(entry));
+        const sortedEntries = [...this.entries].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-        const sortedEntries = [...completeEntries].sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        let currentFaidaoStreak = 0;
-        let currentFilipStreak = 0;
-        let faidaoBest = this.streaks.faidao?.best || 0;
-        let filipBest = this.streaks.filip?.best || 0;
+        let currentStreak = 0;
+        let bestStreak = this.streaks?.best || 0;
 
         sortedEntries.forEach((entry) => {
-            // Safety check for scores
-            if (!entry.faidao?.scores || !entry.filip?.scores) {
-                return;
-            }
+            // Count completion streak (all 3 puzzles completed without DNF)
+            const allCompleted = ['easy', 'medium', 'hard'].every(difficulty =>
+                entry.times?.[difficulty] !== null &&
+                entry.times?.[difficulty] !== undefined &&
+                !entry.dnf?.[difficulty]
+            );
 
-            const faidaoTotal = entry.faidao.scores.total || 0;
-            const filipTotal = entry.filip.scores.total || 0;
-
-            const faidaoWon = faidaoTotal > filipTotal;
-            const filipWon = filipTotal > faidaoTotal;
-
-            if (faidaoWon) {
-                currentFaidaoStreak++;
-                currentFilipStreak = 0;
-                faidaoBest = Math.max(faidaoBest, currentFaidaoStreak);
-            } else if (filipWon) {
-                currentFilipStreak++;
-                currentFaidaoStreak = 0;
-                filipBest = Math.max(filipBest, currentFilipStreak);
+            if (allCompleted) {
+                currentStreak++;
+                bestStreak = Math.max(bestStreak, currentStreak);
             } else {
-                // Ties break both streaks
-                currentFaidaoStreak = 0;
-                currentFilipStreak = 0;
+                currentStreak = 0;
             }
         });
 
         // Update streaks with calculated values
-        const newStreaks = {
-            faidao: {
-                current: currentFaidaoStreak,
-                best: faidaoBest
-            },
-            filip: {
-                current: currentFilipStreak,
-                best: filipBest
-            }
+        this.streaks = {
+            current: currentStreak,
+            best: bestStreak
         };
 
-        this.streaks = newStreaks;
         await this.saveStreaks();
     }
 
+    // TRANSFORMED: User-centric record updates
     updateRecords(entry) {
-        ['faidao', 'filip'].forEach(player => {
-            if (!this.records[player]) this.records[player] = {};
+        if (!this.records) this.records = {};
 
-            ['easy', 'medium', 'hard'].forEach(difficulty => {
-                const time = entry[player].times[difficulty];
-                const errors = entry[player].errors[difficulty];
-                const dnf = entry[player].dnf[difficulty];
+        ['easy', 'medium', 'hard'].forEach(difficulty => {
+            const time = entry.times?.[difficulty];
+            const errors = entry.errors?.[difficulty];
+            const dnf = entry.dnf?.[difficulty];
 
-                if (!dnf && time !== null) {
-                    // Update fastest time record
-                    if (!this.records[player][`${difficulty}_fastest`] ||
-                        time < this.records[player][`${difficulty}_fastest`]) {
-                        this.records[player][`${difficulty}_fastest`] = time;
-                    }
+            if (!dnf && time !== null && time !== undefined) {
+                // Update fastest time record
+                if (!this.records[`${difficulty}_fastest`] ||
+                    time < this.records[`${difficulty}_fastest`]) {
+                    this.records[`${difficulty}_fastest`] = time;
+                }
 
-                    // Update perfect game record (0 errors)
-                    if (errors === 0) {
-                        if (!this.records[player][`${difficulty}_perfect`] ||
-                            time < this.records[player][`${difficulty}_perfect`]) {
-                            this.records[player][`${difficulty}_perfect`] = time;
-                        }
+                // Update perfect game record (0 errors)
+                if (errors === 0) {
+                    if (!this.records[`${difficulty}_perfect`] ||
+                        time < this.records[`${difficulty}_perfect`]) {
+                        this.records[`${difficulty}_perfect`] = time;
                     }
                 }
-            });
+            }
         });
 
         this.saveRecords();
@@ -736,69 +684,59 @@ class SudokuChampionship {
                 this.updateTodayProgress()
             ]);
 
-            // Non-async updates
-            this.updateProgressNotifications();
+            // REMOVED: updateProgressNotifications() call - function no longer exists
         } catch (error) {
             console.error('Dashboard update failed:', error);
             // Continue execution even if dashboard update fails
         }
     }
 
+    // TRANSFORMED: User-centric streak display
     updateStreakDisplay() {
-        document.getElementById('faidaoCurrentStreak').textContent = this.streaks.faidao?.current || 0;
-        document.getElementById('faidaoBestStreak').textContent = this.streaks.faidao?.best || 0;
-        document.getElementById('filipCurrentStreak').textContent = this.streaks.filip?.current || 0;
-        document.getElementById('filipBestStreak').textContent = this.streaks.filip?.best || 0;
-    }
-
-    updateOverallRecord() {
-        let faidaoWins = 0;
-        let filipWins = 0;
-
-        // Only count complete entries for overall record
-        const completeEntries = this.entries.filter(entry => this.isEntryComplete(entry));
-
-        completeEntries.forEach(entry => {
-            // Safety check for scores property
-            if (!entry.faidao?.scores || !entry.filip?.scores) {
-                return;
-            }
-
-            const faidaoTotal = entry.faidao.scores.total || 0;
-            const filipTotal = entry.filip.scores.total || 0;
-
-            if (faidaoTotal > filipTotal) {
-                faidaoWins++;
-            } else if (filipTotal > faidaoTotal) {
-                filipWins++;
-            }
-        });
-
-        document.getElementById('overallRecord').textContent = `${faidaoWins} - ${filipWins}`;
-
-        // Update mobile head-to-head section on dashboard
-        const mobileScoreFaidao = document.getElementById('mobileScoreFaidao');
-        const mobileScoreFilip = document.getElementById('mobileScoreFilip');
-        const mobileOverallRecord = document.getElementById('mobileOverallRecord');
-
-        if (mobileScoreFaidao) mobileScoreFaidao.textContent = faidaoWins;
-        if (mobileScoreFilip) mobileScoreFilip.textContent = filipWins;
-
-        // Determine current streak leader and format display text
-        const faidaoStreak = this.streaks.faidao?.current || 0;
-        const filipStreak = this.streaks.filip?.current || 0;
-        let mobileText = '';
-
-        if (faidaoStreak > 0) {
-            mobileText = `Faidao on a ${faidaoStreak} streak`;
-        } else if (filipStreak > 0) {
-            mobileText = `Filip on a ${filipStreak} streak`;
-        } else {
-            mobileText = `${faidaoWins} - ${filipWins}`;
+        // Update current user's streak displays
+        const currentStreakEl = document.getElementById('currentStreakDisplay');
+        if (currentStreakEl) {
+            currentStreakEl.textContent = this.streaks?.current || 0;
         }
 
-        // Update mobile overall record with animation to prevent jarring changes
+        const bestStreakEl = document.getElementById('bestStreakDisplay');
+        if (bestStreakEl) {
+            bestStreakEl.textContent = this.streaks?.best || 0;
+        }
+    }
+
+    // TRANSFORMED: User-centric overall statistics
+    updateOverallRecord() {
+        // Calculate user's overall statistics
+        const completeEntries = this.entries.filter(entry => this.isEntryComplete(entry));
+        const totalGames = completeEntries.length;
+
+        // Calculate success rate (perfect games / total games)
+        const perfectGames = completeEntries.filter(entry =>
+            (entry.errors?.easy || 0) + (entry.errors?.medium || 0) + (entry.errors?.hard || 0) === 0
+        ).length;
+        const successRate = totalGames > 0 ? Math.round((perfectGames / totalGames) * 100) : 0;
+
+        // Calculate average score
+        const totalScore = completeEntries.reduce((sum, entry) =>
+            sum + (entry.scores?.total || 0), 0
+        );
+        const avgScore = totalGames > 0 ? Math.round(totalScore / totalGames) : 0;
+
+        // Update overall record display
+        const overallRecordEl = document.getElementById('overallRecord');
+        if (overallRecordEl) {
+            overallRecordEl.textContent = `${totalGames} games | ${successRate}% success | ${avgScore} avg`;
+        }
+
+        // Update mobile displays with user stats
+        const mobileOverallRecord = document.getElementById('mobileOverallRecord');
         if (mobileOverallRecord) {
+            const currentStreak = this.streaks?.current || 0;
+            const mobileText = currentStreak > 0
+                ? `${currentStreak} day streak 🔥`
+                : `${totalGames} games completed`;
+
             if (mobileOverallRecord.textContent !== mobileText) {
                 mobileOverallRecord.style.opacity = '0.6';
                 setTimeout(() => {
@@ -808,16 +746,11 @@ class SudokuChampionship {
             }
         }
 
-        // Update mobile head-to-head section on achievements page
-        const achievementsMobileScoreFaidao = document.getElementById('achievementsMobileScoreFaidao');
-        const achievementsMobileScoreFilip = document.getElementById('achievementsMobileScoreFilip');
+        // Update achievements page mobile display
         const achievementsMobileOverallRecord = document.getElementById('achievementsMobileOverallRecord');
-
-        if (achievementsMobileScoreFaidao) achievementsMobileScoreFaidao.textContent = faidaoWins;
-        if (achievementsMobileScoreFilip) achievementsMobileScoreFilip.textContent = filipWins;
-
-        // Update achievements mobile overall record with same animation
         if (achievementsMobileOverallRecord) {
+            const mobileText = `${totalGames} games | ${successRate}% success`;
+
             if (achievementsMobileOverallRecord.textContent !== mobileText) {
                 achievementsMobileOverallRecord.style.opacity = '0.6';
                 setTimeout(() => {
@@ -828,6 +761,7 @@ class SudokuChampionship {
         }
     }
 
+    // TRANSFORMED: User-centric history (recent personal games)
     updateRecentHistory() {
         const historyContainer = document.getElementById('historyCards');
         if (!historyContainer) return;
@@ -835,46 +769,40 @@ class SudokuChampionship {
         const recentEntries = this.entries.slice(0, 5); // Show last 5 entries
 
         if (recentEntries.length === 0) {
-            historyContainer.innerHTML = '<div class="no-history">No battles recorded yet. Start competing!</div>';
+            historyContainer.innerHTML = '<div class="no-history">No games recorded yet. Start playing!</div>';
             return;
         }
 
         historyContainer.innerHTML = recentEntries.map(entry => {
             // Check if entry has valid structure
-            if (!entry.faidao || !entry.filip || !entry.faidao.scores || !entry.filip.scores) {
+            if (!entry || !entry.scores) {
                 return '';
             }
 
             // Check if entry is complete
             const isComplete = this.isEntryComplete(entry);
-
-            const faidaoTotal = entry.faidao.scores.total || 0;
-            const filipTotal = entry.filip.scores.total || 0;
-
-            const winner = isComplete
-                ? (faidaoTotal > filipTotal ? 'Faidao' :
-                   filipTotal > faidaoTotal ? 'Filip' : 'Tie')
-                : 'Incomplete';
+            const totalScore = entry.scores?.total || 0;
+            const totalErrors = (entry.errors?.easy || 0) + (entry.errors?.medium || 0) + (entry.errors?.hard || 0);
+            const isPerfect = totalErrors === 0;
 
             return `
-                <div class="history-card">
+                <div class="history-card ${isComplete ? 'complete' : 'incomplete'}">
                     <div class="history-date">${new Date(entry.date).toLocaleDateString()}</div>
-                    <div class="history-scores">
-                        <div class="history-score">
-                            <div class="player-name">Faidao</div>
-                            <div class="score-value">${faidaoTotal.toFixed(0)}</div>
+                    <div class="history-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Score</div>
+                            <div class="stat-value">${totalScore.toFixed(0)}</div>
                         </div>
-                        <div class="score-vs">VS</div>
-                        <div class="history-score">
-                            <div class="player-name">Filip</div>
-                            <div class="score-value">${filipTotal.toFixed(0)}</div>
+                        <div class="stat-item">
+                            <div class="stat-label">Errors</div>
+                            <div class="stat-value">${totalErrors}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value">${isComplete ? (isPerfect ? 'Perfect ⭐' : 'Complete ✓') : 'Incomplete'}</div>
                         </div>
                     </div>
-                    <div class="history-winner${winner === 'Filip' ? ' filip-winner' : ''}">${winner}</div>
                     <div class="history-actions">
-                        <button class="history-btn" onclick="sudokuApp.editEntry('${entry.date}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
                         <button class="history-btn" onclick="sudokuApp.deleteEntry('${entry.date}')">
                             <i class="fas fa-trash"></i>
                         </button>
@@ -938,6 +866,7 @@ class SudokuChampionship {
         this.updateRecords();
     }
 
+    // TRANSFORMED: User-centric monthly trend (personal performance over time)
     updateMonthlyLeaderboard() {
         const monthlyContainer = document.getElementById('monthlyLeaderboard');
         if (!monthlyContainer) return;
@@ -951,20 +880,42 @@ class SudokuChampionship {
             const entryDate = new Date(entry.date);
             entryDate.setHours(0, 0, 0, 0);
             const isCurrentMonth = entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
-            // Only include complete entries in leaderboard
+            // Only include complete entries
             const isComplete = this.isEntryComplete(entry);
             return isCurrentMonth && isComplete;
         });
 
         if (monthlyEntries.length === 0) {
-            monthlyContainer.innerHTML = '<p class="no-data">No complete battles this month yet!</p>';
+            monthlyContainer.innerHTML = '<p class="no-data">No games completed this month yet!</p>';
             return;
         }
 
-        const monthlyStats = this.calculatePlayerStats(monthlyEntries);
-        monthlyContainer.innerHTML = this.generateLeaderboardHTML(monthlyStats, 'This Month');
+        // Calculate user's monthly statistics
+        const totalScore = monthlyEntries.reduce((sum, e) => sum + (e.scores?.total || 0), 0);
+        const avgScore = Math.round(totalScore / monthlyEntries.length);
+        const perfectGames = monthlyEntries.filter(e =>
+            (e.errors?.easy || 0) + (e.errors?.medium || 0) + (e.errors?.hard || 0) === 0
+        ).length;
+
+        monthlyContainer.innerHTML = `
+            <div class="monthly-stats">
+                <div class="stat-card">
+                    <div class="stat-value">${monthlyEntries.length}</div>
+                    <div class="stat-label">Games Played</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${avgScore}</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${perfectGames}</div>
+                    <div class="stat-label">Perfect Games</div>
+                </div>
+            </div>
+        `;
     }
 
+    // TRANSFORMED: User-centric weekly trend (personal performance this week)
     updateWeeklyLeaderboard() {
         const weeklyContainer = document.getElementById('weeklyLeaderboard');
         if (!weeklyContainer) return;
@@ -974,9 +925,6 @@ class SudokuChampionship {
         const dayOfWeek = now.getDay();
 
         // Calculate Monday of the current calendar week
-        // If today is Sunday (0), go back 6 days to get Monday
-        // If today is Monday (1), use today (go back 0 days)
-        // If today is Tuesday (2), go back 1 day to get Monday, etc.
         const daysFromMonday = (dayOfWeek === 0) ? 6 : dayOfWeek - 1;
         startOfWeek.setDate(now.getDate() - daysFromMonday);
         startOfWeek.setHours(0, 0, 0, 0);
@@ -993,150 +941,103 @@ class SudokuChampionship {
 
             // Check if entry is within the Monday-Sunday week
             const isThisWeek = entryDate >= startOfWeek && entryDate <= endOfWeek;
-            // Only include complete entries in leaderboard
+            // Only include complete entries
             const isComplete = this.isEntryComplete(entry);
             return isThisWeek && isComplete;
         });
 
         if (weeklyEntries.length === 0) {
-            weeklyContainer.innerHTML = '<p class="no-data">No complete battles this week yet!</p>';
+            weeklyContainer.innerHTML = '<p class="no-data">No games completed this week yet!</p>';
             return;
         }
 
-        const weeklyStats = this.calculatePlayerStats(weeklyEntries);
-        weeklyContainer.innerHTML = this.generateLeaderboardHTML(weeklyStats, 'This Week');
+        // Calculate user's weekly statistics
+        const totalScore = weeklyEntries.reduce((sum, e) => sum + (e.scores?.total || 0), 0);
+        const avgScore = Math.round(totalScore / weeklyEntries.length);
+        const perfectGames = weeklyEntries.filter(e =>
+            (e.errors?.easy || 0) + (e.errors?.medium || 0) + (e.errors?.hard || 0) === 0
+        ).length;
+
+        weeklyContainer.innerHTML = `
+            <div class="weekly-stats">
+                <div class="stat-card">
+                    <div class="stat-value">${weeklyEntries.length}</div>
+                    <div class="stat-label">Games Played</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${avgScore}</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${perfectGames}</div>
+                    <div class="stat-label">Perfect Games</div>
+                </div>
+            </div>
+        `;
     }
 
+    // TRANSFORMED: User-centric personal records
     updateRecords() {
         const fastestTimesContainer = document.getElementById('fastestTimes');
         const perfectGamesContainer = document.getElementById('perfectGames');
 
         if (!fastestTimesContainer || !perfectGamesContainer) return;
 
-        // Fastest times by difficulty
+        // User's fastest times by difficulty
         const difficulties = ['easy', 'medium', 'hard'];
         const fastestTimes = {};
 
         difficulties.forEach(difficulty => {
-            const records = [];
-            ['faidao', 'filip'].forEach(player => {
-                const playerTimes = this.entries
-                    .filter(entry => {
-                        // Safety check for valid entry structure
-                        return entry[player] &&
-                               entry[player].dnf &&
-                               entry[player].times &&
-                               !entry[player].dnf[difficulty] &&
-                               entry[player].times[difficulty];
-                    })
-                    .map(entry => ({
-                        time: entry[player].times[difficulty],
-                        date: entry.date,
-                        player: player
-                    }))
-                    .sort((a, b) => a.time - b.time);
+            const userTimes = this.entries
+                .filter(entry => {
+                    // Safety check for valid entry structure
+                    return entry &&
+                           entry.dnf &&
+                           entry.times &&
+                           !entry.dnf[difficulty] &&
+                           entry.times[difficulty];
+                })
+                .map(entry => ({
+                    time: entry.times[difficulty],
+                    date: entry.date,
+                    score: entry.scores?.[difficulty] || 0
+                }))
+                .sort((a, b) => a.time - b.time);
 
-                if (playerTimes.length > 0) {
-                    records.push(playerTimes[0]);
-                }
-            });
-
-            fastestTimes[difficulty] = records.sort((a, b) => a.time - b.time);
+            fastestTimes[difficulty] = userTimes.slice(0, 5); // Top 5 personal bests
         });
 
         fastestTimesContainer.innerHTML = this.generateRecordsHTML(fastestTimes);
 
-        // Perfect games (0 errors)
+        // User's perfect games (0 errors)
         const perfectGames = this.entries.filter(entry => {
-            return ['faidao', 'filip'].some(player => {
-                // Safety check for valid entry structure
-                if (!entry[player] || !entry[player].errors) {
-                    return false;
-                }
-                const totalErrors = (entry[player].errors.easy || 0) +
-                                  (entry[player].errors.medium || 0) +
-                                  (entry[player].errors.hard || 0);
-                return totalErrors === 0;
-            });
+            // Safety check for valid entry structure
+            if (!entry || !entry.errors) {
+                return false;
+            }
+            const totalErrors = (entry.errors.easy || 0) +
+                              (entry.errors.medium || 0) +
+                              (entry.errors.hard || 0);
+            return totalErrors === 0;
         }).slice(0, 10);
 
         perfectGamesContainer.innerHTML = this.generatePerfectGamesHTML(perfectGames);
     }
 
-    calculatePlayerStats(entries) {
-        const stats = {
-            faidao: { wins: 0, totalScore: 0, games: entries.length },
-            filip: { wins: 0, totalScore: 0, games: entries.length }
-        };
+    // REMOVED: calculatePlayerStats() - No longer needed in single-user mode
 
-        entries.forEach(entry => {
-            // Safety check for valid entry structure
-            if (!entry.faidao?.scores || !entry.filip?.scores) {
-                return;
-            }
+    // REMOVED: generateLeaderboardHTML() - No longer needed (replaced by inline stats in updateMonthly/WeeklyLeaderboard)
 
-            const faidaoTotal = entry.faidao.scores.total || 0;
-            const filipTotal = entry.filip.scores.total || 0;
-
-            stats.faidao.totalScore += faidaoTotal;
-            stats.filip.totalScore += filipTotal;
-
-            if (faidaoTotal > filipTotal) {
-                stats.faidao.wins++;
-            } else if (filipTotal > faidaoTotal) {
-                stats.filip.wins++;
-            }
-        });
-
-        stats.faidao.avgScore = stats.faidao.totalScore / entries.length || 0;
-        stats.filip.avgScore = stats.filip.totalScore / entries.length || 0;
-        stats.faidao.winRate = (stats.faidao.wins / entries.length) * 100 || 0;
-        stats.filip.winRate = (stats.filip.wins / entries.length) * 100 || 0;
-
-        return stats;
-    }
-
-    generateLeaderboardHTML(stats, period) {
-        const players = [
-            { name: 'Faidao', key: 'faidao', avatar: 'F', color: 'faidao-color' },
-            { name: 'Filip', key: 'filip', avatar: 'F', color: 'filip-color' }
-        ].sort((a, b) => stats[b.key].wins - stats[a.key].wins);
-
-        return players.map((player, index) => {
-            const playerStats = stats[player.key];
-            return `
-                <div class="leaderboard-card ${index === 0 ? 'winner' : ''}">
-                    <div class="rank">#${index + 1}</div>
-                    <div class="player-info">
-                        <div class="player-avatar ${player.color}">${player.avatar}</div>
-                        <div class="player-details">
-                            <h4>${player.name}</h4>
-                            <p>${playerStats.wins} Win${playerStats.wins === 1 ? '' : 's'}</p>
-                        </div>
-                    </div>
-                    <div class="stats">
-                        <div class="stat">
-                            <span class="stat-value">${playerStats.wins}</span>
-                            <span class="stat-label">${playerStats.wins === 1 ? 'Win' : 'Wins'}</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">${Math.round(playerStats.avgScore)}</span>
-                            <span class="stat-label">Avg Score</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
+    // TRANSFORMED: User-centric personal records HTML
     generateRecordsHTML(fastestTimes) {
         const difficulties = ['easy', 'medium', 'hard'];
         return difficulties.map(difficulty => {
             const records = fastestTimes[difficulty] || [];
-            const recordsHTML = records.map(record => `
+            const recordsHTML = records.map((record, index) => `
                 <div class="record-item ${difficulty}">
-                    <span class="player-name ${record.player}-color">${record.player}</span>
+                    <span class="record-rank">#${index + 1}</span>
                     <span class="record-time">${this.formatSecondsToTime(record.time)}</span>
+                    <span class="record-score">${record.score} pts</span>
                     <span class="record-date">${new Date(record.date).toLocaleDateString()}</span>
                 </div>
             `).join('') || '<div class="record-item">No records set yet!</div>';
@@ -1150,34 +1051,22 @@ class SudokuChampionship {
         }).join('');
     }
 
+    // TRANSFORMED: User-centric perfect games HTML
     generatePerfectGamesHTML(perfectGames) {
         if (perfectGames.length === 0) {
             return '<div class="record-item">No perfect games recorded yet!</div>';
         }
 
         return perfectGames.map(entry => {
-            const perfectPlayers = ['faidao', 'filip'].filter(player => {
-                // Safety check for valid entry structure
-                if (!entry[player] || !entry[player].errors) {
-                    return false;
-                }
-                const totalErrors = (entry[player].errors.easy || 0) +
-                                  (entry[player].errors.medium || 0) +
-                                  (entry[player].errors.hard || 0);
-                return totalErrors === 0;
-            });
-
-            return perfectPlayers.map(player => {
-                // Safety check for scores
-                const score = entry[player]?.scores?.total || 0;
-                return `
-                    <div class="record-item">
-                        <span class="player-name ${player}-color">${player}</span>
-                        <span class="record-score">${Math.round(score)} pts</span>
-                        <span class="record-date">${new Date(entry.date).toLocaleDateString()}</span>
-                    </div>
-                `;
-            }).join('');
+            // Safety check for scores
+            const score = entry.scores?.total || 0;
+            return `
+                <div class="record-item">
+                    <span class="record-score">${Math.round(score)} pts</span>
+                    <span class="record-date">${new Date(entry.date).toLocaleDateString()}</span>
+                    <span class="record-badge">⭐ Perfect</span>
+                </div>
+            `;
         }).join('');
     }
 
@@ -1379,19 +1268,19 @@ class SudokuChampionship {
             return data;
         } catch (error) {
             console.error('Failed to load bulk data:', error);
+            // TRANSFORMED: User-centric default data
             return {
-                streaks: { faidao: { current: 0, best: 0 }, filip: { current: 0, best: 0 } },
+                streaks: { current: 0, best: 0 },
                 challenges: [],
                 achievements: []
             };
         }
     }
 
+    // TRANSFORMED: User-centric today's progress
     async updateTodayProgress() {
         const today = this.getTodayDate();
-        const players = ['faidao', 'filip'];
         const difficulties = ['easy', 'medium', 'hard'];
-
 
         // Check cache first
         const now = Date.now();
@@ -1401,14 +1290,14 @@ class SudokuChampionship {
             (now - this.todayProgressCache.lastUpdate) < this.todayProgressCache.duration) {
             // Use cached data
             const dbProgress = this.todayProgressCache.data;
-            this.renderTodayProgress(dbProgress, players, difficulties, today);
+            this.renderTodayProgress(dbProgress, difficulties, today);
             return;
         }
 
         // Try to load progress from database first
         let dbProgress = null;
         try {
-            // Force no-cache to ensure real-time battle updates across players
+            // Force no-cache to ensure real-time updates
             const response = await fetch(`/api/games?date=${today}`, {
                 cache: 'no-store'
             });
@@ -1419,178 +1308,123 @@ class SudokuChampionship {
                 this.todayProgressCache.data = dbProgress;
                 this.todayProgressCache.lastUpdate = now;
                 this.todayProgressCache.date = today;
-            } else {
             }
         } catch (error) {
+            console.error('Failed to fetch today\'s progress:', error);
         }
 
         // Always render, even if dbProgress is null (will check localStorage fallback)
-        this.renderTodayProgress(dbProgress, players, difficulties, today);
+        this.renderTodayProgress(dbProgress, difficulties, today);
     }
 
 
-    renderTodayProgress(dbProgress, players, difficulties, today) {
-        players.forEach(player => {
-            difficulties.forEach(difficulty => {
-                const progressElement = document.getElementById(`${player}-${difficulty}-progress`);
-                if (!progressElement) {
-                    return;
-                }
+    // TRANSFORMED: User-centric progress rendering
+    renderTodayProgress(dbProgress, difficulties, today) {
+        const user = this.getCurrentUser();
 
-                const statusElement = progressElement.querySelector('.progress-status');
-                if (!statusElement) {
-                    return;
-                }
+        difficulties.forEach(difficulty => {
+            const progressElement = document.getElementById(`user-${difficulty}-progress`);
+            if (!progressElement) {
+                return;
+            }
 
-                let gameData = null;
+            const statusElement = progressElement.querySelector('.progress-status');
+            if (!statusElement) {
+                return;
+            }
 
-                // Check database first
-                if (dbProgress && dbProgress[player] && dbProgress[player][difficulty]) {
-                    gameData = dbProgress[player][difficulty];
-                    // Cache in memory for fast access
-                    const progressKey = `${player}_${today}_${difficulty}`;
-                    this.setStoredData('todayProgress', progressKey, gameData, false);
-                } else {
-                    // Check in-memory store first, then localStorage
-                    const progressKey = `${player}_${today}_${difficulty}`;
-                    gameData = this.getStoredData('todayProgress', `completed_${progressKey}`, true);
-                }
+            let gameData = null;
 
-                if (gameData && gameData.time) {
-                    const time = this.formatSecondsToTime(gameData.time);
-                    statusElement.innerHTML = `
-                        <span class="completion-time">✓ ${time}</span>
-                        <span class="completion-score">${Math.round(gameData.score || 0)}pts</span>
-                    `;
-                    progressElement.classList.add('completed');
-                } else {
-                    statusElement.textContent = 'Not started';
-                    progressElement.classList.remove('completed');
-                }
-            });
+            // Check database first
+            if (dbProgress && dbProgress[difficulty]) {
+                gameData = dbProgress[difficulty];
+                // Cache in memory for fast access
+                const progressKey = `${user.id}_${today}_${difficulty}`;
+                this.setStoredData('todayProgress', progressKey, gameData, false);
+            } else {
+                // Check in-memory store first, then localStorage
+                const progressKey = `${user.id}_${today}_${difficulty}`;
+                gameData = this.getStoredData('todayProgress', `completed_${progressKey}`, true);
+            }
+
+            if (gameData && gameData.time) {
+                const time = this.formatSecondsToTime(gameData.time);
+                statusElement.innerHTML = `
+                    <span class="completion-time">✓ ${time}</span>
+                    <span class="completion-score">${Math.round(gameData.score || 0)}pts</span>
+                `;
+                progressElement.classList.add('completed');
+            } else {
+                statusElement.textContent = 'Not started';
+                progressElement.classList.remove('completed');
+            }
         });
 
-        // Update battle results based on today's completed games
-        this.updateTodaysBattleResults();
+        // Update today's completion status
+        this.updateTodayCompletionStatus();
     }
 
-    updateTodaysBattleResults() {
+    // TRANSFORMED: User-centric completion status
+    updateTodayCompletionStatus() {
         const today = this.getTodayDate();
-        const players = ['faidao', 'filip'];
+        const user = this.getCurrentUser();
         const difficulties = ['easy', 'medium', 'hard'];
 
-        // Calculate total scores for today and count completed games
-        const todayScores = {
-            faidao: { total: 0 },
-            filip: { total: 0 }
-        };
-
+        // Calculate user's total score and count completed games
+        let totalScore = 0;
         let completedGames = 0;
-        const totalGamesRequired = players.length * difficulties.length; // 6 games total
+        const totalGamesRequired = difficulties.length; // 3 games total
 
-        players.forEach(player => {
-            difficulties.forEach(difficulty => {
-                let gameData = null;
+        difficulties.forEach(difficulty => {
+            let gameData = null;
 
-                // Check database cache first (prioritize database data)
-                if (this.todayProgressCache.data &&
-                    this.todayProgressCache.data[player] &&
-                    this.todayProgressCache.data[player][difficulty]) {
-                    gameData = this.todayProgressCache.data[player][difficulty];
-                } else {
-                    // Fallback to sessionStorage (session-only cache, no stale data)
-                    const key = `completed_${player}_${today}_${difficulty}`;
-                    const sessionData = sessionStorage.getItem(key);
-                    if (sessionData) {
-                        gameData = JSON.parse(sessionData);
-                    }
+            // Check database cache first (prioritize database data)
+            if (this.todayProgressCache.data &&
+                this.todayProgressCache.data[difficulty]) {
+                gameData = this.todayProgressCache.data[difficulty];
+            } else {
+                // Fallback to sessionStorage (session-only cache, no stale data)
+                const key = `completed_${user.id}_${today}_${difficulty}`;
+                const sessionData = sessionStorage.getItem(key);
+                if (sessionData) {
+                    gameData = JSON.parse(sessionData);
                 }
+            }
 
-                if (gameData && gameData.score) {
-                    todayScores[player].total += Number(gameData.score) || 0;
-                    completedGames++;
-                }
-            });
+            if (gameData && gameData.score) {
+                totalScore += Number(gameData.score) || 0;
+                completedGames++;
+            }
         });
 
-        // Only show winner if all 6 games are completed
+        // Update completion indicator
         if (completedGames === totalGamesRequired) {
-            // Update the battle results display
-            this.updateBattleResults(todayScores);
-            // Mark that we have a complete battle for today
+            // Mark that user completed all puzzles for today
             this.lastCompleteBattleDate = today;
-        } else {
-            // Only update to incomplete state if we haven't marked today's battle as complete
-            if (this.lastCompleteBattleDate !== today) {
-                const winnerElement = document.getElementById('winnerAnnouncement');
-                if (winnerElement) {
-                    winnerElement.querySelector('.winner-text').textContent = 'Play Sudoku to compete!';
-                }
+
+            const completionElement = document.getElementById('todayCompletionStatus');
+            if (completionElement) {
+                completionElement.innerHTML = `
+                    <div class="completion-badge complete">
+                        <i class="fas fa-check-circle"></i>
+                        All puzzles completed! Total: ${totalScore.toFixed(0)} points
+                    </div>
+                `;
             }
-
-            // Still update score bars to show progress
-            const faidaoBar = document.getElementById('faidaoScoreBar');
-            const filipBar = document.getElementById('filipScoreBar');
-            const faidaoText = document.getElementById('faidaoScoreText');
-            const filipText = document.getElementById('filipScoreText');
-
-            if (faidaoBar && filipBar && faidaoText && filipText) {
-                const faidaoTotal = Number(todayScores.faidao.total) || 0;
-                const filipTotal = Number(todayScores.filip.total) || 0;
-                const maxScore = Math.max(faidaoTotal, filipTotal, 1);
-                const faidaoWidth = (faidaoTotal / maxScore) * 100;
-                const filipWidth = (filipTotal / maxScore) * 100;
-
-                faidaoBar.style.width = `${faidaoWidth}%`;
-                filipBar.style.width = `${filipWidth}%`;
-                faidaoText.textContent = faidaoTotal.toFixed(0);
-                filipText.textContent = filipTotal.toFixed(0);
+        } else {
+            const completionElement = document.getElementById('todayCompletionStatus');
+            if (completionElement) {
+                completionElement.innerHTML = `
+                    <div class="completion-badge incomplete">
+                        <i class="fas fa-clock"></i>
+                        ${completedGames}/${totalGamesRequired} completed | Current: ${totalScore.toFixed(0)} points
+                    </div>
+                `;
             }
         }
     }
 
-    updateProgressNotifications() {
-        const currentPlayer = sessionStorage.getItem('currentPlayer');
-        if (!currentPlayer) return;
-
-        const today = this.getTodayDate();
-        const key = `opponent_progress_${currentPlayer}_${today}`;
-        const notifications = localStorage.getItem(key);
-
-        const container = document.getElementById('notificationsContainer');
-        if (!container) return;
-
-        if (notifications) {
-            const notificationList = JSON.parse(notifications);
-            const recentNotifications = notificationList
-                .sort((a, b) => b.timestamp - a.timestamp)
-                .slice(0, 5);
-
-            if (recentNotifications.length > 0) {
-                container.innerHTML = recentNotifications.map(notification => {
-                    const opponent = currentPlayer === 'faidao' ? 'Filip' : 'Faidao';
-                    const time = this.formatSecondsToTime(notification.time);
-                    const timeAgo = this.getTimeAgo(notification.timestamp);
-
-                    return `
-                        <div class="notification-item ${notification.from}">
-                            <div class="notification-header">
-                                <strong>${opponent}</strong> completed <span class="difficulty">${notification.difficulty}</span>
-                                <span class="time-ago">${timeAgo}</span>
-                            </div>
-                            <div class="notification-details">
-                                Time: ${time} | Score: ${notification.score} | Errors: ${notification.errors} | Hints: ${notification.hints}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            } else {
-                container.innerHTML = '<div class="no-notifications">No recent updates from your opponent.</div>';
-            }
-        } else {
-            container.innerHTML = '<div class="no-notifications">Complete puzzles to see live updates from your opponent!</div>';
-        }
-    }
+    // REMOVED: updateProgressNotifications() - Dead code, opponent notification system no longer exists
 
     getTimeAgo(timestamp) {
         const now = Date.now();
