@@ -75,6 +75,10 @@
                     <i class="fas fa-star"></i>
                     <span>Achievements</span>
                 </a>
+                <a href="lessons.html" class="nav-link">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Lessons</span>
+                </a>
                 <a href="battle-pass.html" class="nav-link">
                     <i class="fas fa-trophy"></i>
                     <span>Battle Pass</span>
@@ -209,6 +213,39 @@
                             </div>
                             <div class="progress-bar">
                                 <div class="progress-fill" id="battlePassProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-card lesson-progress-preview">
+                        <div class="card-header">
+                            <h3><i class="fas fa-graduation-cap"></i> Tutorial Lessons</h3>
+                            <a href="lessons.html" class="view-link">View All <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="progress-content">
+                            <div class="lesson-stats">
+                                <div class="lesson-stat">
+                                    <span class="lesson-stat-value" id="completedLessonsDisplay">0</span>
+                                    <span class="lesson-stat-label">Completed</span>
+                                </div>
+                                <div class="lesson-stat">
+                                    <span class="lesson-stat-value" id="lessonXPDisplay">0</span>
+                                    <span class="lesson-stat-label">XP Earned</span>
+                                </div>
+                            </div>
+                            <div class="lesson-courses">
+                                <div class="course-badge" title="Beginner Course (6 lessons)">
+                                    <i class="fas fa-seedling"></i>
+                                    <span id="beginnerProgressDisplay">0/6</span>
+                                </div>
+                                <div class="course-badge" title="Intermediate Course (8 lessons)">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span id="intermediateProgressDisplay">0/8</span>
+                                </div>
+                                <div class="course-badge" title="Variants Course (6 lessons)">
+                                    <i class="fas fa-shapes"></i>
+                                    <span id="variantsProgressDisplay">0/6</span>
+                                </div>
                             </div>
                         </div>
                     </div>

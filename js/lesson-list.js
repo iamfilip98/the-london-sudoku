@@ -52,6 +52,16 @@ class LessonListManager {
 
         // Update stats
         this.updateStats();
+
+        // Track lessons page view (PHASE 2: PostHog Analytics)
+        if (window.posthog) {
+            const completedCount = Object.values(this.userProgress).filter(p => p.status === 'completed').length;
+            window.posthog.capture('lessons_page_viewed', {
+                total_lessons: this.lessons.length,
+                completed_lessons: completedCount,
+                is_premium: this.isPremium
+            });
+        }
     }
 
     async loadUserProgress() {
