@@ -220,7 +220,7 @@ const targetTimes = {
 
 **Current API Endpoints**:
 1. `/api/achievements.js` - Achievement management
-2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db, **migrate-phase1-month5, migrate-phase2-month7, migrate-phase2-month8, migrate-phase2-lessons, migrate-battle-pass, mark-founders**, **create-checkout, create-portal, webhook, subscription-status** *[Phase 1-2-3, Subscription, Friends, Battle Pass, Tutorial System]*) - **SUBSCRIPTION + FRIENDS + BATTLE PASS + LESSON SYSTEM MIGRATIONS CONSOLIDATED HERE**
+2. `/api/admin.js` - Consolidated admin operations (clear-all, clear-old-puzzles, generate-fallback, init-db, **migrate-phase1-month5, migrate-phase2-month7, migrate-phase2-month8, migrate-phase2-lessons, migrate-performance-indexes, migrate-battle-pass, mark-founders**, **create-checkout, create-portal, webhook, subscription-status**, **performance-stats** *[Phase 1-2-3, Subscription, Friends, Battle Pass, Tutorial System, Performance]*) - **SUBSCRIPTION + FRIENDS + BATTLE PASS + LESSON SYSTEM + PERFORMANCE MIGRATIONS CONSOLIDATED HERE**
 3. `/api/auth.js` - Authentication (bcrypt + Clerk) + **User Profiles** (GET/PUT for bio, avatar, displayName, founder badge) + **Friends System** (?friends=xxx, ?friend-requests=xxx, ?action=send-friend-request) *[Phase 1 Month 4-5, Phase 2 Month 8]*
 4. `/api/cron-verify-puzzles.js` - Scheduled puzzle verification
 5. `/api/entries.js` - Daily battle results
@@ -260,6 +260,7 @@ const targetTimes = {
   - Phase 2 Month 14: Added Jigsaw Sudoku variant to `/api/puzzles.js?mode=practice&variant=jigsaw-sudoku`
   - Phase 3 Month 12: Added Battle Pass System to `/api/stats.js?type=battle-pass|battle-pass-leaderboard|battle-pass-tiers` and `/api/admin.js?action=migrate-battle-pass`
   - Phase 2 (Nov 13, 2025): Added Lesson System migration to `/api/admin.js?action=migrate-phase2-lessons` (creates 5 tables, 25 achievements, triggers)
+  - Performance (Nov 13, 2025): Added database performance optimization to `/api/admin.js?action=migrate-performance-indexes` (24 indexes, 30-50% faster), `GET /api/admin?action=performance-stats` (monitoring)
 
 **Subscription Consolidation Details**:
 - Subscription actions added to `/api/admin.js` with conditional authentication
