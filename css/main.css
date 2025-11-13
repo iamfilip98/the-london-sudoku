@@ -15,6 +15,19 @@
     display: none; /* Safari and Chrome */
 }
 
+/* Accessibility: Visually hide but keep for screen readers */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
 :root {
     --primary-gradient: linear-gradient(135deg, #2d1b69 0%, #ff6b35 100%);
     --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -51,7 +64,7 @@
     --shadow-2xl: 0 32px 64px rgba(0, 0, 0, 0.3), 0 16px 32px rgba(0, 0, 0, 0.25);
     --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    --shadow-focus: 0 0 0 3px rgba(79, 172, 254, 0.3);
+    --shadow-focus: 0 0 0 3px rgba(79, 172, 254, 0.6);
     --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.25), 0 8px 20px rgba(0, 0, 0, 0.2);
 
     /* Legacy support */

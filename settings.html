@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your The London Sudoku account settings. Update profile, manage subscription, configure preferences, and control privacy settings.">
+    <link rel="canonical" href="https://thelondonsudoku.com/settings.html">
+    <meta name="robots" content="noindex, follow">
     <title>Settings - Sudoku Championship</title>
     <link rel="stylesheet" href="css/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -338,6 +341,35 @@
             </div>
         </div>
 
+        <!-- Danger Zone -->
+        <div class="settings-section" style="border: 2px solid rgba(245, 87, 108, 0.5); background: rgba(245, 87, 108, 0.05);">
+            <h2 style="color: #f5576c;">
+                <i class="fas fa-exclamation-triangle"></i>
+                Danger Zone
+            </h2>
+            <div class="setting-group" style="margin-bottom: 1rem;">
+                <div class="setting-info">
+                    <h3 style="color: #f5576c;">Delete Account</h3>
+                    <p>Permanently delete your account and all associated data. This action cannot be undone.</p>
+                    <p style="font-size: 0.875rem; color: #cbd5e1; margin-top: 0.5rem;">
+                        <strong>What will be deleted:</strong>
+                    </p>
+                    <ul style="font-size: 0.875rem; color: #cbd5e1; margin-left: 1.5rem; margin-top: 0.25rem;">
+                        <li>Your profile and account information</li>
+                        <li>All game history and statistics</li>
+                        <li>Achievements and progress</li>
+                        <li>League rankings and battle pass data</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn-base" onclick="confirmDeleteAccount()"
+                    style="background: linear-gradient(135deg, #fa709a, #fee140); color: #1a1a2e; font-weight: 700;"
+                    aria-label="Delete account permanently">
+                <i class="fas fa-trash-alt"></i>
+                Delete My Account
+            </button>
+        </div>
+
         <!-- Save Button -->
         <div class="settings-section">
             <button class="save-btn" onclick="saveSettings()">
@@ -378,6 +410,77 @@
                 } catch (e) {
                     console.error('Error loading settings:', e);
                 }
+            }
+        }
+
+        // Delete account function
+        async function confirmDeleteAccount() {
+            // First confirmation
+            const confirm1 = confirm(
+                '⚠️ WARNING: Delete Account?\n\n' +
+                'This will permanently delete:\n' +
+                '• Your account and profile\n' +
+                '• All game history and statistics\n' +
+                '• All achievements and progress\n' +
+                '• League rankings and battle pass data\n\n' +
+                'This action CANNOT be undone.\n\n' +
+                'Are you absolutely sure you want to continue?'
+            );
+
+            if (!confirm1) return;
+
+            // Second confirmation (require typing)
+            const username = localStorage.getItem('currentPlayer') || 'your account';
+            const confirm2 = prompt(
+                'Final Confirmation\n\n' +
+                'To delete your account, please type: DELETE\n\n' +
+                '(Type in all caps)'
+            );
+
+            if (confirm2 !== 'DELETE') {
+                if (confirm2 !== null) {
+                    alert('Account deletion cancelled. The text did not match.');
+                }
+                return;
+            }
+
+            // Show loading state
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            btn.disabled = true;
+
+            try {
+                // Call delete API endpoint
+                const response = await fetch('/api/auth?action=delete-account', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Clear all local data
+                    localStorage.clear();
+                    sessionStorage.clear();
+
+                    alert('✓ Account Deleted\n\nYour account and all data have been permanently deleted.');
+
+                    // Redirect to home
+                    window.location.href = '/';
+                } else {
+                    throw new Error(result.error || 'Failed to delete account');
+                }
+            } catch (error) {
+                console.error('Delete account error:', error);
+                alert('❌ Error\n\nFailed to delete account: ' + error.message);
+
+                // Restore button
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         }
 

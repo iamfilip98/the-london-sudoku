@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             Monitoring.trackPageView('Battle Pass');
         }
     } catch (error) {
-        console.error('Failed to initialize battle pass:', error);
         showError('Failed to load battle pass. Please try again.');
     }
 });
@@ -112,7 +111,6 @@ async function loadBattlePass() {
         document.getElementById('battle-pass-content').style.display = 'block';
 
     } catch (error) {
-        console.error('Failed to load battle pass:', error);
         showError(error.message || 'Failed to load battle pass');
     }
 }
@@ -127,7 +125,6 @@ async function loadLeaderboard() {
         const data = await response.json();
         renderLeaderboard(data.leaderboard || []);
     } catch (error) {
-        console.error('Failed to load leaderboard:', error);
     }
 }
 
@@ -414,7 +411,6 @@ async function confirmClaimReward() {
         await loadBattlePass();
 
     } catch (error) {
-        console.error('Failed to claim reward:', error);
         showToast('Failed to claim rewards. Please try again.', 'error');
         claimBtn.disabled = false;
         claimBtn.innerHTML = '<i class="fas fa-check"></i> Claim Rewards';

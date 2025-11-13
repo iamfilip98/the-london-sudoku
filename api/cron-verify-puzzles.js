@@ -45,7 +45,6 @@ module.exports = async function handler(req, res) {
 
   // Allow requests without token in development, but require it in production
   if (process.env.NODE_ENV === 'production' && authToken !== expectedToken) {
-    console.error('[11 PM VERIFY] Unauthorized attempt to verify puzzles');
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
@@ -143,7 +142,6 @@ module.exports = async function handler(req, res) {
     }
 
   } catch (error) {
-    console.error(`[11 PM VERIFY] ❌ Verification failed:`, error);
 
     return res.status(500).json({
       success: false,

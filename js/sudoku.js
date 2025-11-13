@@ -60,7 +60,7 @@ class SudokuEngine {
         this.thermometers = null;           // Thermo Sudoku thermometers
         this.jigsawRegions = null;          // Jigsaw Sudoku irregular regions
 
-        console.log('🎮 Initializing Sudoku with variant:', this.variant, 'gridSize:', this.gridSize);
+        // Initialized Sudoku engine
     }
 
     // Initialize Sudoku UI and game
@@ -631,12 +631,12 @@ class SudokuEngine {
                     throw new Error(`API returned ${response.status}`);
                 }
             } catch (apiError) {
-                console.error('❌ Failed to load puzzles from API:', apiError);
+                // Failed to load puzzles from API
                 throw new Error('Unable to load puzzles - please refresh the page');
             }
 
         } catch (error) {
-            console.error('❌ Critical error in loadDailyPuzzles:', error);
+            // Critical error loading puzzles
             throw error;
         }
     }
@@ -694,7 +694,7 @@ class SudokuEngine {
                 throw new Error(`Server responded with ${response.status}`);
             }
         } catch (error) {
-            console.error('❌ Failed to force refresh puzzles:', error);
+            // Failed to refresh puzzles
             return false;
         }
     }
@@ -1141,7 +1141,7 @@ class SudokuEngine {
         // Validate that the solution is actually valid
         debugLog(`🔍 Loading ${difficulty} solution. R6C5 should be:`, this.solution[5][4]);
         if (!this.isValidSudokuSolution(this.solution)) {
-            console.error(`❌ Invalid solution loaded for ${difficulty} difficulty!`);
+            // Invalid solution loaded
             debugLog('Solution:', this.solution.map(r => r.join('')).join('\n'));
         } else {
             debugLog(`✅ Valid ${difficulty} solution loaded`);
@@ -2031,7 +2031,6 @@ class SudokuEngine {
 
                     if (rewarded) {
                         // Grant free hint without penalty
-                        console.log('✅ Rewarded video watched - granting free hint');
                         // Continue with hint but skip penalty tracking
                         this._skipHintPenalty = true;
                     } else {
@@ -2055,7 +2054,6 @@ class SudokuEngine {
                 // Track Level 1 hint (fractional penalty, keeps Perfect bonus!)
                 // PHASE 1 MONTH 6: Skip penalty if rewarded video was watched
                 if (this._skipHintPenalty) {
-                    console.log('🎁 Free hint from rewarded video - no penalty applied');
                     this._skipHintPenalty = false; // Reset flag
                 } else {
                     this.hintLevel1Count++;
@@ -3457,7 +3455,7 @@ class SudokuEngine {
 
             // Notification stays visible until user clicks the navigation button
         } else {
-            console.error('Could not find grid container for completion notification');
+            // Grid container not found
         }
     }
 
@@ -3563,7 +3561,7 @@ class SudokuEngine {
             // Check if we should run analysis (after 7 days of data)
             this.checkAnalysisReadiness(puzzleRatings);
         } catch (error) {
-            console.error('Error storing puzzle rating:', error);
+            // Error storing rating
         }
     }
 
@@ -3609,7 +3607,7 @@ class SudokuEngine {
                 debugLog(`⚠️  ${remainingUnsynced} ratings still pending sync`);
             }
         } catch (error) {
-            console.error('Error syncing ratings:', error);
+            // Error syncing ratings
         }
     }
 
@@ -3767,7 +3765,7 @@ class SudokuEngine {
                 }
             };
         } catch (error) {
-            console.error('Error analyzing puzzle ratings:', error);
+            // Error analyzing ratings
             return null;
         }
     }
@@ -3953,7 +3951,7 @@ class SudokuEngine {
                 })
             });
         } catch (error) {
-            console.error('Failed to save game state to server:', error);
+            // Failed to save state to server
         }
     }
 
@@ -3993,7 +3991,7 @@ class SudokuEngine {
 
                 // If puzzles aren't loaded yet, show error
                 if (!this.dailyPuzzles) {
-                    console.error('⚠️ Puzzles not loaded during game state restore - cannot continue');
+                    // Puzzles not loaded
                     throw new Error('Puzzles must be loaded from API before restoring game state');
                 }
 
@@ -4100,7 +4098,7 @@ class SudokuEngine {
             }
 
         } catch (error) {
-            console.error('Failed to load game state:', error);
+            // Failed to load state
         }
     }
 
@@ -4159,7 +4157,6 @@ class SudokuEngine {
                         errors: this.errors,
                         hints: this.hints
                     });
-                    console.log('✅ Anonymous completion tracked locally');
                 }
             } else {
                 // Authenticated users: save to database
@@ -4177,7 +4174,7 @@ class SudokuEngine {
             }
 
         } catch (error) {
-            console.error('Failed to save completed game:', error);
+            // Failed to save game
         }
     }
 
@@ -4195,7 +4192,7 @@ class SudokuEngine {
             this.notifyOpponentProgress(gameData);
 
         } catch (error) {
-            console.error('Failed to integrate with analytics:', error);
+            // Failed analytics integration
         }
     }
 
@@ -4340,7 +4337,7 @@ class SudokuEngine {
             }
 
         } catch (error) {
-            console.error('Failed to save to existing system:', error);
+            // Failed to save to system
         }
     }
 
@@ -4391,7 +4388,7 @@ class SudokuEngine {
                 await window.sudokuApp.updateTodayProgress();
             }
         } catch (error) {
-            console.error('Failed to save game to database:', error);
+            // Failed to save to database
             // Don't throw error - localStorage fallback is still available
         }
     }
@@ -4824,7 +4821,7 @@ class SudokuEngine {
             return true;
 
         } catch (error) {
-            console.error('❌ Failed to load daily puzzles:', error);
+            // Failed to load daily puzzles
 
             if (!forceRefresh) {
                 debugLog('🔄 Trying force refresh...');
@@ -5129,7 +5126,7 @@ class SudokuEngine {
 
         // Try to resume audio context if it's suspended (required for mobile)
         if (this.audioContext.state === 'suspended') {
-            this.audioContext.resume().catch(console.warn);
+            this.audioContext.resume().catch(() => {});
         }
 
         const playTone = (frequency, duration) => {
@@ -6013,7 +6010,7 @@ window.masterRefresh = async function(verbose = true) {
         return true;
 
     } catch (error) {
-        console.error('❌ Master refresh failed:', error);
+        // Master refresh failed
         // Restore original debug state
         window.sudokuDebug = originalDebug;
         return false;

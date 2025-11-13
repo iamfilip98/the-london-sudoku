@@ -57,7 +57,6 @@ module.exports = async function handler(req, res) {
     const cronSecret = process.env.CRON_SECRET;
 
     if (authHeader !== `Bearer ${cronSecret}`) {
-      console.log('Unauthorized cron request');
       return res.status(401).json({ error: 'Unauthorized' });
     }
   }
@@ -143,7 +142,6 @@ module.exports = async function handler(req, res) {
         });
     }
   } catch (error) {
-    console.error('Admin action error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }
@@ -172,7 +170,7 @@ async function handleClearAll(req, res) {
       cleared: ['individual_games', 'game_states', 'entries', 'achievements', 'challenges', 'streaks']
     });
   } catch (error) {
-    console.error('Failed to clear data:', error);
+    // Error occurred
     res.status(500).json({ error: 'Failed to clear data', details: error.message });
   }
 }
@@ -200,7 +198,7 @@ async function handleClearOldPuzzles(req, res) {
       deletedCount: result.rowCount
     });
   } catch (error) {
-    console.error('Failed to clear old puzzles:', error);
+    // Error occurred
     res.status(500).json({ error: 'Failed to clear old puzzles', details: error.message });
   }
 }
@@ -244,7 +242,7 @@ async function handleGenerateFallback(req, res) {
       puzzles: generated
     });
   } catch (error) {
-    console.error('Failed to generate fallback puzzles:', error);
+    // Error occurred
     res.status(500).json({ error: 'Failed to generate fallback puzzles', details: error.message });
   }
 }
@@ -363,7 +361,6 @@ async function handleInitDb(req, res) {
     });
 
   } catch (error) {
-    console.error('Database initialization failed:', error);
     res.status(500).json({
       error: 'Database initialization failed',
       details: error.message
@@ -468,7 +465,6 @@ async function handleMigratePhase1Month5(req, res) {
     });
 
   } catch (error) {
-    console.error('Phase 1 Month 5 migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
       details: error.message
@@ -505,7 +501,7 @@ async function handleMarkFounders(req, res) {
     });
 
   } catch (error) {
-    console.error('Failed to mark founders:', error);
+    // Error occurred
     res.status(500).json({
       error: 'Failed to mark founders',
       details: error.message
@@ -521,7 +517,6 @@ async function handleMigratePhase2Month7(req, res) {
   }
 
   try {
-    console.log('Starting Phase 2 Month 7 migration...');
     const changes = [];
 
     // 1. Add premium fields to users table
@@ -616,7 +611,6 @@ async function handleMigratePhase2Month7(req, res) {
     });
 
   } catch (error) {
-    console.error('Phase 2 Month 7 migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
       details: error.message
@@ -649,7 +643,7 @@ async function handleCreateCheckout(req, res) {
       url: session.url
     });
   } catch (error) {
-    console.error('Failed to create checkout session:', error);
+    // Error occurred
     return res.status(500).json({
       success: false,
       error: error.message || 'Failed to create checkout session'
@@ -681,7 +675,7 @@ async function handleCreatePortal(req, res) {
       url: portal.url
     });
   } catch (error) {
-    console.error('Failed to create portal session:', error);
+    // Error occurred
     return res.status(500).json({
       success: false,
       error: error.message || 'Failed to create portal session'
@@ -717,7 +711,6 @@ async function handleWebhook(req, res) {
       return res.status(400).json({ received: false });
     }
   } catch (error) {
-    console.error('Webhook handling failed:', error);
     return res.status(400).json({
       success: false,
       error: error.message
@@ -760,7 +753,7 @@ async function handleSubscriptionStatus(req, res) {
       cancelAtPeriodEnd: status.subscription_cancel_at_period_end
     });
   } catch (error) {
-    console.error('Failed to get subscription status:', error);
+    // Error occurred
     return res.status(500).json({
       success: false,
       error: 'Failed to get subscription status'
@@ -776,7 +769,6 @@ async function handleMigratePhase2Month8(req, res) {
   }
 
   try {
-    console.log('Starting Phase 2 Month 8 migration...');
     const changes = [];
 
     // Read and execute the migration SQL file
@@ -859,7 +851,6 @@ async function handleMigratePhase2Month8(req, res) {
     });
 
   } catch (error) {
-    console.error('Phase 2 Month 8 migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
       details: error.message
@@ -875,7 +866,6 @@ async function handleMigrateBattlePass(req, res) {
   }
 
   try {
-    console.log('Starting Battle Pass migration...');
 
     // Run the migration
     const result = await migrateBattlePass();
@@ -909,7 +899,6 @@ async function handleMigrateBattlePass(req, res) {
     });
 
   } catch (error) {
-    console.error('Battle Pass migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
       details: error.message
@@ -925,7 +914,6 @@ async function handleMigrateLeagues(req, res) {
   }
 
   try {
-    console.log('Starting Leagues migration...');
 
     // Run the migration
     const result = await migrateLeagues();
@@ -959,7 +947,6 @@ async function handleMigrateLeagues(req, res) {
     });
 
   } catch (error) {
-    console.error('Leagues migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
       details: error.message
@@ -975,7 +962,6 @@ async function handleMigrateLeagueSeasons(req, res) {
   }
 
   try {
-    console.log('Starting League Seasons migration...');
 
     // Run the migration
     const result = await migrateLeagueSeasons();
@@ -1009,7 +995,6 @@ async function handleMigrateLeagueSeasons(req, res) {
     });
 
   } catch (error) {
-    console.error('League seasons migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
       details: error.message
@@ -1025,7 +1010,6 @@ async function handleMigratePhase6Month22(req, res) {
   }
 
   try {
-    console.log('Starting Phase 6 Month 22 migration (Advanced League Achievement Tracking)...');
 
     // Run the migration
     const result = await migrateLeagueSeasonTracking();
@@ -1050,7 +1034,6 @@ async function handleMigratePhase6Month22(req, res) {
       modifications: result.modifications
     });
   } catch (error) {
-    console.error('Phase 6 Month 22 migration error:', error);
     res.status(500).json({
       success: false,
       error: 'Phase 6 Month 22 migration failed',
@@ -1067,7 +1050,6 @@ async function handleMigratePhase6Month23(req, res) {
   }
 
   try {
-    console.log('Starting Phase 6 Month 23 migration (Intra-Season Zone Tracking)...');
 
     // Run the migration
     const result = await migrateLeagueZoneTracking();
@@ -1086,7 +1068,6 @@ async function handleMigratePhase6Month23(req, res) {
       tables: result.tables
     });
   } catch (error) {
-    console.error('Phase 6 Month 23 migration error:', error);
     res.status(500).json({
       success: false,
       error: 'Phase 6 Month 23 migration failed',
@@ -1103,7 +1084,6 @@ async function handleMigrateLessons(req, res) {
   }
 
   try {
-    console.log('Starting Phase 2 Lesson System migration...');
 
     // Run the migration
     const result = await migrateLessons();
@@ -1143,7 +1123,6 @@ async function handleMigrateLessons(req, res) {
     });
 
   } catch (error) {
-    console.error('Lesson System migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
       details: error.message
@@ -1159,7 +1138,6 @@ async function handleMigratePerformanceIndexes(req, res) {
   }
 
   try {
-    console.log('Starting Performance Index Optimization migration...');
 
     // Run the migration
     const result = await migratePerformanceIndexes();
@@ -1201,7 +1179,6 @@ async function handleMigratePerformanceIndexes(req, res) {
     });
 
   } catch (error) {
-    console.error('Performance index migration failed:', error);
     res.status(500).json({
       error: 'Migration failed',
       details: error.message
@@ -1217,7 +1194,6 @@ async function handlePerformanceStats(req, res) {
   }
 
   try {
-    console.log('Fetching database performance statistics...');
 
     // Get index usage stats
     const indexUsage = await getIndexUsageStats();
@@ -1242,7 +1218,6 @@ async function handlePerformanceStats(req, res) {
     });
 
   } catch (error) {
-    console.error('Performance stats error:', error);
     res.status(500).json({
       error: 'Failed to fetch performance stats',
       details: error.message
@@ -1258,7 +1233,6 @@ async function handleTakeLeagueSnapshots(req, res) {
   }
 
   try {
-    console.log('Taking league position snapshots...');
 
     const result = await takeLeagueSnapshots();
 
@@ -1268,7 +1242,6 @@ async function handleTakeLeagueSnapshots(req, res) {
       result: result
     });
   } catch (error) {
-    console.error('Take snapshots error:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to take league snapshots',
@@ -1285,7 +1258,6 @@ async function handleProcessLeagueSeason(req, res) {
   }
 
   try {
-    console.log('Processing league season end...');
 
     const result = await processSeasonEnd();
 
@@ -1296,7 +1268,6 @@ async function handleProcessLeagueSeason(req, res) {
     });
 
   } catch (error) {
-    console.error('Season processing failed:', error);
     res.status(500).json({
       error: 'Season processing failed',
       details: error.message
@@ -1312,7 +1283,6 @@ async function handleCreateNewSeasons(req, res) {
   }
 
   try {
-    console.log('Creating new league seasons...');
 
     const result = await createNewSeasons();
 
@@ -1323,7 +1293,6 @@ async function handleCreateNewSeasons(req, res) {
     });
 
   } catch (error) {
-    console.error('Season creation failed:', error);
     res.status(500).json({
       error: 'Season creation failed',
       details: error.message
@@ -1339,23 +1308,18 @@ async function handleCronProcessSeasons(req, res) {
   }
 
   try {
-    console.log('Starting weekly league season processing...');
 
     // Step 1: Process current season end (promote/demote/reset)
-    console.log('Step 1: Processing season end...');
     const processResult = await processSeasonEnd();
 
     if (!processResult.success) {
       throw new Error('Season processing failed');
     }
 
-    console.log('Season processing results:', processResult);
 
     // Step 2: Create new seasons for next week
-    console.log('Step 2: Creating new seasons...');
     const newSeasons = await createNewSeasons();
 
-    console.log(`Created ${newSeasons.length} new seasons`);
 
     // Return success
     return res.status(200).json({
@@ -1372,7 +1336,6 @@ async function handleCronProcessSeasons(req, res) {
     });
 
   } catch (error) {
-    console.error('Weekly season processing failed:', error);
     return res.status(500).json({
       error: 'Season processing failed',
       details: error.message,

@@ -16,6 +16,7 @@ const leagues = require('../lib/leagues-api');
 const { getCurrentSeasonInfo, getUserSeasonHistory, getSeasonLeaderboard } = require('../lib/league-seasons');
 const fs = require('fs').promises;
 const path = require('path');
+const { rateLimit } = require('../lib/rate-limit');
 
 // Helper function to execute SQL queries
 async function sql(strings, ...values) {
@@ -79,7 +80,7 @@ async function initDatabase() {
 
     return true;
   } catch (error) {
-    console.error('Failed to initialize database:', error);
+    // Error occurred
     throw error;
   }
 }
@@ -89,7 +90,6 @@ module.exports = async function handler(req, res) {
   try {
     await initDatabase();
   } catch (error) {
-    console.error('Database initialization failed:', error);
     return res.status(500).json({ error: 'Database initialization failed' });
   }
 
@@ -97,6 +97,15 @@ module.exports = async function handler(req, res) {
   // ✅ SECURITY FIX: Proper CORS handling
   if (setCorsHeaders(req, res)) {
     return;  // Preflight request handled
+  }
+
+  // ✅ RATE LIMITING: 200 requests per hour
+  const limited = await rateLimit(req, 'api', { max: 200, window: 3600 });
+  if (limited) {
+    return res.status(429).json({
+      error: 'Too many requests. Please try again later.',
+      retryAfter: 3600
+    });
   }
 
   try {
@@ -331,7 +340,7 @@ module.exports = async function handler(req, res) {
             const escapeCount = await getUserDemotionEscapes(parseInt(userId));
             return res.status(200).json({ success: true, escapeCount: escapeCount });
           } catch (error) {
-            console.error('Failed to get demotion escapes:', error);
+            // Error occurred
             return res.status(500).json({ error: 'Failed to get demotion escapes' });
           }
         }
@@ -375,7 +384,7 @@ module.exports = async function handler(req, res) {
             }
             return res.status(200).json({ success: true, data: result });
           } catch (error) {
-            console.error('Failed to get current season:', error);
+            // Error occurred
             return res.status(500).json({ error: 'Failed to get season info' });
           }
         }
@@ -390,7 +399,7 @@ module.exports = async function handler(req, res) {
             const result = await getUserSeasonHistory(parseInt(userId), parseInt(limit) || 10);
             return res.status(200).json({ success: true, data: result });
           } catch (error) {
-            console.error('Failed to get season history:', error);
+            // Error occurred
             return res.status(500).json({ error: 'Failed to get season history' });
           }
         }
@@ -408,7 +417,7 @@ module.exports = async function handler(req, res) {
             }
             return res.status(200).json({ success: true, data: result });
           } catch (error) {
-            console.error('Failed to get season leaderboard:', error);
+            // Error occurred
             return res.status(500).json({ error: 'Failed to get leaderboard' });
           }
         }
@@ -435,7 +444,7 @@ module.exports = async function handler(req, res) {
 
               return res.status(200).json(lesson);
             } catch (error) {
-              console.error(`Error loading lesson ${id}:`, error);
+              // Error occurred
               if (error.code === 'ENOENT') {
                 return res.status(404).json({ error: 'Lesson not found' });
               }
@@ -509,7 +518,7 @@ module.exports = async function handler(req, res) {
 
             return res.status(200).json(result.rows);
           } catch (error) {
-            console.error('Error getting lesson progress:', error);
+            // Error occurred
             return res.status(500).json({ error: 'Failed to get progress' });
           }
         }
@@ -642,7 +651,7 @@ module.exports = async function handler(req, res) {
 
             return res.status(200).json({ success: true });
           } catch (error) {
-            console.error('Error updating lesson progress:', error);
+            // Error occurred
             return res.status(500).json({ error: 'Failed to update progress' });
           }
         }
@@ -679,7 +688,7 @@ module.exports = async function handler(req, res) {
               message: 'Lesson completed!'
             });
           } catch (error) {
-            console.error('Error completing lesson:', error);
+            // Error occurred
             return res.status(500).json({ error: 'Failed to complete lesson' });
           }
         }
@@ -691,7 +700,7 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ error: `Method ${req.method} not allowed` });
     }
   } catch (error) {
-    console.error('API Error:', error);
+    // Error occurred
     return res.status(500).json({
       error: 'Internal server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
