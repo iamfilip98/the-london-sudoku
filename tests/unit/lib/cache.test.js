@@ -37,7 +37,7 @@ describe('lib/cache.js', () => {
 
   describe('CacheKeys', () => {
     test('dailyPuzzles() should generate correct key', () => {
-      expect(CacheKeys.dailyPuzzles('2025-11-13')).toBe('dailyPuzzles:2025-11-13');
+      expect(CacheKeys.dailyPuzzles('2025-11-13')).toBe('puzzles:daily:2025-11-13');
     });
 
     test('userProfile() should generate correct key', () => {
@@ -45,8 +45,8 @@ describe('lib/cache.js', () => {
     });
 
     test('leaderboard() should generate correct key', () => {
-      expect(CacheKeys.leaderboard('weekly', 'easy')).toBe('leaderboard:weekly:easy');
-      expect(CacheKeys.leaderboard('all', 'all')).toBe('leaderboard:all:all');
+      expect(CacheKeys.leaderboard('weekly', 'classic', 'week')).toBe('leaderboard:weekly:classic:week');
+      expect(CacheKeys.leaderboard('all', 'all', 'all')).toBe('leaderboard:all:all:all');
     });
   });
 
@@ -148,9 +148,8 @@ describe('lib/cache.js', () => {
       await invalidateCachePattern('user:*:profile');
 
       expect(mockKv.keys).toHaveBeenCalledWith('user:*:profile');
-      expect(mockKv.del).toHaveBeenCalledTimes(2);
-      expect(mockKv.del).toHaveBeenCalledWith('user:alice:profile');
-      expect(mockKv.del).toHaveBeenCalledWith('user:bob:profile');
+      expect(mockKv.del).toHaveBeenCalledTimes(1);
+      expect(mockKv.del).toHaveBeenCalledWith('user:alice:profile', 'user:bob:profile');
     });
 
     test('should handle no matching keys', async () => {

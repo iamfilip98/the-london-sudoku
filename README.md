@@ -1661,30 +1661,47 @@ The application is deployed on Vercel with:
 
 ### **Production-Grade Automated Testing**
 
-This project features a **comprehensive testing suite** with automated CI/CD integration:
+This project features a **comprehensive testing suite** with automated CI/CD integration, targeting **80%+ code coverage**:
 
+- **🧪 Unit Tests (Jest)**: Library functions, utilities, and business logic
+- **🎭 E2E Tests (Playwright)**: Complete user journeys from onboarding to gameplay
 - **📸 Visual Regression**: 12+ devices (iPhone, iPad, Android, Desktop)
-- **🎯 E2E User Flows**: Complete user journeys from auth to game completion
 - **♿ Accessibility**: WCAG 2.1 Level AA compliance (keyboard nav, ARIA, contrast)
 - **⚡ Performance**: Page load, bundle size, Lighthouse scores
 - **🔌 API Testing**: All endpoints validated for security and performance
 
 ### **Test Automation Features**
-- ✅ **GitHub Actions CI/CD**: Auto-run on PRs, pushes, and daily
+- ✅ **GitHub Actions CI/CD**: Auto-run on PRs and pushes
 - 🎭 **Matrix Testing**: Parallel execution across Chrome, Firefox, Safari, Mobile
-- 📊 **Visual Diff Reports**: Side-by-side screenshot comparisons
-- 🤖 **PR Bot Comments**: Automated test results on pull requests
+- 📊 **Coverage Reports**: Codecov integration with 70%+ threshold
 - 📹 **Video Recording**: Failed tests captured for debugging
-- 💾 **Artifacts**: Screenshots, traces, reports saved for 30 days
+- 💾 **Artifacts**: Screenshots, traces, coverage reports saved for 7 days
+- 🤖 **Automated Regression Prevention**: Tests run automatically on every code change
 
 ### **Running Tests**
-```bash
-# Run all tests
-npm test
 
-# Run specific suites
+#### **Unit Tests (Jest)**
+```bash
+# Run all unit tests
+npm run test:unit
+
+# Run in watch mode (auto-rerun on file changes)
+npm run test:unit:watch
+
+# Run with coverage report
+npm run test:unit:coverage
+
+# Coverage thresholds: 70% minimum (branches, functions, lines, statements)
+```
+
+#### **E2E Tests (Playwright)**
+```bash
+# Run all E2E tests
+npm run test:e2e
+
+# Run specific test suites
 npm run test:visual          # Visual regression
-npm run test:e2e             # End-to-end flows
+npm run test:e2e:specific    # User flows (onboarding, gameplay, achievements)
 npm run test:accessibility   # WCAG compliance
 npm run test:performance     # Performance benchmarks
 npm run test:api             # API endpoints
@@ -1702,10 +1719,93 @@ npm run test:report          # View HTML report
 ```
 
 ### **Test Coverage**
-- **12+ Device Configurations**: iPhone SE/12/14 Pro Max, Pixel 5, Galaxy S20, iPad Mini/Pro, Desktop (1280-2560px)
+
+#### **Unit Tests Coverage**
+- ✅ **lib/validation.js**: Input validation for API endpoints (validatePlayer, validateDifficulty, validateDate, validateGameData)
+- ✅ **lib/error-handler.js**: Centralized error handling (AppError, handleApiError, retryOperation, validateRequired)
+- ✅ **lib/cache.js**: Redis caching functionality (getCached, invalidateCache, CacheKeys, CACHE_DURATIONS)
+- ✅ **lib/cors.js**: CORS security configuration (setCorsHeaders, allowedOrigins, whitelist validation)
+
+**Current Coverage**: 70%+ (target: 80%)
+
+#### **E2E Tests Coverage**
+- **Onboarding Flow**: Homepage loading, navigation, puzzle selection, authentication, responsive design
+- **Gameplay Flow**: Grid interaction, keyboard input, timer, hints, undo, error highlighting, mobile gameplay
+- **Achievements Flow**: Achievement display, filtering, progress bars, rarity indicators, detail views
+- **Visual Regression**: 12+ devices (iPhone SE/12/14 Pro Max, Pixel 5, Galaxy S20, iPad Mini/Pro, Desktop)
 - **3 Major Browsers**: Chrome, Firefox, Safari (desktop + mobile)
 - **100+ Individual Tests**: Covering UI, UX, accessibility, performance, and APIs
-- **Automated Regression Prevention**: Tests run automatically on every code change
+
+### **CI/CD Integration**
+
+All tests run automatically on:
+- **Every push** to any branch
+- **Every pull request** to main/develop branches
+- **Parallel execution**: Unit tests and E2E tests run simultaneously
+- **Coverage enforcement**: Unit tests must maintain 70%+ coverage
+- **Artifacts uploaded**: Coverage reports, screenshots, and test results
+
+**GitHub Actions Workflow**:
+```yaml
+jobs:
+  unit-tests:
+    # Jest unit tests with coverage reporting
+    # Uploads to Codecov for tracking over time
+
+  e2e-tests:
+    # Playwright E2E tests across multiple browsers
+    # Screenshots and videos on failure
+```
+
+### **Test Files Structure**
+```
+tests/
+├── unit/                     # Jest unit tests
+│   ├── setup.js             # Global test setup
+│   └── lib/
+│       ├── validation.test.js    # Input validation tests
+│       ├── error-handler.test.js # Error handling tests
+│       ├── cache.test.js         # Redis caching tests
+│       └── cors.test.js          # CORS security tests
+├── e2e/                      # Playwright E2E tests
+│   ├── onboarding.spec.js   # New user onboarding
+│   ├── gameplay.spec.js     # Game interactions
+│   ├── achievements.spec.js # Achievement system
+│   └── user-flows.spec.js   # Complete user journeys
+├── visual/                   # Visual regression tests
+├── accessibility/            # WCAG compliance tests
+├── performance/              # Performance benchmarks
+├── api/                      # API endpoint tests
+└── helpers/
+    ├── test-utils.js        # Shared test utilities
+    └── devices.js           # Device configurations
+```
+
+### **Writing New Tests**
+
+**Unit Test Example (Jest)**:
+```javascript
+const { validatePlayer } = require('../lib/validation');
+
+describe('validatePlayer()', () => {
+  test('should accept valid usernames', () => {
+    expect(validatePlayer('testuser')).toBe(true);
+  });
+
+  test('should reject usernames over 50 characters', () => {
+    expect(() => validatePlayer('a'.repeat(51))).toThrow();
+  });
+});
+```
+
+**E2E Test Example (Playwright)**:
+```javascript
+test('User can select difficulty', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('button:has-text("Easy")').click();
+  await expect(page).toHaveURL(/difficulty=easy/);
+});
+```
 
 📖 **Full Testing Documentation**: See [TESTING.md](TESTING.md) for detailed information
 

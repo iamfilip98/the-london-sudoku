@@ -7,8 +7,60 @@ on:
     branches: [main, develop]
 
 jobs:
-  test:
-    name: Run Tests
+  unit-tests:
+    name: Unit Tests (Jest)
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests with coverage
+        run: npm run test:unit:coverage
+        env:
+          CI: true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-unit
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+      - name: Check coverage thresholds
+        run: |
+          COVERAGE=$(grep -oP 'Lines\s+:\s+\K[0-9.]+' coverage/lcov-report/index.html | head -1)
+          echo "Coverage: ${COVERAGE}%"
+          if (( $(echo "$COVERAGE < 70" | bc -l) )); then
+            echo "::warning::Code coverage is below 70% threshold"
+          fi
+        continue-on-error: true
+
+  e2e-tests:
+    name: E2E Tests (Playwright)
     runs-on: ubuntu-latest
 
     strategy:
@@ -31,7 +83,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run tests (excluding API endpoint tests)
+      - name: Run E2E tests (excluding API endpoint tests)
         run: npx playwright test --grep-invert "API Endpoint Tests"
         continue-on-error: true  # Allow failures - fixing pre-existing test issues separately
         env:

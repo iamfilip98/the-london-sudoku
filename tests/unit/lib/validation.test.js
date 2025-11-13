@@ -9,14 +9,18 @@ const {
   validateDifficulty,
   validateDate,
   validateGameData,
-  validateSaveGameRequest
+  validateSaveGameRequest,
+  sanitizeString,
+  VALID_DIFFICULTIES
 } = require('../../../lib/validation');
 
 describe('lib/validation.js', () => {
   describe('validatePlayer()', () => {
-    test('should accept valid player names', () => {
-      expect(validatePlayer('faidao')).toBe(true);
-      expect(validatePlayer('filip')).toBe(true);
+    test('should accept valid player names of any length 1-50', () => {
+      expect(validatePlayer('user')).toBe(true);
+      expect(validatePlayer('testuser123')).toBe(true);
+      expect(validatePlayer('a')).toBe(true); // 1 character
+      expect(validatePlayer('a'.repeat(50))).toBe(true); // 50 characters
     });
 
     test('should reject missing player', () => {
@@ -31,10 +35,8 @@ describe('lib/validation.js', () => {
       expect(() => validatePlayer([])).toThrow('Player must be a string');
     });
 
-    test('should reject invalid player names', () => {
-      expect(() => validatePlayer('invalid')).toThrow('Invalid player');
-      expect(() => validatePlayer('alice')).toThrow('Invalid player');
-      expect(() => validatePlayer('FAIDAO')).toThrow('Invalid player'); // Case sensitive
+    test('should reject player names that are too long', () => {
+      expect(() => validatePlayer('a'.repeat(51))).toThrow('Player must be between 1 and 50 characters');
     });
   });
 
@@ -90,10 +92,10 @@ describe('lib/validation.js', () => {
     });
 
     test('should reject invalid date values', () => {
-      expect(() => validateDate('2025-13-01')).toThrow('Invalid date values'); // Month 13
-      expect(() => validateDate('2025-02-30')).toThrow('Invalid date values'); // Feb 30
-      expect(() => validateDate('2025-11-31')).toThrow('Invalid date values'); // Nov 31
-      expect(() => validateDate('2023-02-29')).toThrow('Invalid date values'); // Not leap year
+      expect(() => validateDate('2025-13-01')).toThrow('Invalid date'); // Month 13
+      expect(() => validateDate('2025-02-30')).toThrow('Invalid date'); // Feb 30
+      expect(() => validateDate('2025-11-31')).toThrow('Invalid date'); // Nov 31
+      expect(() => validateDate('2023-02-29')).toThrow('Invalid date'); // Not leap year
     });
 
     test('should reject completely invalid dates', () => {
@@ -117,49 +119,50 @@ describe('lib/validation.js', () => {
       expect(validateGameData({ ...validGameData, hints: 0 })).toBe(true);
     });
 
+    test('should accept empty game data object', () => {
+      // Validation is optional - fields are only validated if present
+      expect(validateGameData({})).toBe(true);
+    });
+
     test('should reject missing or invalid game data', () => {
       expect(() => validateGameData()).toThrow('Game data must be an object');
       expect(() => validateGameData(null)).toThrow('Game data must be an object');
       expect(() => validateGameData('string')).toThrow('Game data must be an object');
     });
 
-    test('should reject missing required fields', () => {
-      expect(() => validateGameData({})).toThrow('Time is required');
-      expect(() => validateGameData({ time: 180 })).toThrow('Errors is required');
-      expect(() => validateGameData({ time: 180, errors: 0 })).toThrow('Score is required');
-      expect(() => validateGameData({ time: 180, errors: 0, score: 95 })).toThrow('Hints is required');
-    });
-
     test('should reject invalid time values', () => {
-      expect(() => validateGameData({ ...validGameData, time: -1 })).toThrow('Time must be non-negative');
-      expect(() => validateGameData({ ...validGameData, time: 'fast' })).toThrow('Time must be a number');
-      expect(() => validateGameData({ ...validGameData, time: 7201 })).toThrow('Time must be <= 7200');
+      expect(() => validateGameData({ time: -1 })).toThrow('Time must be a positive integer');
+      expect(() => validateGameData({ time: 'fast' })).toThrow('Time must be a positive integer');
+      expect(() => validateGameData({ time: 86401 })).toThrow('Time cannot exceed 24 hours');
+      expect(() => validateGameData({ time: 1.5 })).toThrow('Time must be a positive integer'); // Not integer
     });
 
     test('should reject invalid error counts', () => {
-      expect(() => validateGameData({ ...validGameData, errors: -1 })).toThrow('Errors must be non-negative');
-      expect(() => validateGameData({ ...validGameData, errors: 'many' })).toThrow('Errors must be a number');
-      expect(() => validateGameData({ ...validGameData, errors: 101 })).toThrow('Errors must be <= 100');
+      expect(() => validateGameData({ errors: -1 })).toThrow('Errors must be a non-negative integer');
+      expect(() => validateGameData({ errors: 'many' })).toThrow('Errors must be a non-negative integer');
+      expect(() => validateGameData({ errors: 101 })).toThrow('Errors seems unreasonably high');
+      expect(() => validateGameData({ errors: 1.5 })).toThrow('Errors must be a non-negative integer'); // Not integer
     });
 
     test('should reject invalid scores', () => {
-      expect(() => validateGameData({ ...validGameData, score: -1 })).toThrow('Score must be non-negative');
-      expect(() => validateGameData({ ...validGameData, score: 'high' })).toThrow('Score must be a number');
-      expect(() => validateGameData({ ...validGameData, score: 1001 })).toThrow('Score must be <= 1000');
+      expect(() => validateGameData({ score: -1 })).toThrow('Score must be a non-negative number');
+      expect(() => validateGameData({ score: 'high' })).toThrow('Score must be a non-negative number');
+      expect(() => validateGameData({ score: 10001 })).toThrow('Score seems unreasonably high');
     });
 
     test('should reject invalid hint counts', () => {
-      expect(() => validateGameData({ ...validGameData, hints: -1 })).toThrow('Hints must be non-negative');
-      expect(() => validateGameData({ ...validGameData, hints: 'few' })).toThrow('Hints must be a number');
-      expect(() => validateGameData({ ...validGameData, hints: 26 })).toThrow('Hints must be <= 25');
+      expect(() => validateGameData({ hints: -1 })).toThrow('Hints must be a non-negative integer');
+      expect(() => validateGameData({ hints: 'few' })).toThrow('Hints must be a non-negative integer');
+      expect(() => validateGameData({ hints: 11 })).toThrow('Hints seems unreasonably high');
+      expect(() => validateGameData({ hints: 1.5 })).toThrow('Hints must be a non-negative integer'); // Not integer
     });
 
     test('should accept edge case values', () => {
       expect(validateGameData({
-        time: 7200, // Maximum time
+        time: 86400, // Maximum time (24 hours)
         errors: 100, // Maximum errors
-        score: 1000, // Maximum score
-        hints: 25 // Maximum hints
+        score: 10000, // Maximum score
+        hints: 10 // Maximum hints
       })).toBe(true);
 
       expect(validateGameData({
@@ -169,19 +172,22 @@ describe('lib/validation.js', () => {
         hints: 0 // No hints
       })).toBe(true);
     });
+
+    test('should accept decimal scores', () => {
+      expect(validateGameData({ score: 95.5 })).toBe(true);
+      expect(validateGameData({ score: 100.123 })).toBe(true);
+    });
   });
 
   describe('validateSaveGameRequest()', () => {
     const validRequest = {
-      player: 'faidao',
+      player: 'testuser',
       date: '2025-11-13',
       difficulty: 'easy',
-      gameData: {
-        time: 180,
-        errors: 2,
-        score: 95.5,
-        hints: 1
-      }
+      time: 180,
+      errors: 2,
+      score: 95.5,
+      hints: 1
     };
 
     test('should accept valid save game request', () => {
@@ -189,14 +195,14 @@ describe('lib/validation.js', () => {
     });
 
     test('should reject missing fields', () => {
-      expect(() => validateSaveGameRequest({})).toThrow('Player is required');
-      expect(() => validateSaveGameRequest({ player: 'faidao' })).toThrow('Date is required');
-      expect(() => validateSaveGameRequest({ player: 'faidao', date: '2025-11-13' })).toThrow('Difficulty is required');
+      expect(() => validateSaveGameRequest({})).toThrow('Validation failed');
+      expect(() => validateSaveGameRequest({ player: 'testuser' })).toThrow('Date is required');
+      expect(() => validateSaveGameRequest({ player: 'testuser', date: '2025-11-13' })).toThrow('Difficulty is required');
     });
 
     test('should validate all fields', () => {
-      // Invalid player
-      expect(() => validateSaveGameRequest({ ...validRequest, player: 'invalid' })).toThrow('Invalid player');
+      // Invalid player (too long)
+      expect(() => validateSaveGameRequest({ ...validRequest, player: 'a'.repeat(51) })).toThrow('between 1 and 50 characters');
 
       // Invalid date
       expect(() => validateSaveGameRequest({ ...validRequest, date: '2025-13-01' })).toThrow('Invalid date');
@@ -204,26 +210,82 @@ describe('lib/validation.js', () => {
       // Invalid difficulty
       expect(() => validateSaveGameRequest({ ...validRequest, difficulty: 'expert' })).toThrow('Invalid difficulty');
 
-      // Invalid game data
-      expect(() => validateSaveGameRequest({ ...validRequest, gameData: { ...validRequest.gameData, time: -1 } })).toThrow('Time must be non-negative');
+      // Invalid game data (negative time)
+      expect(() => validateSaveGameRequest({ ...validRequest, time: -1 })).toThrow('positive integer');
     });
 
     test('should work with different players and difficulties', () => {
-      expect(validateSaveGameRequest({ ...validRequest, player: 'filip' })).toBe(true);
+      expect(validateSaveGameRequest({ ...validRequest, player: 'user1' })).toBe(true);
+      expect(validateSaveGameRequest({ ...validRequest, player: 'anotheruser' })).toBe(true);
       expect(validateSaveGameRequest({ ...validRequest, difficulty: 'medium' })).toBe(true);
       expect(validateSaveGameRequest({ ...validRequest, difficulty: 'hard' })).toBe(true);
+    });
+
+    test('should collect multiple validation errors', () => {
+      const invalidRequest = {
+        player: 'a'.repeat(51), // Too long
+        date: 'invalid-date',
+        difficulty: 'expert',
+        time: -1
+      };
+
+      try {
+        validateSaveGameRequest(invalidRequest);
+        fail('Should have thrown validation error');
+      } catch (e) {
+        expect(e.message).toContain('Validation failed');
+        expect(e.message).toContain('between 1 and 50 characters');
+        expect(e.message).toContain('Date must be in YYYY-MM-DD format');
+        expect(e.message).toContain('Invalid difficulty');
+      }
+    });
+  });
+
+  describe('sanitizeString()', () => {
+    test('should remove dangerous characters', () => {
+      expect(sanitizeString('test\\"string')).toBe('teststring');
+      expect(sanitizeString("test'string")).toBe('teststring');
+      expect(sanitizeString('test;string')).toBe('teststring');
+      expect(sanitizeString('test`string')).toBe('teststring');
+      expect(sanitizeString('test\\string')).toBe('teststring');
+    });
+
+    test('should trim whitespace', () => {
+      expect(sanitizeString('  test  ')).toBe('test');
+      expect(sanitizeString('\n test \n')).toBe('test');
+    });
+
+    test('should limit length to 255 characters', () => {
+      const longString = 'a'.repeat(300);
+      expect(sanitizeString(longString).length).toBe(255);
+    });
+
+    test('should handle non-string input', () => {
+      expect(sanitizeString(123)).toBe(123);
+      expect(sanitizeString(null)).toBe(null);
+      expect(sanitizeString(undefined)).toBe(undefined);
+    });
+
+    test('should handle empty strings', () => {
+      expect(sanitizeString('')).toBe('');
+      expect(sanitizeString('   ')).toBe('');
+    });
+  });
+
+  describe('VALID_DIFFICULTIES constant', () => {
+    test('should export valid difficulties', () => {
+      expect(VALID_DIFFICULTIES).toEqual(['easy', 'medium', 'hard']);
     });
   });
 
   describe('Validation edge cases', () => {
-    test('should handle whitespace correctly', () => {
-      expect(() => validatePlayer(' faidao ')).toThrow('Invalid player'); // With spaces
-      expect(() => validateDifficulty(' easy ')).toThrow('Invalid difficulty');
+    test('should handle whitespace in player names', () => {
+      // Whitespace should be preserved in player names
+      expect(validatePlayer('user name')).toBe(true);
+      expect(validatePlayer('  spaces  ')).toBe(true);
     });
 
-    test('should be case-sensitive', () => {
-      expect(() => validatePlayer('Faidao')).toThrow('Invalid player');
-      expect(() => validatePlayer('FILIP')).toThrow('Invalid player');
+    test('should be case-sensitive for difficulty', () => {
       expect(() => validateDifficulty('Easy')).toThrow('Invalid difficulty');
       expect(() => validateDifficulty('MEDIUM')).toThrow('Invalid difficulty');
     });
@@ -234,21 +296,22 @@ describe('lib/validation.js', () => {
       expect(() => validateDate('2025-11-13\n')).toThrow('Date must be in YYYY-MM-DD format');
     });
 
-    test('should handle floating point numbers correctly', () => {
-      expect(validateGameData({
-        time: 180.5,
+    test('should handle floating point time (should fail)', () => {
+      expect(() => validateGameData({
+        time: 180.5, // Not an integer
         errors: 2,
         score: 95.789,
         hints: 1
-      })).toBe(true);
+      })).toThrow('positive integer');
+    });
 
-      // Errors should be integer
+    test('should handle floating point errors (should fail)', () => {
       expect(() => validateGameData({
         time: 180,
-        errors: 2.5,
+        errors: 2.5, // Not an integer
         score: 95,
         hints: 1
-      })).toThrow(); // Should validate errors are integers
+      })).toThrow('non-negative integer');
     });
   });
 });

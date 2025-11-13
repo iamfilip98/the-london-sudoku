@@ -185,10 +185,6 @@ class ChallengesManager {
                 currentStreak: 0,
                 bestStreak: 0,
                 milestones: []
-            },
-            participants: {
-                faidao: { participating: true, progress: 0 },
-                filip: { participating: true, progress: 0 }
             }
         };
 
@@ -264,15 +260,11 @@ class ChallengesManager {
         let tempStreak = 0;
 
         entries.forEach(entry => {
-            const faidaoErrors = (entry.faidao.errors.easy || 0) +
-                               (entry.faidao.errors.medium || 0) +
-                               (entry.faidao.errors.hard || 0);
-            const filipErrors = (entry.filip.errors.easy || 0) +
-                              (entry.filip.errors.medium || 0) +
-                              (entry.filip.errors.hard || 0);
+            const totalErrors = (entry.errors?.easy || 0) +
+                               (entry.errors?.medium || 0) +
+                               (entry.errors?.hard || 0);
 
-            const meetsTarget = faidaoErrors <= challenge.target.maxErrorsPerDay ||
-                              filipErrors <= challenge.target.maxErrorsPerDay;
+            const meetsTarget = totalErrors <= challenge.target.maxErrorsPerDay;
 
             if (meetsTarget) {
                 tempStreak++;
@@ -299,20 +291,15 @@ class ChallengesManager {
         let validDays = 0;
 
         entries.forEach(entry => {
-            const faidaoTotal = (entry.faidao.times.easy || 0) +
-                               (entry.faidao.times.medium || 0) +
-                               (entry.faidao.times.hard || 0);
-            const filipTotal = (entry.filip.times.easy || 0) +
-                              (entry.filip.times.medium || 0) +
-                              (entry.filip.times.hard || 0);
+            const totalTime = (entry.times?.easy || 0) +
+                             (entry.times?.medium || 0) +
+                             (entry.times?.hard || 0);
 
-            const betterTime = Math.min(faidaoTotal, filipTotal);
-
-            if (betterTime > 0 && betterTime <= challenge.target.avgTotalTime) {
+            if (totalTime > 0 && totalTime <= challenge.target.avgTotalTime) {
                 currentStreak++;
-                totalTimeSum += betterTime;
+                totalTimeSum += totalTime;
                 validDays++;
-            } else {
+            } else if (totalTime > challenge.target.avgTotalTime) {
                 currentStreak = 0;
             }
         });
@@ -341,22 +328,15 @@ class ChallengesManager {
         }
 
         // Calculate average score across all entries
-        const allScores = [];
-        entries.forEach(entry => {
-            allScores.push(entry.faidao.scores.total, entry.filip.scores.total);
-        });
-
-        const avgScore = allScores.reduce((sum, score) => sum + score, 0) / allScores.length;
+        const avgScore = entries.reduce((sum, entry) => sum + (entry.total_score || 0), 0) / entries.length;
         const variationLimit = avgScore * (challenge.target.scoreVariation / 100);
 
         let currentStreak = 0;
         let tempStreak = 0;
 
         entries.forEach(entry => {
-            const faidaoVariation = Math.abs(entry.faidao.scores.total - avgScore);
-            const filipVariation = Math.abs(entry.filip.scores.total - avgScore);
-
-            const meetsTarget = faidaoVariation <= variationLimit || filipVariation <= variationLimit;
+            const variation = Math.abs((entry.total_score || 0) - avgScore);
+            const meetsTarget = variation <= variationLimit;
 
             if (meetsTarget) {
                 tempStreak++;
@@ -383,10 +363,8 @@ class ChallengesManager {
         let tempStreak = 0;
 
         entries.forEach(entry => {
-            const faidaoDNFs = entry.faidao.dnf.easy || entry.faidao.dnf.medium || entry.faidao.dnf.hard;
-            const filipDNFs = entry.filip.dnf.easy || entry.filip.dnf.medium || entry.filip.dnf.hard;
-
-            const meetsTarget = !faidaoDNFs || !filipDNFs;
+            const hasDNF = entry.dnf?.easy || entry.dnf?.medium || entry.dnf?.hard;
+            const meetsTarget = !hasDNF;
 
             if (meetsTarget) {
                 tempStreak++;
@@ -413,10 +391,10 @@ class ChallengesManager {
             const prevEntry = entries[i - 1];
             const currEntry = entries[i];
 
-            const prevBest = Math.max(prevEntry.faidao.scores.total, prevEntry.filip.scores.total);
-            const currBest = Math.max(currEntry.faidao.scores.total, currEntry.filip.scores.total);
+            const prevScore = prevEntry.total_score || 0;
+            const currScore = currEntry.total_score || 0;
 
-            if (currBest > prevBest) {
+            if (currScore > prevScore) {
                 currentStreak++;
             } else {
                 break;
@@ -438,14 +416,11 @@ class ChallengesManager {
         let tempStreak = 0;
 
         entries.forEach(entry => {
-            const faidaoCompleted = (entry.faidao.times.easy > 0 || entry.faidao.dnf.easy) ||
-                                   (entry.faidao.times.medium > 0 || entry.faidao.dnf.medium) ||
-                                   (entry.faidao.times.hard > 0 || entry.faidao.dnf.hard);
-            const filipCompleted = (entry.filip.times.easy > 0 || entry.filip.dnf.easy) ||
-                                  (entry.filip.times.medium > 0 || entry.filip.dnf.medium) ||
-                                  (entry.filip.times.hard > 0 || entry.filip.dnf.hard);
+            const hasCompleted = (entry.times?.easy > 0 || entry.dnf?.easy) ||
+                                (entry.times?.medium > 0 || entry.dnf?.medium) ||
+                                (entry.times?.hard > 0 || entry.dnf?.hard);
 
-            const meetsTarget = faidaoCompleted || filipCompleted;
+            const meetsTarget = hasCompleted;
 
             if (meetsTarget) {
                 tempStreak++;
@@ -470,14 +445,11 @@ class ChallengesManager {
         let perfectDays = 0;
 
         entries.forEach(entry => {
-            const faidaoPerfect = (entry.faidao.errors.easy || 0) === 0 &&
-                                 (entry.faidao.errors.medium || 0) === 0 &&
-                                 (entry.faidao.errors.hard || 0) === 0;
-            const filipPerfect = (entry.filip.errors.easy || 0) === 0 &&
-                                (entry.filip.errors.medium || 0) === 0 &&
-                                (entry.filip.errors.hard || 0) === 0;
+            const isPerfect = (entry.errors?.easy || 0) === 0 &&
+                             (entry.errors?.medium || 0) === 0 &&
+                             (entry.errors?.hard || 0) === 0;
 
-            if (faidaoPerfect || filipPerfect) {
+            if (isPerfect) {
                 perfectDays++;
             }
         });
@@ -495,18 +467,13 @@ class ChallengesManager {
     calculateWeekendSpeedProgress(challenge, entries) {
         let personalBestsBeaten = 0;
 
-        // This would need access to historical data to determine personal bests
-        // For now, simplified version
+        // Simplified: count if they completed all puzzles quickly
         entries.forEach(entry => {
-            // Simplified: count if they completed all puzzles quickly
-            const faidaoTotal = (entry.faidao.times.easy || 0) +
-                               (entry.faidao.times.medium || 0) +
-                               (entry.faidao.times.hard || 0);
-            const filipTotal = (entry.filip.times.easy || 0) +
-                              (entry.filip.times.medium || 0) +
-                              (entry.filip.times.hard || 0);
+            const totalTime = (entry.times?.easy || 0) +
+                             (entry.times?.medium || 0) +
+                             (entry.times?.hard || 0);
 
-            if (faidaoTotal > 0 && faidaoTotal < 600 || filipTotal > 0 && filipTotal < 600) {
+            if (totalTime > 0 && totalTime < 600) {
                 personalBestsBeaten++;
             }
         });
