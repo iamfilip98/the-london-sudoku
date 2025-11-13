@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - The London Sudoku</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .offline-container {
+      max-width: 500px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 48px 32px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .offline-icon {
+      font-size: 80px;
+      margin-bottom: 24px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.6;
+        transform: scale(0.95);
+      }
+    }
+
+    h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: 32px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #b0b0b0;
+      margin-bottom: 16px;
+    }
+
+    .tips {
+      background: rgba(102, 126, 234, 0.1);
+      border-left: 4px solid #667eea;
+      padding: 20px;
+      margin: 32px 0;
+      text-align: left;
+      border-radius: 8px;
+    }
+
+    .tips h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #667eea;
+    }
+
+    .tips ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .tips li {
+      padding: 8px 0;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .tips li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #667eea;
+      font-weight: bold;
+    }
+
+    .retry-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-family: 'Orbitron', monospace;
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 24px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+    }
+
+    .retry-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .retry-button:active {
+      transform: translateY(0);
+    }
+
+    .connection-status {
+      margin-top: 24px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .connection-status.offline {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .connection-status.online {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    @media (max-width: 640px) {
+      .offline-container {
+        padding: 32px 24px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .offline-icon {
+        font-size: 64px;
+      }
+
+      .retry-button {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">📡</div>
+    <h1>You're Offline</h1>
+    <p>
+      It looks like you've lost your internet connection. Don't worry - The London Sudoku works offline too!
+    </p>
+
+    <div class="tips">
+      <h2>What you can do offline:</h2>
+      <ul>
+        <li>Play cached daily puzzles</li>
+        <li>Complete puzzles you've already started</li>
+        <li>View your local statistics</li>
+        <li>Your progress is saved locally and will sync when you're back online</li>
+      </ul>
+    </div>
+
+    <p>
+      Once you reconnect, all your completed games will automatically sync to the server.
+    </p>
+
+    <div id="connection-status" class="connection-status offline">
+      🔴 Currently offline
+    </div>
+
+    <a href="/" class="retry-button" id="retry-button">
+      Return to Home
+    </a>
+  </div>
+
+  <script>
+    // Monitor connection status
+    function updateConnectionStatus() {
+      const statusElement = document.getElementById('connection-status');
+      const retryButton = document.getElementById('retry-button');
+
+      if (navigator.onLine) {
+        statusElement.className = 'connection-status online';
+        statusElement.textContent = '🟢 Back online!';
+        retryButton.textContent = 'Reload Page';
+
+        // Auto-reload after 2 seconds when back online
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        statusElement.className = 'connection-status offline';
+        statusElement.textContent = '🔴 Currently offline';
+        retryButton.textContent = 'Return to Home';
+      }
+    }
+
+    // Initial status check
+    updateConnectionStatus();
+
+    // Listen for connection changes
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
+
+    // Retry button handler
+    document.getElementById('retry-button').addEventListener('click', (e) => {
+      if (!navigator.onLine) {
+        e.preventDefault();
+        alert('You are still offline. Please check your internet connection and try again.');
+      }
+    });
+  </script>
+</body>
+</html>
