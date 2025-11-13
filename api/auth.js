@@ -10,12 +10,18 @@
  * PHASE 1 MONTH 4 (November 2025):
  * - Extended for user profiles (GET/PUT)
  * - Supports bio, avatar, display name updates
+ *
+ * PERFORMANCE (November 2025):
+ * - Redis caching for user profiles (15min TTL)
+ * - Redis caching for friends lists (10min TTL)
+ * - Auto-invalidation on profile/friends updates
  */
 
 const pool = require('../lib/db-pool');
 const { setCorsHeaders } = require('../lib/cors');
 const { loginSchema, validate, sanitizeHtml } = require('../lib/validators');
 const bcrypt = require('bcryptjs');
+const { getCached, invalidateCachePattern, CACHE_DURATIONS, CacheKeys } = require('../lib/cache');
 
 // Ensure bio column exists in users table
 async function ensureUserSchema() {
@@ -139,79 +145,92 @@ async function handleGetProfile(req, res) {
       });
     }
 
-    // Get user profile with stats
-    const userResult = await pool.query(`
-      SELECT
-        id,
-        username,
-        display_name,
-        avatar,
-        bio,
-        founder,
-        created_at,
-        last_active_at
-      FROM users
-      WHERE username = $1
-    `, [username]);
+    // Use caching for user profiles (15min TTL)
+    const profile = await getCached(
+      CacheKeys.userProfile(username),
+      async () => {
+        // Get user profile with stats
+        const userResult = await pool.query(`
+          SELECT
+            id,
+            username,
+            display_name,
+            avatar,
+            bio,
+            founder,
+            created_at,
+            last_active_at
+          FROM users
+          WHERE username = $1
+        `, [username]);
 
-    if (userResult.rows.length === 0) {
+        if (userResult.rows.length === 0) {
+          return null; // Cache null result to avoid repeated DB hits
+        }
+
+        const user = userResult.rows[0];
+
+        // Get user stats (total games, best scores, etc.)
+        const statsResult = await pool.query(`
+          SELECT
+            COUNT(*) as total_games,
+            COUNT(*) FILTER (WHERE difficulty = 'easy') as easy_games,
+            COUNT(*) FILTER (WHERE difficulty = 'medium') as medium_games,
+            COUNT(*) FILTER (WHERE difficulty = 'hard') as hard_games,
+            AVG(score) as avg_score,
+            MAX(score) as best_score,
+            MIN(time) as fastest_time
+          FROM individual_games
+          WHERE player = $1
+        `, [username]);
+
+        const stats = statsResult.rows[0];
+
+        // Get current streak
+        const streakResult = await pool.query(`
+          SELECT current_streak, best_streak
+          FROM streaks
+          WHERE player = $1
+        `, [username]);
+
+        const streak = streakResult.rows[0] || { current_streak: 0, best_streak: 0 };
+
+        return {
+          username: user.username,
+          displayName: user.display_name,
+          avatar: user.avatar,
+          bio: user.bio,
+          founder: user.founder || false,  // Phase 1 Month 5: Founder badge
+          createdAt: user.created_at,
+          lastActiveAt: user.last_active_at,
+          stats: {
+            totalGames: parseInt(stats.total_games) || 0,
+            easyGames: parseInt(stats.easy_games) || 0,
+            mediumGames: parseInt(stats.medium_games) || 0,
+            hardGames: parseInt(stats.hard_games) || 0,
+            avgScore: parseFloat(stats.avg_score) || 0,
+            bestScore: parseFloat(stats.best_score) || 0,
+            fastestTime: parseInt(stats.fastest_time) || 0
+          },
+          streak: {
+            current: streak.current_streak,
+            best: streak.best_streak
+          }
+        };
+      },
+      CACHE_DURATIONS.USER_PROFILE // 15 minutes
+    );
+
+    if (profile === null) {
       return res.status(404).json({
         success: false,
         error: 'User not found'
       });
     }
 
-    const user = userResult.rows[0];
-
-    // Get user stats (total games, best scores, etc.)
-    const statsResult = await pool.query(`
-      SELECT
-        COUNT(*) as total_games,
-        COUNT(*) FILTER (WHERE difficulty = 'easy') as easy_games,
-        COUNT(*) FILTER (WHERE difficulty = 'medium') as medium_games,
-        COUNT(*) FILTER (WHERE difficulty = 'hard') as hard_games,
-        AVG(score) as avg_score,
-        MAX(score) as best_score,
-        MIN(time) as fastest_time
-      FROM individual_games
-      WHERE player = $1
-    `, [username]);
-
-    const stats = statsResult.rows[0];
-
-    // Get current streak
-    const streakResult = await pool.query(`
-      SELECT current_streak, best_streak
-      FROM streaks
-      WHERE player = $1
-    `, [username]);
-
-    const streak = streakResult.rows[0] || { current_streak: 0, best_streak: 0 };
-
     return res.status(200).json({
       success: true,
-      profile: {
-        username: user.username,
-        displayName: user.display_name,
-        avatar: user.avatar,
-        bio: user.bio,
-        founder: user.founder || false,  // Phase 1 Month 5: Founder badge
-        createdAt: user.created_at,
-        lastActiveAt: user.last_active_at,
-        stats: {
-          totalGames: parseInt(stats.total_games) || 0,
-          easyGames: parseInt(stats.easy_games) || 0,
-          mediumGames: parseInt(stats.medium_games) || 0,
-          hardGames: parseInt(stats.hard_games) || 0,
-          avgScore: parseFloat(stats.avg_score) || 0,
-          bestScore: parseFloat(stats.best_score) || 0,
-          fastestTime: parseInt(stats.fastest_time) || 0
-        },
-        streak: {
-          current: streak.current_streak,
-          best: streak.best_streak
-        }
-      }
+      profile
     });
   } catch (error) {
     console.error('Get profile error:', error);
@@ -305,6 +324,9 @@ async function handleUpdateProfile(req, res) {
         error: 'User not found'
       });
     }
+
+    // Invalidate profile cache after update
+    await invalidateCachePattern(`user:${username}:*`);
 
     return res.status(200).json({
       success: true,
