@@ -25,7 +25,7 @@ module.exports = {
   ],
 
   // Coverage thresholds (aim for 80%+)
-  coverageThresholds: {
+  coverageThreshold: {
     global: {
       branches: 70,
       functions: 70,
